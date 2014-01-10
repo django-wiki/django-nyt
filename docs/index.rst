@@ -4,11 +4,12 @@ Welcome to django-nyt's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    installation
    configuration
    integration
+   javascript
 
 django-nyt
 =============
@@ -45,11 +46,9 @@ this:
 
 .. image:: misc/screenshot_dropdown.png
 
-Here is a snippet example to get you started, but you need to get ui.js from [django-wiki/plugins/notifications](https://github.com/benjaoming/django-wiki/tree/master/wiki/plugins/notifications/static/wiki/plugins/notifications/js)
-which is a couple of utility functions that use JQuery to get notifications from
-a JSON view and display them in the right DOM element.
+Try to refer to :doc:`javascript` -- it shows a pretty solid example of the UI logic that's needed for the above to work.
 
-.. code-block:: html+django
+. code-block:: html+django
 
    <h2>Notifications:</h2>
    <ul>
