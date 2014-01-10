@@ -1,30 +1,7 @@
 # -*- coding: utf-8 -*-
-# This package and all its sub-packages are part of django_nyt,
-# except where otherwise stated.
-#
-# django_nyt is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# django_nyt is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with django_nyt. If not, see <http://www.gnu.org/licenses/>.
-
-# Unused feature, atm. everything is bundled with django-wiki
-VERSION = "0.9"
-
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Model
-from django.utils.translation import ugettext as _
-
-import models
-
 _disable_notifications = False
+
+VERSION = "0.9"
 
 def notify(message, key, target_object=None, url=None, filter_exclude={}):
     """
@@ -46,7 +23,16 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}):
     in the queryset, for instance filter_exclude={''}
     
     """
-    
+
+    # TODO: Can we improve this? In __init__.py we don't want it in the main scope
+    # because then we have to be in a django project to do "import django_nyt", but
+    # for instance then we cannot do "from django_nyt import VERSION" in setup.py
+    from django.contrib.contenttypes.models import ContentType
+    from django.db.models import Model
+    from django.utils.translation import ugettext as _
+
+    from . import models
+
     if _disable_notifications:
         return 0
     
