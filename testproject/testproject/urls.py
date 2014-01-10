@@ -20,5 +20,5 @@ if settings.DEBUG:
 
 from django_nyt.urls import get_pattern as get_nyt_pattern
 urlpatterns += patterns('',
-    (r'^notify/', get_nyt_pattern()),
+    (r'^nyt/', get_nyt_pattern()),
 )

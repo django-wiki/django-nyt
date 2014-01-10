@@ -7,6 +7,7 @@ Contents:
    :maxdepth: 2
 
    installation
+   configuration
    integration
 
 django-nyt

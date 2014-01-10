@@ -52,7 +52,7 @@ class Command(BaseCommand):
 
         if not self.logger.handlers:
             if daemon:
-                handler = logging.FileHandler(filename=nyt_settings.NOTIFY_LOG)
+                handler = logging.FileHandler(filename=nyt_settings.NYT_LOG)
             else:
                 handler = logging.StreamHandler(self.stdout)
             self.logger.addHandler(handler)
@@ -72,7 +72,7 @@ class Command(BaseCommand):
                 if fpid > 0:
                 # Running as daemon now. PID is fpid
                     self.logger.info("PID: %s" % str(fpid))
-                    pid_file = file(nyt_settings.NOTIFY_PID, "w")
+                    pid_file = file(nyt_settings.NYT_PID, "w")
                     pid_file.write(str(fpid))
                     pid_file.close()
                     sys.exit(0)

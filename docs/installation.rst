@@ -38,6 +38,6 @@ You need to add the following patterns to get JSON views. You need to add it to 
 
    from django_nyt.urls import get_pattern as get_nyt_pattern
    urlpatterns += patterns('',
-       (r'^notify/', get_nyt_pattern()),
+       (r'^nyt/', get_nyt_pattern()),
    )
 

@@ -48,6 +48,9 @@ if DJANGO_VERSION >= (1,5):
 else:
     USER_MODEL = 'auth.User'
 
+NYT_LOG = getattr(django_settings, 'NYT_LOG', '/tmp/nyt_daemon.log')
+NYT_PID = getattr(django_settings, 'NYT_PID', '/tmp/nyt_daemon.pid')
+
 ####################
 # PLANNED SETTINGS #
 ####################
@@ -59,9 +62,5 @@ AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
 
 # After how many days should all types of notifications be deleted?
 AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
-
-NYT_LOG = getattr(django_settings, 'NYT_LOG', '/tmp/nyt_daemon.log')
-
-NYT_PID = getattr(django_settings, 'NYT_PID', '/tmp/nyt_daemon.pid')
 
 
