@@ -5,6 +5,9 @@
 # C extensions
 *.so
 
+docs/_build
+docs/_static
+
 # Packages
 *.egg
 *.egg-info

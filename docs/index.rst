@@ -6,6 +6,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   integration
 
 django-nyt
 =============
@@ -40,7 +41,7 @@ fetch the latest notifications and display them in some area of the screen.
 Upon clicking that icon, the latest notifications are displayed. Something like
 this:
 
-![Javascript drop-down](./docs/misc/screenshot_dropdown.png)
+.. image:: misc/screenshot_dropdown.png
 
 Here is a snippet example to get you started, but you need to get ui.js from [django-wiki/plugins/notifications](https://github.com/benjaoming/django-wiki/tree/master/wiki/plugins/notifications/static/wiki/plugins/notifications/js)
 which is a couple of utility functions that use JQuery to get notifications from
