@@ -12,14 +12,13 @@ django-nyt
 
 django_nyt does this:
 
-```python
-from django_nyt import notify
+.. code-block:: python
+   from django_nyt import notify
+   
+   EVENT_KEY = "my_key"
+   notify(_("OMG! Something happened"), EVENT_KEY)
 
-EVENT_KEY = "my_key"
-notify(_("OMG! Something happened"), EVENT_KEY)
-```
-
-All users subscribing to `EVENT_KEY` will have a notification created in their
+All users subscribing to ``EVENT_KEY`` will have a notification created in their
 stack. If you have emails enabled, they may get a summary of notifications at an
 interval of their choice.
 
@@ -45,45 +44,43 @@ Here is a snippet example to get you started, but you need to get ui.js from [dj
 which is a couple of utility functions that use JQuery to get notifications from
 a JSON view and display them in the right DOM element.
 
-```html
-<h2>Notifications:</h2>
-<ul>
-  <li class="notifications-empty"><a href="#"><em>{% trans "No notifications" %}</em></a></li>
-  <li class="divider"></li>
-  <li>
-    <a href="#" onclick="notify_mark_read()">
-      <i class="icon-check"></i>
-      {% trans "Clear notifications list" %}
-    </a>
-  </li>
-  <!-- Example of a settings page linked directly under the notifications -->
-  <li>
-    <a href="{% url 'wiki:notification_settings' %}">
-      <i class="icon-wrench"></i>
-      {% trans "Notification settings" %}
-    </a>
-  </li>
-</ul>
-<script type="text/javascript">
-  URL_NOTIFY_GET_NEW = "{% url "notify:json_get" %}";
-  URL_NOTIFY_MARK_READ = "{% url "notify:json_mark_read_base" %}";
-  URL_NOTIFY_GOTO = "{% url "notify:goto_base" %}";
-</script>
-<script type="text/javascript" src="{{ STATIC_URL }}wiki/plugins/notifications/js/ui.js"></script>
-```
+.. code-block:: html+django
+   <h2>Notifications:</h2>
+   <ul>
+     <li class="notifications-empty"><a href="#"><em>{% trans "No notifications" %}</em></a></li>
+     <li class="divider"></li>
+     <li>
+       <a href="#" onclick="notify_mark_read()">
+         <i class="icon-check"></i>
+         {% trans "Clear notifications list" %}
+       </a>
+     </li>
+     <!-- Example of a settings page linked directly under the notifications -->
+     <li>
+       <a href="{% url 'wiki:notification_settings' %}">
+         <i class="icon-wrench"></i>
+         {% trans "Notification settings" %}
+       </a>
+     </li>
+   </ul>
+   <script type="text/javascript">
+     URL_NOTIFY_GET_NEW = "{% url "nyt:json_get" %}";
+     URL_NOTIFY_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
+     URL_NOTIFY_GOTO = "{% url "nyt:goto_base" %}";
+   </script>
+   <script type="text/javascript" src="{{ STATIC_URL }}wiki/plugins/notifications/js/ui.js"></script>
 
 Usage
 -----
 
-
 ### Adding a notification
 
-```python
-    from django_nyt import notify
-    
-    EVENT_KEY = "my_key"
-    notify(_("OMG! Something happened"), EVENT_KEY)
-```
+.. code-block:: python
+   from django_nyt import notify
+   
+   EVENT_KEY = "my_key"
+   notify(_("OMG! Something happened"), EVENT_KEY)
+
 
 ### Adding a notification with a certain target object
 
@@ -91,35 +88,35 @@ The Notification model has a GenericForeignKey which can link it to any other
 object. This is nice, because you might have an intention to go the other way
 around and ask "for this object, are there any notifications?"
 
-```python
+``````python
     notify(_("OMG! Something happened"), EVENT_KEY, target_object=my_model_instance)
-```
+``````
 
 ### Excluding certain recepients
 
-By setting the kwarg `filter_exclude` to a dictionary of lookup fields for
-`models.Subscription`, you may exclude certain users from getting a notification.
+By setting the kwarg ``filter_exclude`` to a dictionary of lookup fields for
+``models.Subscription``, you may exclude certain users from getting a notification.
 For instance, if a notification is solely for staff members:
 
-```python
-    notify(
-        _("OMG! Something happened"), EVENT_KEY, 
-        filter_exclude={'settings__user__is_staff': True}
-    )
-```
+.. code-block:: html+django
+   notify(
+       _("OMG! Something happened"), EVENT_KEY, 
+       filter_exclude={'settings__user__is_staff': True}
+   )
+
 
 ### Disabling notifications
 
-Use `decorators.disable_notify` to ensure that all notifications within a function are disabled.
+Use ``decorators.disable_notify`` to ensure that all notifications within a function are disabled.
 
 For instance:
 
-```python
-    from django_nyt.decorators import disable_notify
-    @disable_notify
-    def my_view(request):
-        ...
-```
+.. code-block:: html+django
+   from django_nyt.decorators import disable_notify
+   @disable_notify
+   def my_view(request):
+       ...
+
 
 *This is a work in progress*
 ----------------------------
@@ -137,7 +134,7 @@ TODO:
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+* :ref:``genindex``
+* :ref:``modindex``
+* :ref:``search``
 
