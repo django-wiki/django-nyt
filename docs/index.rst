@@ -48,35 +48,8 @@ this:
 
 Try to refer to :doc:`javascript` -- it shows a pretty solid example of the UI logic that's needed for the above to work.
 
-. code-block:: html+django
-
-   <h2>Notifications:</h2>
-   <ul>
-     <li class="notifications-empty"><a href="#"><em>{% trans "No notifications" %}</em></a></li>
-     <li class="divider"></li>
-     <li>
-       <a href="#" onclick="notify_mark_read()">
-         <i class="icon-check"></i>
-         {% trans "Clear notifications list" %}
-       </a>
-     </li>
-     <!-- Example of a settings page linked directly under the notifications -->
-     <li>
-       <a href="{% url 'wiki:notification_settings' %}">
-         <i class="icon-wrench"></i>
-         {% trans "Notification settings" %}
-       </a>
-     </li>
-   </ul>
-   <script type="text/javascript">
-     URL_NOTIFY_GET_NEW = "{% url "nyt:json_get" %}";
-     URL_NOTIFY_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
-     URL_NOTIFY_GOTO = "{% url "nyt:goto_base" %}";
-   </script>
-   <script type="text/javascript" src="{{ STATIC_URL }}wiki/plugins/notifications/js/ui.js"></script>
-
-Usage
------
+API Usage
+---------
 
 Adding a notification
 ~~~~~~~~~~~~~~~~~~~~~
