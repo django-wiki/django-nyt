@@ -10,7 +10,7 @@ Contents:
 django-nyt
 =============
 
-django_nyt does this:
+Often a lot of stuff happens on a website, and users need an easy way to digest changes through notifications.
 
 .. code-block:: python
 
@@ -76,7 +76,8 @@ a JSON view and display them in the right DOM element.
 Usage
 -----
 
-### Adding a notification
+Adding a notification
+~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -86,7 +87,8 @@ Usage
    notify(_("OMG! Something happened"), EVENT_KEY)
 
 
-### Adding a notification with a certain target object
+Adding a notification with a certain target object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Notification model has a GenericForeignKey which can link it to any other
 object. This is nice, because you might have an intention to go the other way
@@ -97,7 +99,8 @@ around and ask "for this object, are there any notifications?"
    notify(_("OMG! Something happened"), EVENT_KEY, target_object=my_model_instance)
 
 
-### Excluding certain recepients
+Excluding certain recepients
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By setting the kwarg ``filter_exclude`` to a dictionary of lookup fields for
 ``models.Subscription``, you may exclude certain users from getting a notification.
@@ -111,7 +114,8 @@ For instance, if a notification is solely for staff members:
    )
 
 
-### Disabling notifications
+Disabling notifications
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Use ``decorators.disable_notify`` to ensure that all notifications within a function are disabled.
 
