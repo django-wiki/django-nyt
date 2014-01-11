@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from django_nyt import settings
 
+
 class NotificationType(models.Model):
     """
     Notification types are added on-the-fly by the
@@ -33,7 +34,8 @@ class NotificationType(models.Model):
         db_table = settings.DB_TABLE_PREFIX + '_notificationtype'
         verbose_name = _(u'type')
         verbose_name_plural = _(u'types')
-    
+
+
 class Settings(models.Model):
     """
     Reusable settings object for a subscription
@@ -56,6 +58,7 @@ class Settings(models.Model):
         db_table = settings.DB_TABLE_PREFIX + '_settings'
         verbose_name = _(u'settings')
         verbose_name_plural = _(u'settings')
+
 
 class Subscription(models.Model):
     
@@ -82,6 +85,7 @@ class Subscription(models.Model):
         db_table = settings.DB_TABLE_PREFIX + '_subscription'
         verbose_name = _(u'subscription')
         verbose_name_plural = _(u'subscriptions')
+
 
 class Notification(models.Model):
     
@@ -112,6 +116,7 @@ class Notification(models.Model):
     
     @classmethod
     def create_notifications(cls, key, **kwargs):
+        """Creates notifications directly in database -- do not call directly, use django_nyt.notify(...)"""
         if not key or not isinstance(key, str):
             raise KeyError('No notification key (string) specified.')
         

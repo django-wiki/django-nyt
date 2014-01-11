@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from django_nyt import models
 from django_nyt import settings
 
+
 class SettingsAdmin(admin.ModelAdmin):
     raw_id_fields = ('user',)
     list_display = ('user', 'interval',)

@@ -8,13 +8,14 @@ from setuptools import setup, find_packages
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
 def get_path(fname):
-    return os.path.join(os.path.dirname(__file__), fname)
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), fname)
 
 def read(fname):
     return open(get_path(fname)).read()
 
 packages = find_packages()
 
+print get_path("README.md")
 
 try:
     import pypandoc
