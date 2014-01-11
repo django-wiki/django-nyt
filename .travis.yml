@@ -8,6 +8,6 @@ install:
   - pip install -r .travis/requirements_1.5.txt
   - pip install -r .travis/requirements_1.6.txt
 script:
-  - python -W error:"":"":0 testproject/manage.py test django_nyt --settings=testproject.settings.travis
+  - cd testproject ; python -W error:"":"":0 manage.py test django_nyt --settings=testproject.settings.travis
 
 
