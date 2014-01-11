@@ -54,7 +54,20 @@ Community
 
 Please visit #django-wiki on irc.freenode.net as many django-wiki users are also familiar with django-nyt which previously lived inside django-wiki.
 
-*This is a work in progress*
+Development
+------------
+
+In your Git fork, run `pip install -r requirements.txt` to install the requirements.
+
+The folder **testproject/** contains a pre-configured django project and an sqlite database. Login for django admin is *admin:admin*.
+
+[![Build Status](https://travis-ci.org/benjaoming/django-nyt.png?branch=master)](https://travis-ci.org/benjaoming/django-nyt)
+
+[![Downloads](https://pypip.in/d/django-nyt/badge.png)](https://crate.io/package/wiki)
+
+[![Downloads](https://pypip.in/v/django-nyt/badge.png)](https://crate.io/package/wiki)
+
+*This is a work in progre..*
 ----------------------------
 
 Please refer to the [TODO](https://github.com/benjaoming/django-nyt/blob/master/TODO.md)
