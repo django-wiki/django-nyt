@@ -57,4 +57,4 @@ Please visit #django-wiki on irc.freenode.net as many django-wiki users are also
 *This is a work in progress*
 ----------------------------
 
-Please refer to the [TODO](https://github.com/benjaoming/django-nyt/blob/master/TODO)
+Please refer to the [TODO](https://github.com/benjaoming/django-nyt/blob/master/TODO.md)
