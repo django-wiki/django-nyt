@@ -31,43 +31,21 @@ will fetch the latest notifications and display them in some area of the
 screen. Upon clicking that icon, the latest notifications are displayed.
 Something like this:
 
-.. figure:: ./docs/misc/screenshot_dropdown.png
+.. figure:: https://raw2.github.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
    :alt: Javascript drop-down
 
    Javascript drop-down
-Here is a snippet example to get you started, but you need to get ui.js
-from
-`django-wiki/plugins/notifications <https://github.com/benjaoming/django-wiki/tree/master/wiki/plugins/notifications/static/wiki/plugins/notifications/js>`__
-which is a couple of utility functions that use JQuery to get
-notifications from a JSON view and display them in the right DOM
-element.
+Some examples are provided, but there is no real easy way to place this
+nifty little thing at the top of your site.
 
-.. code:: html
+Other things for your TODO list:
 
-    <h2>Notifications:</h2>
-    <ul>
-      <li class="notifications-empty"><a href="#"><em>{% trans "No notifications" %}</em></a></li>
-      <li class="divider"></li>
-      <li>
-        <a href="#" onclick="notify_mark_read()">
-          <i class="icon-check"></i>
-          {% trans "Clear notifications list" %}
-        </a>
-      </li>
-      <!-- Example of a settings page linked directly under the notifications -->
-      <li>
-        <a href="{% url 'wiki:notification_settings' %}">
-          <i class="icon-wrench"></i>
-          {% trans "Notification settings" %}
-        </a>
-      </li>
-    </ul>
-    <script type="text/javascript">
-      URL_NOTIFY_GET_NEW = "{% url "notify:json_get" %}";
-      URL_NOTIFY_MARK_READ = "{% url "notify:json_mark_read_base" %}";
-      URL_NOTIFY_GOTO = "{% url "notify:goto_base" %}";
-    </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}wiki/plugins/notifications/js/ui.js"></script>
+-  Provide your users with options to customize their subscriptions and
+   notification preferences.
+-  Customize contents of notification emails
+-  Make the mail notification daemon script run
+   ``python manage.py notifymail --daemon``
+-  Put calls to ``notify(...)`` where ever necessary.
 
 Docs
 ----
@@ -83,13 +61,30 @@ Please visit #django-wiki on irc.freenode.net as many django-wiki users
 are also familiar with django-nyt which previously lived inside
 django-wiki.
 
-*This is a work in progress*
+Development
+-----------
+
+In your Git fork, run ``pip install -r requirements.txt`` to install the
+requirements.
+
+The folder **testproject/** contains a pre-configured django project and
+an sqlite database. Login for django admin is *admin:admin*.
+
+|Build Status|
+
+|Downloads|
+
+|Downloads|
+
+*This is a work in progre..*
 ----------------------------
 
-TODO:
+Please refer to the
+`TODO <https://github.com/benjaoming/django-nyt/blob/master/TODO.md>`__
 
--  Missing email functionality
--  Functions to easily retrive notifications and mark them as read
--  Some easy-to-use template tags and templates to override.
--  Examples of how to extend
-
+.. |Build Status| image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
+   :target: https://travis-ci.org/benjaoming/django-nyt
+.. |Downloads| image:: https://pypip.in/d/django-nyt/badge.png
+   :target: https://crate.io/package/wiki
+.. |Downloads| image:: https://pypip.in/v/django-nyt/badge.png
+   :target: https://crate.io/package/wiki

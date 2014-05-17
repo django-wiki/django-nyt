@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
+
 import os
 from django_nyt import VERSION
 from setuptools import setup, find_packages
@@ -7,38 +9,41 @@ from setuptools import setup, find_packages
 # Used for the long_description.  It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
+
+
 def get_path(fname):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), fname)
+
 
 def read(fname):
     return open(get_path(fname)).read()
 
 packages = find_packages()
 
-print get_path("README.md")
-
 try:
     import pypandoc
     long_description = pypandoc.convert(get_path('README.md'), 'rst')
-    long_description = long_description.split('<!---Illegal PyPi RST data -->')[0]
+    long_description = long_description.split(
+        '<!---Illegal PyPi RST data -->')[0]
     f = open(get_path('README.rst'), 'w')
     f.write(long_description)
     f.close()
+    print("Successfully converted README.md to README.rst")
 except (IOError, ImportError):
     # No long description... but nevermind, it's only for PyPi uploads.
     long_description = ""
 
 setup(
-    name = "django-nyt",
-    version = VERSION,
-    author = "Benjamin Bach",
-    author_email = "benjamin@overtag.dk",
-    url = "https://github.com/benjaoming/django-nyt",
-    description = "A pluggable notification system written for the Django framework.",
-    license = "Apache License 2.0",
-    keywords = "django notification system",
-    packages=find_packages(exclude=["testproject","testproject.*"]),
-    #long_description=long_description,
+    name="django-nyt",
+    version=VERSION,
+    author="Benjamin Bach",
+    author_email="benjamin@overtag.dk",
+    url="https://github.com/benjaoming/django-nyt",
+    description="A pluggable notification system written for the Django framework.",
+    license="Apache License 2.0",
+    keywords="django notification system",
+    packages=find_packages(exclude=["testproject", "testproject.*"]),
+    # long_description=long_description,
     zip_safe=False,
     install_requires=read('requirements.txt').split("\n"),
     classifiers=[
