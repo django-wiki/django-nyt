@@ -18,7 +18,7 @@ Often a lot of stuff happens on a website, and users need an easy way to digest 
 
 .. code-block:: python
 
-   from django_nyt import notify
+   from django_nyt.utils import notify
    
    EVENT_KEY = "my_key"
    notify(_("OMG! Something happened"), EVENT_KEY)
@@ -56,7 +56,7 @@ Adding a notification
 
 .. code-block:: python
 
-   from django_nyt import notify
+   from django_nyt.utils import notify
    
    EVENT_KEY = "my_key"
    notify(_("OMG! Something happened"), EVENT_KEY)
