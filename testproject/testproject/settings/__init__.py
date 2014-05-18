@@ -91,9 +91,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'south',
     'django_nyt',
 ]
+
+from django import VERSION
+if VERSION <= (1, 6):
+    INSTALLED_APPS.append('south')
+    SOUTH_MIGRATION_MODULES = {
+        'django_nyt': 'django_nyt.south_migrations',
+    }
+else:
+    TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
