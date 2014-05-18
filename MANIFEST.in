@@ -3,4 +3,5 @@ include README.md
 include README.rst
 include setup.cfg
 include requirements.txt
-recursive-include django_nyt *.html *.txt *.png *.js *.css *.gif *.less *.mo *.po *.otf *.svg *.woff *.eot *.ttf
+# None of these exist
+# recursive-include django_nyt *.html *.txt *.png *.js *.css *.gif *.less *.mo *.po *.otf *.svg *.woff *.eot *.ttf
