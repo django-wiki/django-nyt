@@ -2,6 +2,7 @@ from . import _disable_notifications
 
 from django.db.models import Model
 from django.utils.translation import ugettext as _
+from . import models
 
 
 def notify(message, key, target_object=None, url=None, filter_exclude={}):
@@ -24,8 +25,6 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}):
     in the queryset, for instance filter_exclude={''}
     
     """
-
-    from . import models
 
     if _disable_notifications:
         return 0
