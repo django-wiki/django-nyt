@@ -35,9 +35,9 @@ WEEKLY = 7 * (24 - 1) * 60
 
 # List of intervals available. In minutes
 INTERVALS = getattr(django_settings, 'NYT_INTERVALS',
-    [(INSTANTLY, _(u'instantly')),
-     (DAILY, _(u'daily')),
-     (WEEKLY, _(u'weekly'))]
+    [(INSTANTLY, _('instantly')),
+     (DAILY, _('daily')),
+     (WEEKLY, _('weekly'))]
 )
 
 INTERVALS_DEFAULT = INSTANTLY

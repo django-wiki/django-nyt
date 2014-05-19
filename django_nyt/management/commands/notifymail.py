@@ -61,7 +61,7 @@ class Command(BaseCommand):
         self.logger.info("Starting django_nyt e-mail dispatcher")
 
         if not nyt_settings.SEND_EMAILS:
-            print "E-mails disabled - quitting."
+            print("E-mails disabled - quitting.")
             sys.exit()
 
         # Run as daemon, ie. fork the process
@@ -76,14 +76,14 @@ class Command(BaseCommand):
                     pid_file.write(str(fpid))
                     pid_file.close()
                     sys.exit(0)
-            except OSError, e:
+            except OSError as e:
                 sys.stderr.write("fork failed: %d (%s)\n" % (e.errno, e.strerror))
                 sys.exit(1)
 
         try:
             self.send_loop()
         except KeyboardInterrupt:
-            print "\nQuitting..."
+            print("\nQuitting...")
 
         # deactivate the language
         deactivate()

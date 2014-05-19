@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django-nyt'
-copyright = u'2014, Benjamin Bach'
+project = 'django-nyt'
+copyright = '2014, Benjamin Bach'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -191,8 +191,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'django-nyt.tex', u'django-nyt Documentation',
-   u'Benjamin Bach', 'manual'),
+  ('index', 'django-nyt.tex', 'django-nyt Documentation',
+   'Benjamin Bach', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -221,8 +221,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-nyt', u'django-nyt Documentation',
-     [u'Benjamin Bach'], 1)
+    ('index', 'django-nyt', 'django-nyt Documentation',
+     ['Benjamin Bach'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -235,8 +235,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'django-nyt', u'django-nyt Documentation',
-   u'Benjamin Bach', 'django-nyt', 'One line description of project.',
+  ('index', 'django-nyt', 'django-nyt Documentation',
+   'Benjamin Bach', 'django-nyt', 'One line description of project.',
    'Miscellaneous'),
 ]
 

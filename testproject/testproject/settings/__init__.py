@@ -154,7 +154,3 @@ except ImportError:
     pass
 
 NYT_ENABLE_ADMIN = True
-
-SOUTH_MIGRATION_MODULES = {
-    'django_nyt': 'django_nyt.south_migrations',
-}

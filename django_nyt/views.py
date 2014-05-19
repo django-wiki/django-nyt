@@ -29,7 +29,7 @@ def get_notifications(request, latest_id=None, is_viewed=False, max_results=10):
                          'message': n.message,
                          'url': n.url,
                          'occurrences': n.occurrences,
-                         'occurrences_msg': _(u'%d times') % n.occurrences,
+                         'occurrences_msg': _('%d times') % n.occurrences,
                          'type': n.subscription.notification_type.key,
                          'since': naturaltime(n.created)} for n in notifications[:max_results]]}
 

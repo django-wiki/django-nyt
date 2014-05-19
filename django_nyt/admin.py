@@ -16,11 +16,11 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
     def display_user(self, instance):
         return instance.settings.user
-    display_user.short_description = _(u"user")
+    display_user.short_description = _("user")
 
     def display_interval(self, instance):
         return instance.settings.interval
-    display_interval.short_description = _(u"interval")
+    display_interval.short_description = _("interval")
 
 
 if settings.ENABLE_ADMIN:
