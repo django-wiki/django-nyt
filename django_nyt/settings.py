@@ -15,11 +15,11 @@ ENABLE_ADMIN = getattr(django_settings, 'NYT_ENABLE_ADMIN', False)
 # python manage.py notifymail
 SEND_EMAILS = getattr(django_settings, 'NYT_SEND_EMAILS', True)
 
-EMAIL_SUBJECT = getattr(django_settings, 
-    'NYT_EMAIL_SUBJECT', _("You have new notifications")) 
+EMAIL_SUBJECT = getattr(django_settings,
+                        'NYT_EMAIL_SUBJECT', _("You have new notifications"))
 
-EMAIL_SENDER = getattr(django_settings, 
-    'NYT_EMAIL_SENDER', "notifications@example.com")
+EMAIL_SENDER = getattr(django_settings,
+                       'NYT_EMAIL_SENDER', "notifications@example.com")
 
 # Seconds to sleep between each database poll
 # (leave high unless you really want to send extremely real time
@@ -30,20 +30,21 @@ NYT_SLEEP_TIME = 120
 # to send when invoking the script, and the number indicates how many hours
 # to minimum pass between each notification.
 INSTANTLY = 0
-DAILY = (24 - 1) * 60 # Subtract 1, because the job finishes less than 24h before the next...
+# Subtract 1, because the job finishes less than 24h before the next...
+DAILY = (24 - 1) * 60
 WEEKLY = 7 * (24 - 1) * 60
 
 # List of intervals available. In minutes
 INTERVALS = getattr(django_settings, 'NYT_INTERVALS',
-    [(INSTANTLY, _('instantly')),
-     (DAILY, _('daily')),
-     (WEEKLY, _('weekly'))]
-)
+                    [(INSTANTLY, _('instantly')),
+                     (DAILY, _('daily')),
+                        (WEEKLY, _('weekly'))]
+                    )
 
 INTERVALS_DEFAULT = INSTANTLY
 
 # Django 1.5+
-if DJANGO_VERSION >= (1,5):
+if DJANGO_VERSION >= (1, 5):
     USER_MODEL = getattr(django_settings, 'AUTH_USER_MODEL', 'auth.User')
 else:
     USER_MODEL = 'auth.User'
@@ -62,5 +63,3 @@ AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
 
 # After how many days should all types of notifications be deleted?
 AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
-
-

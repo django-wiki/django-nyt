@@ -3,6 +3,7 @@ _disable_notifications = False
 
 VERSION = "0.9.1"
 
+
 def notify(*args, **kwargs):
     """
     DEPRECATED - please access django_nyt.utils.notify

@@ -9,27 +9,28 @@ from django_nyt import settings
 
 
 class NotificationType(models.Model):
+
     """
     Notification types are added on-the-fly by the
     applications adding new notifications
     """
     key = models.CharField(
-        max_length=128, 
-        primary_key=True, 
+        max_length=128,
+        primary_key=True,
         verbose_name=_('unique key'),
         unique=True
     )
     label = models.CharField(
-        max_length=128, 
+        max_length=128,
         verbose_name=_('verbose name'),
-        blank=True, 
+        blank=True,
         null=True
     )
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
-    
+
     def __unicode__(self):
         return self.key
-    
+
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_notificationtype'
         verbose_name = _('type')
@@ -37,23 +38,24 @@ class NotificationType(models.Model):
 
 
 class Settings(models.Model):
+
     """
     Reusable settings object for a subscription
     """
-    
+
     user = models.ForeignKey(
         settings.USER_MODEL
     )
     interval = models.SmallIntegerField(
-        choices=settings.INTERVALS, 
+        choices=settings.INTERVALS,
         verbose_name=_('interval'),
         default=settings.INTERVALS_DEFAULT
     )
-    
+
     def __unicode__(self):
         obj_name = _("Settings for %s") % self.user.username
         return str(obj_name)
-    
+
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_settings'
         verbose_name = _('settings')
@@ -61,22 +63,22 @@ class Settings(models.Model):
 
 
 class Subscription(models.Model):
-    
+
     settings = models.ForeignKey(Settings)
     notification_type = models.ForeignKey(NotificationType)
     object_id = models.CharField(
-        max_length=64, 
-        null=True, 
-        blank=True, 
+        max_length=64,
+        null=True,
+        blank=True,
         help_text=_('Leave this blank to subscribe to any kind of object')
     )
     send_emails = models.BooleanField(default=True)
-    latest = models.ForeignKey('Notification', 
-        null=True, 
-        blank=True, 
-        related_name='latest_for'
-    )
-    
+    latest = models.ForeignKey('Notification',
+                               null=True,
+                               blank=True,
+                               related_name='latest_for'
+                               )
+
     def __unicode__(self):
         obj_name = _("Subscription for: %s") % str(self.settings.user.username)
         return str(obj_name)
@@ -88,44 +90,44 @@ class Subscription(models.Model):
 
 
 class Notification(models.Model):
-    
+
     subscription = models.ForeignKey(
-        Subscription, 
-        null=True, 
-        blank=True, 
+        Subscription,
+        null=True,
+        blank=True,
         on_delete=models.SET_NULL
     )
     message = models.TextField()
     url = models.CharField(
         verbose_name=_('link for notification'),
-        blank=True, 
-        null=True, 
+        blank=True,
+        null=True,
         max_length=200
     )
     is_viewed = models.BooleanField(default=False)
     is_emailed = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     occurrences = models.PositiveIntegerField(
-        default=1, 
+        default=1,
         verbose_name=_('occurrences'),
         help_text=_(
             'If the same notification was fired multiple '
-             'times with no intermediate notifications'
-         )
+            'times with no intermediate notifications'
+        )
     )
-    
+
     @classmethod
     def create_notifications(cls, key, **kwargs):
         """Creates notifications directly in database -- do not call directly, use django_nyt.notify(...)"""
         if not key or not isinstance(key, str):
             raise KeyError('No notification key (string) specified.')
-        
+
         object_id = kwargs.pop('object_id', None)
         filter_exclude = kwargs.pop('filter_exclude', {})
-        
+
         objects_created = []
         subscriptions = Subscription.objects.filter(
-            Q(notification_type__key=key) | 
+            Q(notification_type__key=key) |
             Q(notification_type__key=None),
             **filter_exclude
         )
@@ -138,18 +140,18 @@ class Notification(models.Model):
         subscriptions = subscriptions.prefetch_related('latest', 'settings')
         subscriptions = subscriptions.order_by('settings__user')
         prev_user = None
-        
+
         for subscription in subscriptions:
             # Don't alert the same user several times even though overlapping
             # subscriptions occur.
             if subscription.settings.user == prev_user:
                 continue
-            
+
             # Check if it's the same as the previous message
             latest = subscription.latest
-            if latest and (latest.message == kwargs.get('message', None) and 
-                latest.url == kwargs.get('url', None) and
-                latest.is_viewed == False):
+            if latest and (latest.message == kwargs.get('message', None) and
+                           latest.url == kwargs.get('url', None) and
+                           latest.is_viewed == False):
                 # Both message and URL are the same, and it hasn't been viewed
                 # so just increment occurrence count.
                 latest.occurrences = latest.occurrences + 1
@@ -157,16 +159,18 @@ class Notification(models.Model):
                 latest.save()
             else:
                 # Insert a new notification
-                new_obj = cls.objects.create(subscription=subscription, **kwargs)
+                new_obj = cls.objects.create(
+                    subscription=subscription,
+                    **kwargs)
                 objects_created.append(
-                   new_obj
+                    new_obj
                 )
                 subscription.latest = new_obj
                 subscription.save()
             prev_user = subscription.settings.user
-        
+
         return objects_created
-    
+
     def __unicode__(self):
         return "%s: %s" % (str(self.subscription.settings.user), self.message)
 

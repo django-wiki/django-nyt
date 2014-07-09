@@ -17,16 +17,16 @@ from django_nyt import models
 from django_nyt import settings as nyt_settings
 
 
-
 class Command(BaseCommand):
     can_import_settings = True
-    help = 'Sends notification emails to subscribed users taking into account the subscription interval' #@ReservedAssignment
+    # @ReservedAssignment
+    help = 'Sends notification emails to subscribed users taking into account the subscription interval'
     option_list = BaseCommand.option_list + (
-        make_option('--daemon','-d',
-        action='store_true',
-        dest='daemon',
-        default=False,
-        help='Go to daemon mode and exit'),
+        make_option('--daemon', '-d',
+                    action='store_true',
+                    dest='daemon',
+                    default=False,
+                    help='Go to daemon mode and exit'),
     )
 
     def _send_user_notifications(self, context, connection):
@@ -77,7 +77,9 @@ class Command(BaseCommand):
                     pid_file.close()
                     sys.exit(0)
             except OSError as e:
-                sys.stderr.write("fork failed: %d (%s)\n" % (e.errno, e.strerror))
+                sys.stderr.write(
+                    "fork failed: %d (%s)\n" %
+                    (e.errno, e.strerror))
                 sys.exit(1)
 
         try:
@@ -97,7 +99,7 @@ class Command(BaseCommand):
                    'digest': None,
                    'site': Site.objects.get_current()}
 
-        #create a connection to smtp server for reuse
+        # create a connection to smtp server for reuse
         try:
             connection = mail.get_connection()
         except:
@@ -112,20 +114,30 @@ class Command(BaseCommand):
                 raise
             started_sending_at = datetime.now()
 
-            self.logger.info("Starting send loop at %s" % str(started_sending_at))
+            self.logger.info(
+                "Starting send loop at %s" %
+                str(started_sending_at))
 
             if last_sent:
                 user_settings = models.Settings.objects.filter(
-                    interval__lte=((started_sending_at-last_sent).seconds // 60) // 60
-                ).order_by('user')
+                    interval__lte=(
+                        (started_sending_at -
+                         last_sent).seconds //
+                        60) //
+                    60).order_by('user')
             else:
                 user_settings = models.Settings.objects.all().order_by('user')
 
             for setting in user_settings:
                 context['user'] = setting.user
-                context['notifications']= []
-                #get the index of the tuple corresponding to the interval and get the string name
-                context['digest'] = nyt_settings.INTERVALS[[y[0] for y in nyt_settings.INTERVALS].index(setting.interval)][1]
+                context['notifications'] = []
+                # get the index of the tuple corresponding to the interval and
+                # get the string name
+                context[
+                    'digest'] = nyt_settings.INTERVALS[
+                    [y[0] for y in nyt_settings.INTERVALS].index(setting.
+                                                                 interval)][
+                    1]
                 for subscription in setting.subscription_set.filter(
                     send_emails=True,
                     latest__is_emailed=False
@@ -135,11 +147,12 @@ class Command(BaseCommand):
                     try:
                         self._send_user_notifications(context, connection)
                         for n in context['notifications']:
-                            n.is_emailed=True
+                            n.is_emailed = True
                             n.save()
                     except smtplib.SMTPException:
                         # TODO: Only quit on certain errors, retry on others.
-                        self.logger.error("You have an error with your SMTP server connection, quitting.")
+                        self.logger.error(
+                            "You have an error with your SMTP server connection, quitting.")
                         raise
 
             connection.close()
