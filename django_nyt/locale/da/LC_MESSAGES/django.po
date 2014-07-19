@@ -1,0 +1,157 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-15 16:17+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:19 models.py:63 models.py:137
+msgid "user"
+msgstr "bruger"
+
+#: admin.py:23 models.py:67
+msgid "interval"
+msgstr "interval"
+
+#: models.py:23
+msgid "unique key"
+msgstr "unik nøgle"
+
+#: models.py:28
+msgid "optional label"
+msgstr "evt. label"
+
+#: models.py:39
+msgid "type"
+msgstr "type"
+
+#: models.py:40
+msgid "types"
+msgstr "typer"
+
+#: models.py:72
+#, python-format
+msgid "Settings for %s"
+msgstr "Indstillinger for %s"
+
+#: models.py:77 models.py:78 models.py:85
+msgid "settings"
+msgstr "indstillinger"
+
+#: models.py:90
+msgid "notification type"
+msgstr "notifikationstype"
+
+#: models.py:96
+msgid "Leave this blank to subscribe to any kind of object"
+msgstr "Efterlad denne tom for at abonnere på alle typer objekter"
+
+#: models.py:97
+msgid "object ID"
+msgstr "objekt ID"
+
+#: models.py:101
+msgid "send emails"
+msgstr "send e-mails"
+
+#: models.py:108
+msgid "latest notification"
+msgstr "seneste notifikation"
+
+#: models.py:112
+#, python-format
+msgid "Subscription for: %s"
+msgstr "Tilmelding for: %s"
+
+#: models.py:117 models.py:129
+msgid "subscription"
+msgstr "tilmelding"
+
+#: models.py:118
+msgid "subscriptions"
+msgstr "tilmeldinger"
+
+#: models.py:141
+msgid "link for notification"
+msgstr "link for notifikation"
+
+#: models.py:151
+msgid "occurrences"
+msgstr "hændelser"
+
+#: models.py:153
+msgid ""
+"If the same notification was fired multiple times with no intermediate "
+"notifications"
+msgstr ""
+"Hvis den samme notifikation blev sendt flere gange uden andre typer "
+"mellemliggende notifikationer"
+
+#: models.py:223
+msgid "notification"
+msgstr "notifikation"
+
+#: models.py:224
+msgid "notifications"
+msgstr "notifikationer"
+
+#: settings.py:19
+msgid "You have new notifications"
+msgstr "Do har nye notifikationer"
+
+#: settings.py:39
+msgid "instantly"
+msgstr "med det samme"
+
+#: settings.py:40
+msgid "daily"
+msgstr "dagligt"
+
+#: settings.py:41
+msgid "weekly"
+msgstr "ugentligt"
+
+#: utils.py:35
+msgid "You supplied a target_object that's not an instance of a django Model."
+msgstr "Du angav et target_object der ikke er en Django Model for."
+
+#: views.py:40
+#, python-format
+msgid "%d times"
+msgstr "%d gange"
+
+#: templates/emails/notification_email_message.txt:1
+#, python-format
+msgid "Dear %(username)s,"
+msgstr "Kære %(username)s,"
+
+#: templates/emails/notification_email_message.txt:3
+#, python-format
+msgid "These are the %(digest)s notifications from %(site)s."
+msgstr "Dette er de seneste %(digest)s notifikationer fra %(site)s."
+
+#: templates/emails/notification_email_message.txt:9
+msgid "Thanks for using our site!"
+msgstr "Tak for, at du bruger vores hjemmeside!"
+
+#: templates/emails/notification_email_message.txt:11
+msgid "Sincerely"
+msgstr "Venlig hilsen"
+
+#: templates/emails/notification_email_subject.txt:2
+#, python-format
+msgid " %(digest)s Notifications %(site)s."
+msgstr " %(digest)s Notifikationer %(site)s."
