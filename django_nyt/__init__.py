@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 _disable_notifications = False
 
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 
 
 def notify(*args, **kwargs):
