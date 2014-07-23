@@ -23,7 +23,9 @@ def get_notifications(
 
     if is_viewed is not None:
         notifications = notifications.filter(is_viewed=is_viewed)
-
+        
+    total_count = notifications.count()
+    
     if latest_id is not None:
         notifications = notifications.filter(id__gt=latest_id)
 
@@ -35,7 +37,7 @@ def get_notifications(
     from django.contrib.humanize.templatetags.humanize import naturaltime
 
     return {'success': True,
-            'total_count': notifications.count(),
+            'total_count': total_count,
             'objects': [{'pk': n.pk,
                          'message': n.message,
                          'url': n.url,
