@@ -158,7 +158,7 @@ class Notification(models.Model):
     def save(self, *args, **kwargs):
         assert self.user or self.subscription
         if not self.user:
-            self.user = self.subscription.user
+            self.user = self.subscription.settings.user
         super(Notification, self).save(*args, **kwargs)
 
     @classmethod
