@@ -41,7 +41,7 @@ def get_notifications(
                          'url': n.url,
                          'occurrences': n.occurrences,
                          'occurrences_msg': _('%d times') % n.occurrences,
-                         'type': n.subscription.notification_type.key,
+                         'type': n.subscription.notification_type.key if n.subscription else None,
                          'since': naturaltime(n.created)} for n in notifications[:max_results]]}
 
 
