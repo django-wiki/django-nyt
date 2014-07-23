@@ -221,7 +221,7 @@ class Notification(models.Model):
         return objects_created
 
     def __unicode__(self):
-        return "%s: %s" % (str(self.subscription.settings.user), self.message)
+        return "%s: %s" % (str(self.user), self.message)
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_notification'
