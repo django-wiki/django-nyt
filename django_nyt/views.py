@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.db.models import Q
 
 from django_nyt.decorators import json_view, login_required_ajax
 from django_nyt import models
@@ -16,12 +17,14 @@ def get_notifications(
         max_results=10):
 
     notifications = models.Notification.objects.filter(
-        subscription__settings__user=request.user,)
+        Q(subscription__settings__user=request.user) |
+        Q(user=request.user),
+    )
 
-    if not is_viewed is None:
+    if is_viewed is not None:
         notifications = notifications.filter(is_viewed=is_viewed)
 
-    if not latest_id is None:
+    if latest_id is not None:
         notifications = notifications.filter(id__gt=latest_id)
 
     notifications = notifications.order_by('-id')
@@ -47,12 +50,15 @@ def goto(request, notification_id=None):
     referer = request.META.get('HTTP_REFERER', '')
     if not notification_id:
         return redirect(referer)
-    notification = get_object_or_404(models.Notification,
-                                     subscription__settings__user=request.user,
-                                     id=notification_id)
+    notification = get_object_or_404(
+        models.Notification,
+        Q(subscription__settings__user=request.user) |
+        Q(user=request.user),
+        id=notification_id
+    )
     notification.is_viewed = True
     notification.save()
-    if not notification.url is None:
+    if notification.url is not None:
         return redirect(notification.url)
     return redirect(referer)
 
@@ -62,8 +68,10 @@ def goto(request, notification_id=None):
 def mark_read(request, id_lte, notification_type_id=None, id_gte=None):
 
     notifications = models.Notification.objects.filter(
-        subscription__settings__user=request.user,
-        id__lte=id_lte)
+        Q(subscription__settings__user=request.user) |
+        Q(user=request.user),
+        id__lte=id_lte
+    )
 
     if notification_type_id:
         notifications = notifications.filter(
