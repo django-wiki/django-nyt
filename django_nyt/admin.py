@@ -23,8 +23,13 @@ class SubscriptionAdmin(admin.ModelAdmin):
     display_interval.short_description = _("interval")
 
 
+class NotificationAdmin(admin.ModelAdmin):
+    
+    raw_id_fields = ('user', 'subscription')
+
+
 if settings.ENABLE_ADMIN:
     admin.site.register(models.NotificationType)
-    admin.site.register(models.Notification)
+    admin.site.register(models.Notification, NotificationAdmin)
     admin.site.register(models.Settings, SettingsAdmin)
     admin.site.register(models.Subscription, SubscriptionAdmin)
