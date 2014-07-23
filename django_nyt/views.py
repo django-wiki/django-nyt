@@ -60,7 +60,7 @@ def goto(request, notification_id=None):
     )
     notification.is_viewed = True
     notification.save()
-    if notification.url is not None:
+    if notification.url:
         return redirect(notification.url)
     return redirect(referer)
 
