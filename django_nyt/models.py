@@ -70,7 +70,7 @@ class Settings(models.Model):
 
     def __unicode__(self):
         obj_name = _("Settings for %s") % self.user.username
-        return str(obj_name)
+        return unicode(obj_name)
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_settings'
@@ -109,8 +109,8 @@ class Subscription(models.Model):
     )
 
     def __unicode__(self):
-        obj_name = _("Subscription for: %s") % str(self.settings.user.username)
-        return str(obj_name)
+        obj_name = _("Subscription for: %s") % unicode(self.settings.user.username)
+        return unicode(obj_name)
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_subscription'
@@ -221,7 +221,7 @@ class Notification(models.Model):
         return objects_created
 
     def __unicode__(self):
-        return "%s: %s" % (str(self.user), self.message)
+        return "%s: %s" % (unicode(self.user), self.message)
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_notification'
