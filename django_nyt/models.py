@@ -130,7 +130,7 @@ class Notification(models.Model):
     )
     # Or the user to receive the notification
     user = models.ForeignKey(
-        'auth.User',
+        settings.USER_MODEL,
         null=True,
         blank=True,
         on_delete=models.CASCADE,  # If a user is deleted, remove all notifications
