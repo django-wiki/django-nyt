@@ -42,7 +42,7 @@ def json_view(func):
         obj = func(request, *args, **kwargs)
         data = json.dumps(obj, ensure_ascii=False)
         status = kwargs.get('status', 200)
-        response = HttpResponse(mimetype='application/json', status=status)
+        response = HttpResponse(content_type='application/json', status=status)
         response.write(data)
         return response
     return wrap
