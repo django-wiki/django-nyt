@@ -1,4 +1,7 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 # -*- coding: utf-8 -*-
+import six
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
@@ -60,7 +63,7 @@ class Settings(models.Model):
     user = models.ForeignKey(
         settings.USER_MODEL,
         on_delete=models.CASCADE,  # If a user is deleted, remove all settings
-        verbose_name=_(u"user"),
+        verbose_name=_("user"),
     )
     interval = models.SmallIntegerField(
         choices=settings.INTERVALS,
@@ -82,30 +85,30 @@ class Subscription(models.Model):
 
     settings = models.ForeignKey(
         Settings,
-        verbose_name=_(u"settings"),
+        verbose_name=_("settings"),
         on_delete=models.CASCADE,  # If settings are deleted, remove all subscriptions
     )
     notification_type = models.ForeignKey(
         NotificationType,
-        verbose_name=_(u"notification type"),
+        verbose_name=_("notification type"),
     )
     object_id = models.CharField(
         max_length=64,
         null=True,
         blank=True,
         help_text=_('Leave this blank to subscribe to any kind of object'),
-        verbose_name=_(u"object ID"),
+        verbose_name=_("object ID"),
     )
     send_emails = models.BooleanField(
         default=True,
-        verbose_name=_(u"send emails"),
+        verbose_name=_("send emails"),
     )
     latest = models.ForeignKey(
         'Notification',
         null=True,
         blank=True,
         related_name='latest_for',
-        verbose_name=_(u"latest notification"),
+        verbose_name=_("latest notification"),
     )
 
     def __unicode__(self):
@@ -126,7 +129,7 @@ class Notification(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        verbose_name=_(u"subscription"),
+        verbose_name=_("subscription"),
     )
     # Or the user to receive the notification
     user = models.ForeignKey(
@@ -134,7 +137,7 @@ class Notification(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,  # If a user is deleted, remove all notifications
-        verbose_name=_(u"user"),
+        verbose_name=_("user"),
     )
     message = models.TextField()
     url = models.CharField(
@@ -164,7 +167,7 @@ class Notification(models.Model):
     @classmethod
     def create_notifications(cls, key, **kwargs):
         """Creates notifications directly in database -- do not call directly, use django_nyt.notify(...)"""
-        if not key or not isinstance(key, str):
+        if not key or not isinstance(key, six.string_types):
             raise KeyError('No notification key (string) specified.')
 
         object_id = kwargs.pop('object_id', None)

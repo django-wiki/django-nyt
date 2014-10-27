@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from . import _disable_notifications
 
 from django.db.models import Model

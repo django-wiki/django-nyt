@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 import os
 import sys
 import time
@@ -72,7 +75,7 @@ class Command(BaseCommand):
                 if fpid > 0:
                 # Running as daemon now. PID is fpid
                     self.logger.info("PID: %s" % str(fpid))
-                    pid_file = file(nyt_settings.NYT_PID, "w")
+                    pid_file = open(nyt_settings.NYT_PID, "w")
                     pid_file.write(str(fpid))
                     pid_file.close()
                     sys.exit(0)

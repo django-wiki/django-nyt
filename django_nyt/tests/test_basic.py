@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from django.test import TestCase
 
 from django_nyt import notify, models

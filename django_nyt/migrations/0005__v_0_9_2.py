@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 # encoding: utf8
 from django.db import models, migrations
 import django.db.models.deletion
@@ -15,47 +17,47 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='notification',
             name='user',
-            field=models.ForeignKey(verbose_name=u'user', to_field=u'id', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(verbose_name='user', to_field='id', blank=True, to=settings.AUTH_USER_MODEL, null=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='subscription',
             name='latest',
-            field=models.ForeignKey(verbose_name=u'latest notification', to_field=u'id', blank=True, to='django_nyt.Notification', null=True),
+            field=models.ForeignKey(verbose_name='latest notification', to_field='id', blank=True, to='django_nyt.Notification', null=True),
         ),
         migrations.AlterField(
             model_name='settings',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, to_field=u'id', verbose_name=u'user'),
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, to_field='id', verbose_name='user'),
         ),
         migrations.AlterField(
             model_name='subscription',
             name='settings',
-            field=models.ForeignKey(to='django_nyt.Settings', to_field=u'id', verbose_name=u'settings'),
+            field=models.ForeignKey(to='django_nyt.Settings', to_field='id', verbose_name='settings'),
         ),
         migrations.AlterField(
             model_name='subscription',
             name='notification_type',
-            field=models.ForeignKey(to='django_nyt.NotificationType', to_field='key', verbose_name=u'notification type'),
+            field=models.ForeignKey(to='django_nyt.NotificationType', to_field='key', verbose_name='notification type'),
         ),
         migrations.AlterField(
             model_name='notificationtype',
             name='label',
-            field=models.CharField(max_length=128, null=True, verbose_name=u'optional label', blank=True),
+            field=models.CharField(max_length=128, null=True, verbose_name='optional label', blank=True),
         ),
         migrations.AlterField(
             model_name='subscription',
             name='object_id',
-            field=models.CharField(help_text=u'Leave this blank to subscribe to any kind of object', max_length=64, null=True, verbose_name=u'object ID', blank=True),
+            field=models.CharField(help_text='Leave this blank to subscribe to any kind of object', max_length=64, null=True, verbose_name='object ID', blank=True),
         ),
         migrations.AlterField(
             model_name='subscription',
             name='send_emails',
-            field=models.BooleanField(default=True, verbose_name=u'send emails'),
+            field=models.BooleanField(default=True, verbose_name='send emails'),
         ),
         migrations.AlterField(
             model_name='notification',
             name='subscription',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, verbose_name=u'subscription', to_field=u'id', blank=True, to='django_nyt.Subscription', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, verbose_name='subscription', to_field='id', blank=True, to='django_nyt.Subscription', null=True),
         ),
     ]
