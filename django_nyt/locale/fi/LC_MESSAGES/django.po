@@ -1,0 +1,156 @@
+# THE FINNISH TRANSLATION OF DJANGO-NYT
+# Copyright (C) 2014 JAAKKO LUTTINEN
+# This file is distributed under the same license as the DJANGO-WIKI package.
+# JAAKKO LUTTINEN <jaakko.luttinen@iki.fi>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.9.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-27 06:25+0200\n"
+"PO-Revision-Date: 2014-10-27 06:53+0200\n"
+"Last-Translator: Jaakko Luttinen <jaakko.luttinen@iki.fi>\n"
+"Language-Team: \n"
+"Language: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:19 models.py:63 models.py:137
+msgid "user"
+msgstr "käyttäjä"
+
+#: admin.py:23 models.py:67
+msgid "interval"
+msgstr "aikaväli"
+
+#: models.py:23
+msgid "unique key"
+msgstr "uniikki avain"
+
+#: models.py:28
+msgid "optional label"
+msgstr "vapaaehtoinen nimiö"
+
+#: models.py:39
+msgid "type"
+msgstr "tyyppi"
+
+#: models.py:40
+msgid "types"
+msgstr "tyypit"
+
+#: models.py:72
+#, python-format
+msgid "Settings for %s"
+msgstr "Asetukset %s"
+
+#: models.py:77 models.py:78 models.py:85
+msgid "settings"
+msgstr "asetukset"
+
+#: models.py:90
+msgid "notification type"
+msgstr "ilmoituksen tyyppi"
+
+#: models.py:96
+msgid "Leave this blank to subscribe to any kind of object"
+msgstr "Jätä tämä tyhjäksi tilataksesi kaikenlaiset ilmoitukset"
+
+#: models.py:97
+msgid "object ID"
+msgstr "objektin tunniste"
+
+#: models.py:101
+msgid "send emails"
+msgstr "lähetä sähköposteja"
+
+#: models.py:108
+msgid "latest notification"
+msgstr "viimeisin ilmoitus"
+
+#: models.py:112
+#, python-format
+msgid "Subscription for: %s"
+msgstr "Tilaus: %s"
+
+#: models.py:117 models.py:129
+msgid "subscription"
+msgstr "tilaus"
+
+#: models.py:118
+msgid "subscriptions"
+msgstr "tilaukset"
+
+#: models.py:141
+msgid "link for notification"
+msgstr "ilmoituksen linkki"
+
+#: models.py:151
+msgid "occurrences"
+msgstr "esiintymät"
+
+#: models.py:153
+msgid ""
+"If the same notification was fired multiple times with no intermediate "
+"notifications"
+msgstr ""
+"Jos sama ilmoitus esiintyy useamman kerran ilman välissä olevia ilmoituksia"
+
+#: models.py:228
+msgid "notification"
+msgstr "ilmoitus"
+
+#: models.py:229
+msgid "notifications"
+msgstr "ilmoitukset"
+
+#: settings.py:19
+msgid "You have new notifications"
+msgstr "Sinulla on uusia ilmoituksia"
+
+#: settings.py:39
+msgid "instantly"
+msgstr "heti"
+
+#: settings.py:40
+msgid "daily"
+msgstr "päivittäin"
+
+#: settings.py:41
+msgid "weekly"
+msgstr "viikottain"
+
+#: utils.py:39
+msgid "You supplied a target_object that's not an instance of a django Model."
+msgstr "Annoit kohteen (target_object), joka ei ole Djangon Model-luokan ilmentymä."
+
+#: views.py:45
+#, python-format
+msgid "%d times"
+msgstr "%d kertaa"
+
+#: templates/emails/notification_email_message.txt:1
+#, python-format
+msgid "Dear %(username)s,"
+msgstr "Hei %(username)s"
+
+#: templates/emails/notification_email_message.txt:3
+#, python-format
+msgid "These are the %(digest)s notifications from %(site)s."
+msgstr "Tässä ovat %(digest)s toimitettavat ilmoitukset sivustolta %(site)s."
+
+#: templates/emails/notification_email_message.txt:9
+msgid "Thanks for using our site!"
+msgstr "Kiitos kun käytät sivustoamme!"
+
+#: templates/emails/notification_email_message.txt:11
+msgid "Sincerely"
+msgstr "Ystävällisin terveisin,"
+
+#: templates/emails/notification_email_subject.txt:2
+#, python-format
+msgid " %(digest)s Notifications %(site)s."
+msgstr " %(site)s - %(digest)s toimitettavat ilmoitukset"
