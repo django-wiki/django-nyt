@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 # -*- coding: utf-8 -*-
 _disable_notifications = False
 
-VERSION = "0.9.3"
+VERSION = "0.9.4"
 
 
 def notify(*args, **kwargs):
