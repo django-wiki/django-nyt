@@ -2,11 +2,11 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 # -*- coding: utf-8 -*-
 import six
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-
-from django.contrib.contenttypes.models import ContentType
+from django.utils.encoding import python_2_unicode_compatible
 
 from django_nyt import settings
 
@@ -14,6 +14,7 @@ from django_nyt import settings
 _notification_type_cache = {}
 
 
+@python_2_unicode_compatible
 class NotificationType(models.Model):
 
     """
@@ -34,7 +35,7 @@ class NotificationType(models.Model):
     )
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.key
 
     class Meta:
@@ -54,6 +55,7 @@ class NotificationType(models.Model):
         return nt
 
 
+@python_2_unicode_compatible
 class Settings(models.Model):
 
     """
@@ -71,7 +73,7 @@ class Settings(models.Model):
         default=settings.INTERVALS_DEFAULT,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         obj_name = _("Settings for %s") % self.user.username
         return str(obj_name)
 
@@ -81,6 +83,7 @@ class Settings(models.Model):
         verbose_name_plural = _('settings')
 
 
+@python_2_unicode_compatible
 class Subscription(models.Model):
 
     settings = models.ForeignKey(
@@ -111,7 +114,7 @@ class Subscription(models.Model):
         verbose_name=_("latest notification"),
     )
 
-    def __unicode__(self):
+    def __str__(self):
         obj_name = _("Subscription for: %s") % str(self.settings.user.username)
         return str(obj_name)
 
@@ -121,6 +124,7 @@ class Subscription(models.Model):
         verbose_name_plural = _('subscriptions')
 
 
+@python_2_unicode_compatible
 class Notification(models.Model):
     
     # Either set the subscription
@@ -223,7 +227,7 @@ class Notification(models.Model):
 
         return objects_created
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (str(self.user), self.message)
 
     class Meta:
