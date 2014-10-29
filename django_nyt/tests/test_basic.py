@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from django.test import TestCase
 
-from django_nyt import notify, models
+from django_nyt import utils, models
 
 try:
     from django.contrib.auth import get_user_model
@@ -16,19 +16,11 @@ class NotifyTest(TestCase):
     def test_simple(self):
 
         TEST_KEY = 'test_key'
-        TEST_USER = User.objects.create_user(
+        user = User.objects.create_user(
             'lalala'
         )
-
-        TEST_NOTIFICATION_TYPE = models.NotificationType.objects.create(
-            key=TEST_KEY)
-        TEST_SETTINGS = models.Settings.objects.create(
-            user=TEST_USER,
-        )
-        models.Subscription.objects.create(
-            settings=TEST_SETTINGS,
-            notification_type=TEST_NOTIFICATION_TYPE,
-        )
-        notify("Test Is a Test", TEST_KEY)
+        user_settings = models.Settings.objects.create(user=user)
+        utils.subscribe(user_settings, TEST_KEY)
+        utils.notify("Test Is a Test", TEST_KEY)
 
         self.assertEqual(models.Notification.objects.all().count(), 1)

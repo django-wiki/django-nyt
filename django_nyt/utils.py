@@ -59,7 +59,8 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     Creates a new subscription to a given key. If the key does not exist
     as a NotificationType, it will be created
     
-    If a subscription already exist, it is returned
+    Uses get_or_create to avoid double creation
+    See: https://docs.djangoproject.com/en/dev/ref/models/querysets/#get-or-create
     
     :param: settings: A models.Settings instance (user + interval specification)
     :param: key: The unique key that the Settings should subscribe to
@@ -69,15 +70,9 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     """
     notification_type = models.NotificationType.get_by_key(key, content_type=content_type)
     
-    models.Subscription.objects.filter(
+    return models.Subscription.objects.get_or_create(
         settings=settings,
         notification_type=notification_type,
         object_id=object_id,
         **kwargs
-    )
-    return models.Subscription.objects.create(
-        settings=settings,
-        notification_type=notification_type,
-        object_id=object_id,
-        **kwargs
-    )
+    )[0]
