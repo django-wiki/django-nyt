@@ -180,7 +180,8 @@ class Notification(models.Model):
 
         objects_created = []
         subscriptions = Subscription.objects.filter(
-            notification_type__key=key,
+            notification_type__key=key
+        ).exclude(
             **filter_exclude
         )
         if object_id:
