@@ -41,3 +41,17 @@ You need to add the following patterns to get JSON views. You need to add it to 
        (r'^notifications/', get_nyt_pattern()),
    )
 
+
+Django < 1.7
+~~~~~~~~~~~~
+
+If you run older versions of django, please ensure that South is using the
+`south_migrations` module, and not the default `migrations` module which is
+now for Django 1.7. 
+
+::
+
+    INSTALLED_APPS += ['south',]
+    SOUTH_MIGRATION_MODULES = {
+        'django_nyt': 'django_nyt.south_migrations',
+    }
