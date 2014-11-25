@@ -164,7 +164,7 @@ class Command(BaseCommand):
             time.sleep(
                 max(
                     (min(nyt_settings.INTERVALS)[0] - elapsed_seconds) * 60,
-                    nyt_settings.NOTIFY_SLEEP_TIME,
+                    nyt_settings.NYT_SLEEP_TIME,
                     0
                 )
             )
