@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import django
+from django import VERSION
 from django.conf import settings
 
 INSTALLED_APPS=[
@@ -14,25 +15,8 @@ INSTALLED_APPS=[
 ]
 
 
-from django import VERSION
-if VERSION <= (1, 6):
+if VERSION < (1, 7):
     INSTALLED_APPS.append('south')
-    SOUTH_MIGRATION_MODULES = {
-        'django_nyt': 'django_nyt.south_migrations',
-    }
-else:
-    TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
-from django import VERSION
-if VERSION <= (1, 6):
-    INSTALLED_APPS.append('south')
-    SOUTH_MIGRATION_MODULES = {
-        'django_nyt': 'django_nyt.south_migrations',
-    }
-#    TEST_RUNNER = None
-else:
-    SOUTH_MIGRATION_MODULES = None
-#    TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 settings.configure(
     DEBUG=True,
@@ -44,7 +28,6 @@ settings.configure(
     },
     SITE_ID=1,
     ROOT_URLCONF='testproject.urls',
-    SOUTH_MIGRATION_MODULES=SOUTH_MIGRATION_MODULES,
     INSTALLED_APPS=INSTALLED_APPS,
     TEMPLATE_CONTEXT_PROCESSORS=(
         "django.contrib.auth.context_processors.auth",
@@ -63,8 +46,9 @@ settings.configure(
 
 # If you use South for migrations, uncomment this to monkeypatch
 # syncdb to get migrations to run.
-from south.management.commands import patch_for_test_db_setup
-patch_for_test_db_setup()
+if VERSION < (1, 7):
+    from south.management.commands import patch_for_test_db_setup
+    patch_for_test_db_setup()
 
 from django.core.management import execute_from_command_line
 argv = [sys.argv[0], "test"]

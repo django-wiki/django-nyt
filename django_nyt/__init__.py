@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import unicode_literals
-# -*- coding: utf-8 -*-
+
 _disable_notifications = False
 
 VERSION = "0.9.4"
