@@ -7,8 +7,8 @@ env:
 - TOXENV=py27-django14
 - TOXENV=py27-django15
 - TOXENV=py27-django16
-- TOXENV=py32-django15
-- TOXENV=py32-django16
+- TOXENV=py33-django15
+- TOXENV=py33-django16
 - TOXENV=py34-django15
 - TOXENV=py34-django16
 install:
