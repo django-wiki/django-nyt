@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 # -*- coding: utf-8 -*-
 #
 # django-nyt documentation build configuration file, created by
@@ -12,6 +10,8 @@ from __future__ import unicode_literals
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import sys, os
 
