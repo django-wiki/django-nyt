@@ -1,10 +1,10 @@
 django-nyt
 =============
 
-django_nyt does this:
+django-nyt does this:
 
 ```python
-from django_nyt import notify
+from django_nyt.utils import notify
 
 EVENT_KEY = "my_key"
 notify(_("OMG! Something happened"), EVENT_KEY)
@@ -19,16 +19,20 @@ Data can be accessed easily from Django models or from the included JSON views.
 Why should you do this?
 -----------------------
 
-Users need an cleverly sifted stream of events. Ensure that they have the
-possibility of customizing what they deem fit for their stream.
+Users need a cleverly sifted stream of events that's highly customizable as well.
+By using django-nyt, your users can subscribe to global events or specific events
+pertaining specific objects.
+
+Each event can be associated with a link so the user can use the notifications as
+shortcuts in their work flow.
 
 What do you need to do?
 -----------------------
 
-You need to do a lot. Firstly, you need to write some javascript that will
-fetch the latest notifications and display them in some area of the screen.
-Upon clicking that icon, the latest notifications are displayed. Something like
-this:
+You need to do a lot! But django-nyt does everything to meet as many needs as possible.
+Firstly, you need to write some javascript that will fetch the latest notifications
+and display them in some area of the screen. Upon clicking that icon, the latest
+notifications are displayed. Something like this:
 
 ![Javascript drop-down](https://raw2.github.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png)
 
@@ -37,10 +41,10 @@ little thing at the top of your site.
 
 Other things for your TODO list:
 
- * Provide your users with options to customize their subscriptions and notification preferences.
+ * Provide your users with options to customize their subscriptions and notification preferences
  * Customize contents of notification emails
  * Make the mail notification daemon script run `python manage.py notifymail --daemon`
- * Put calls to `notify(...)` where ever necessary.
+ * Put calls to `notify(...)` where ever necessary
 
 Docs
 -----
