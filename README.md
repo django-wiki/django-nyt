@@ -67,9 +67,9 @@ The folder **testproject/** contains a pre-configured django project and an sqli
 
 [![Build Status](https://travis-ci.org/benjaoming/django-nyt.png?branch=master)](https://travis-ci.org/benjaoming/django-nyt)
 
-[![Downloads](https://pypip.in/d/django-nyt/badge.png)](https://crate.io/package/wiki)
+[![Downloads](https://pypip.in/d/django-nyt/badge.png)](https://pypi.python.org/pypi/django-nyt)
 
-[![Downloads](https://pypip.in/v/django-nyt/badge.png)](https://crate.io/package/wiki)
+[![Downloads](https://pypip.in/v/django-nyt/badge.png)](https://pypi.python.org/pypi/django-nyt)
 
 *This is a work in progre..*
 ----------------------------
