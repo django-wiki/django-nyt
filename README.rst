@@ -81,6 +81,10 @@ an sqlite database. Login for django admin is *admin:admin*.
 
 |Downloads|
 
+|Wheel Status|
+
+|Egg Status|
+
 *This is a work in progre..*
 ----------------------------
 
@@ -93,3 +97,7 @@ Please refer to the
    :target: https://pypi.python.org/pypi/django-nyt
 .. |Downloads| image:: https://pypip.in/v/django-nyt/badge.png
    :target: https://pypi.python.org/pypi/django-nyt
+.. |Wheel Status| image:: https://pypip.in/wheel/django-ny/badge.svg
+   :target: https://pypi.python.org/pypi/django-nyt/
+.. |Egg Status| image:: https://pypip.in/egg/django-nyt/badge.svg
+   :target: https://pypi.python.org/pypi/django-nyt/
