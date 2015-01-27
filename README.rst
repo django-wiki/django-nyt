@@ -1,11 +1,11 @@
 django-nyt
 ==========
 
-django\_nyt does this:
+django-nyt does this:
 
 .. code:: python
 
-    from django_nyt import notify
+    from django_nyt.utils import notify
 
     EVENT_KEY = "my_key"
     notify(_("OMG! Something happened"), EVENT_KEY)
@@ -20,14 +20,19 @@ views.
 Why should you do this?
 -----------------------
 
-Users need an cleverly sifted stream of events. Ensure that they have
-the possibility of customizing what they deem fit for their stream.
+Users need a cleverly sifted stream of events that's highly customizable
+as well. By using django-nyt, your users can subscribe to global events
+or specific events pertaining specific objects.
+
+Each event can be associated with a link so the user can use the
+notifications as shortcuts in their work flow.
 
 What do you need to do?
 -----------------------
 
-You need to do a lot. Firstly, you need to write some javascript that
-will fetch the latest notifications and display them in some area of the
+You need to do a lot! But django-nyt does everything to meet as many
+needs as possible. Firstly, you need to write some javascript that will
+fetch the latest notifications and display them in some area of the
 screen. Upon clicking that icon, the latest notifications are displayed.
 Something like this:
 
@@ -41,11 +46,11 @@ nifty little thing at the top of your site.
 Other things for your TODO list:
 
 -  Provide your users with options to customize their subscriptions and
-   notification preferences.
+   notification preferences
 -  Customize contents of notification emails
 -  Make the mail notification daemon script run
    ``python manage.py notifymail --daemon``
--  Put calls to ``notify(...)`` where ever necessary.
+-  Put calls to ``notify(...)`` where ever necessary
 
 Docs
 ----
@@ -85,6 +90,6 @@ Please refer to the
 .. |Build Status| image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
    :target: https://travis-ci.org/benjaoming/django-nyt
 .. |Downloads| image:: https://pypip.in/d/django-nyt/badge.png
-   :target: https://crate.io/package/wiki
+   :target: https://pypi.python.org/pypi/django-nyt
 .. |Downloads| image:: https://pypip.in/v/django-nyt/badge.png
-   :target: https://crate.io/package/wiki
+   :target: https://pypi.python.org/pypi/django-nyt
