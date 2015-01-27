@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import os
 from django_nyt import VERSION
+import setuptools
 from setuptools import setup, find_packages
 
 # Utility function to read the README file.
@@ -43,7 +44,7 @@ setup(
     url="https://github.com/benjaoming/django-nyt",
     description="A pluggable notification system written for the Django framework.",
     license="Apache License 2.0",
-    keywords="django notification system",
+    keywords="django notification alerts",
     packages=find_packages(exclude=["testproject", "testproject.*"]),
     # long_description=long_description,
     zip_safe=False,
@@ -55,10 +56,13 @@ setup(
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
-        'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
     ],
     include_package_data=True,
 )
