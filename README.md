@@ -34,7 +34,7 @@ Firstly, you need to write some javascript that will fetch the latest notificati
 and display them in some area of the screen. Upon clicking that icon, the latest
 notifications are displayed. Something like this:
 
-![Javascript drop-down](https://raw2.github.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png)
+![Javascript drop-down](https://raw.githubusercontent.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png)
 
 Some examples are provided, but there is no real easy way to place this nifty
 little thing at the top of your site.
