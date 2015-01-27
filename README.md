@@ -71,6 +71,10 @@ The folder **testproject/** contains a pre-configured django project and an sqli
 
 [![Downloads](https://pypip.in/v/django-nyt/badge.png)](https://pypi.python.org/pypi/django-nyt)
 
+[![Wheel Status](https://pypip.in/wheel/django-ny/badge.svg)](https://pypi.python.org/pypi/django-nyt/)
+
+[![Egg Status](https://pypip.in/egg/django-nyt/badge.svg)](https://pypi.python.org/pypi/django-nyt/)
+
 *This is a work in progre..*
 ----------------------------
 
