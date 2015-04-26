@@ -36,7 +36,7 @@ fetch the latest notifications and display them in some area of the
 screen. Upon clicking that icon, the latest notifications are displayed.
 Something like this:
 
-.. figure:: https://raw2.github.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
+.. figure:: https://raw.githubusercontent.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
    :alt: Javascript drop-down
 
    Javascript drop-down
