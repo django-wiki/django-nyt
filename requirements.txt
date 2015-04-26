@@ -1,3 +1,2 @@
 django>=1.4
-South>=1.0.1
 six
