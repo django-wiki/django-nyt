@@ -76,7 +76,7 @@ class Settings(models.Model):
 
     def __str__(self):
         obj_name = _("Settings for %s") % self.user.username
-        return str(obj_name)
+        return obj_name.encode('utf-8')
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_settings'
@@ -117,7 +117,7 @@ class Subscription(models.Model):
 
     def __str__(self):
         obj_name = _("Subscription for: %s") % str(self.settings.user.username)
-        return str(obj_name)
+        return obj_name.encode('utf-8')
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_subscription'
