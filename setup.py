@@ -50,7 +50,7 @@ setup(
     zip_safe=False,
     install_requires=read('requirements.txt').split("\n"),
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Environment :: Web Environment',
         'Framework :: Django',
