@@ -75,7 +75,8 @@ class Settings(models.Model):
     )
 
     def __str__(self):
-        obj_name = _("Settings for %s") % self.user.username
+        obj_name = _("Settings for %s") % getattr(
+            self.user, self.user.USERNAME_FIELD)
         return obj_name.encode('utf-8')
 
     class Meta:
@@ -116,7 +117,8 @@ class Subscription(models.Model):
     )
 
     def __str__(self):
-        obj_name = _("Subscription for: %s") % str(self.settings.user.username)
+        obj_name = _("Subscription for: %s") % str(
+            getattr(self.settings.user, self.settings.user.USERNAME_FIELD))
         return obj_name.encode('utf-8')
 
     class Meta:

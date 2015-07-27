@@ -98,6 +98,7 @@ class Command(BaseCommand):
         # This could be /improved by looking up the last notified person
         last_sent = None
         context = {'user': None,
+                   'username': None,
                    'notifications': None,
                    'digest': None,
                    'site': Site.objects.get_current()}
@@ -133,6 +134,8 @@ class Command(BaseCommand):
 
             for setting in user_settings:
                 context['user'] = setting.user
+                context['username'] = getattr(
+                    setting.user, setting.user.USERNAME_FIELD)
                 context['notifications'] = []
                 # get the index of the tuple corresponding to the interval and
                 # get the string name
