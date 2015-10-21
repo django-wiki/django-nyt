@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import sys
 import django
 from django import VERSION
@@ -41,6 +42,13 @@ settings.configure(
     ),
     USE_TZ=True,
     SOUTH_TESTS_MIGRATE=True,
+    MIDDLEWARE_CLASSES = [
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    ],
 )
 
 
@@ -63,4 +71,5 @@ else:
     # Allow tests to be specified:
     argv.extend(sys.argv[1:])
 
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'testproject'))
 execute_from_command_line(argv)
