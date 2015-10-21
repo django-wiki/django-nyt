@@ -1,14 +1,12 @@
 django-nyt
 ==========
 
-|Build Status| |Docs| |PyPi|
-
-.. |Build Status| image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
+.. image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
    :target: https://travis-ci.org/benjaoming/django-nyt
-.. |Docs| image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
+.. image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
    :target: http://django-nyt.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation Status
-.. |PyPi| image:: https://badge.fury.io/py/django-nyt.svg
+.. image:: https://badge.fury.io/py/django-nyt.svg
    :target: https://pypi.python.org/pypi/django-nyt
 
 django-nyt does this:
@@ -46,12 +44,12 @@ fetch the latest notifications and display them in some area of the
 screen. Upon clicking that icon, the latest notifications are displayed.
 Something like this:
 
-.. figure:: https://raw.githubusercontent.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
+.. image:: https://raw.githubusercontent.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
    :alt: Javascript drop-down
 
-   Javascript drop-down
-Some examples are provided, but there is no real easy way to place this
-nifty little thing at the top of your site.
+Javascript drop-down: Some examples are provided in the docs, but there
+is no real easy way to place this nifty little thing at the top of your
+site, you're gonna have to work it out on your own.
 
 Other things for your TODO list:
 
