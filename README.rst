@@ -1,6 +1,20 @@
 django-nyt
 ==========
 
+|Build Status|
+
+|Docs|
+
+|PyPi|
+
+.. |Build Status| image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
+   :target: https://travis-ci.org/benjaoming/django-nyt
+.. |Docs| image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
+   :target: http://django-nyt.readthedocs.org/en/latest/?badge=latest
+   :alt: Documentation Status
+.. |PyPi| image:: https://badge.fury.io/py/django-nyt.svg
+   :target: https://pypi.python.org/pypi/django-nyt
+
 django-nyt does this:
 
 .. code:: python
@@ -75,29 +89,8 @@ requirements.
 The folder **testproject/** contains a pre-configured django project and
 an sqlite database. Login for django admin is *admin:admin*.
 
-|Build Status|
-
-|Downloads|
-
-|Downloads|
-
-|Wheel Status|
-
-|Egg Status|
-
 *This is a work in progre..*
 ----------------------------
 
 Please refer to the
 `TODO <https://github.com/benjaoming/django-nyt/blob/master/TODO.md>`__
-
-.. |Build Status| image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
-   :target: https://travis-ci.org/benjaoming/django-nyt
-.. |Downloads| image:: https://pypip.in/d/django-nyt/badge.png
-   :target: https://pypi.python.org/pypi/django-nyt
-.. |Downloads| image:: https://pypip.in/v/django-nyt/badge.png
-   :target: https://pypi.python.org/pypi/django-nyt
-.. |Wheel Status| image:: https://pypip.in/wheel/django-ny/badge.svg
-   :target: https://pypi.python.org/pypi/django-nyt/
-.. |Egg Status| image:: https://pypip.in/egg/django-nyt/badge.svg
-   :target: https://pypi.python.org/pypi/django-nyt/
