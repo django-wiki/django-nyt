@@ -1,11 +1,7 @@
 django-nyt
 ==========
 
-|Build Status|
-
-|Docs|
-
-|PyPi|
+|Build Status| |Docs| |PyPi|
 
 .. |Build Status| image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
    :target: https://travis-ci.org/benjaoming/django-nyt
