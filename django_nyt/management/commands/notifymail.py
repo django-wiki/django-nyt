@@ -8,7 +8,9 @@ import smtplib
 import logging
 from datetime import datetime
 from optparse import make_option
+from distutils.version import StrictVersion
 
+from django import get_version
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
@@ -34,10 +36,16 @@ class Command(BaseCommand):
 
     def _send_user_notifications(self, context, connection):
         subject = _(nyt_settings.EMAIL_SUBJECT)
-        message = render_to_string(
-            'emails/notification_email_message.txt',
-            context
-        )
+        if StrictVersion(get_version()) > StrictVersion('1.8.9'):
+            message = render_to_string(
+                'emails/notification_email_message_1point9.txt',
+                context
+            )
+        else:
+            message = render_to_string(
+                'emails/notification_email_message.txt',
+                context
+            )
         email = mail.EmailMessage(
             subject, message, nyt_settings.EMAIL_SENDER,
             [context['user'].email], connection=connection
