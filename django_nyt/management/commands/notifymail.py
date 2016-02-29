@@ -34,6 +34,7 @@ class Command(BaseCommand):
 
     def _send_user_notifications(self, context, connection):
         subject = _(nyt_settings.EMAIL_SUBJECT)
+        
         message = render_to_string(
             'emails/notification_email_message.txt',
             context
