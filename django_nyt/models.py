@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
 from django_nyt import settings
+from django.core.exceptions import ValidationError
 
 
 _notification_type_cache = {}
@@ -17,7 +18,6 @@ _notification_type_cache = {}
 
 @python_2_unicode_compatible
 class NotificationType(models.Model):
-
     """
     Notification types are added on-the-fly by the
     applications adding new notifications
@@ -58,7 +58,6 @@ class NotificationType(models.Model):
 
 @python_2_unicode_compatible
 class Settings(models.Model):
-
     """
     Reusable settings object for a subscription
     """
@@ -73,6 +72,10 @@ class Settings(models.Model):
         verbose_name=_('interval'),
         default=settings.INTERVALS_DEFAULT,
     )
+    is_default = models.BooleanField(
+        default=False,
+        verbose_name=_("Default for new subscriptions"),
+    )
 
     def __str__(self):
         obj_name = _("Settings for %s") % getattr(
@@ -83,6 +86,46 @@ class Settings(models.Model):
         db_table = settings.DB_TABLE_PREFIX + '_settings'
         verbose_name = _('settings')
         verbose_name_plural = _('settings')
+
+    def clean(self):
+        if not self.is_default:
+            default_settings = Settings.objects.filter(
+                user=self.user,
+                is_default=True,
+            ).exclude(pk=self.pk)
+            if not default_settings.exists():
+                raise ValidationError(
+                    _("At minimum one default setting must exist for the user")
+                )
+
+    def save(self, *args, **kwargs):
+        # We should check that it's the only default setting manually because
+        # it's not possible to create a database constraint for this.
+        # Instead of having a constraint, we unset all other is_default for
+        # the user.
+        if self.is_default:
+            default_settings = Settings.objects.filter(
+                user=self.user,
+                is_default=True,
+            ).exclude(pk=self.pk)
+            default_settings.update(is_default=False)
+        else:
+            non_default_settings = Settings.objects.filter(
+                user=self.user,
+                is_default=False,
+            ).exclude(pk=self.pk)
+            if non_default_settings.exists():
+                non_default_settings[0].is_default = True
+            else:
+                raise ValueError("A user must have a default settings object")
+        super(Settings, self).save(*args, **kwargs)
+
+    @classmethod
+    def get_default_setting(cls, user):
+        return cls.objects.get_or_create(
+            user=user,
+            is_default=True
+        )[0]
 
 
 @python_2_unicode_compatible
@@ -156,6 +199,7 @@ class Notification(models.Model):
     is_viewed = models.BooleanField(default=False)
     is_emailed = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     occurrences = models.PositiveIntegerField(
         default=1,
         verbose_name=_('occurrences'),

@@ -10,9 +10,7 @@ from . import models
 def notify(message, key, target_object=None, url=None, filter_exclude={}, recipient_users=None):
     """
     Notify subscribing users of a new event. Key can be any kind of string,
-    just make sure to reuse it where applicable! Object_id is some identifier
-    of an object, for instance if a user subscribes to a specific comment thread,
-    you could write:
+    just make sure to reuse it where applicable.
 
     notify("there was a response to your comment", "comment_response",
            target_object=PostersObject,
@@ -30,6 +28,8 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
                              instead of notifying all subscribers of the event.
                              Notice that users still have to be actually subscribed
                              to the event key!
+    :param: target_object: Any django model instance that this notification
+                           relates to. User django content types.
     """
 
     if _disable_notifications:
@@ -62,7 +62,7 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     Uses get_or_create to avoid double creation
     See: https://docs.djangoproject.com/en/dev/ref/models/querysets/#get-or-create
 
-    :param: settings: A models.Settings instance (user + interval specification)
+    :param: settings: A models.Settings instance
     :param: key: The unique key that the Settings should subscribe to
     :param: content_type: If notifications are regarding a specific ContentType, it should be set
     :param: object_id: If the notifications should only regard a specific object_id
