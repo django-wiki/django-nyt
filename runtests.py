@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 import os
 import sys
-import django
-from django import VERSION
 from django.conf import settings
 
-INSTALLED_APPS=[
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -16,16 +14,13 @@ INSTALLED_APPS=[
 ]
 
 
-if VERSION < (1, 7):
-    INSTALLED_APPS.append('south')
-
 settings.configure(
     DEBUG=True,
-#    AUTH_USER_MODEL='testdata.CustomUser',
+    # AUTH_USER_MODEL='testdata.CustomUser',
     DATABASES={
-         'default': {
-             'ENGINE': 'django.db.backends.sqlite3',
-         }
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+        }
     },
     SITE_ID=1,
     ROOT_URLCONF='testproject.urls',
@@ -42,7 +37,7 @@ settings.configure(
     ),
     USE_TZ=True,
     SOUTH_TESTS_MIGRATE=True,
-    MIDDLEWARE_CLASSES = [
+    MIDDLEWARE_CLASSES=[
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,21 +47,11 @@ settings.configure(
 )
 
 
-# If you use South for migrations, uncomment this to monkeypatch
-# syncdb to get migrations to run.
-if VERSION < (1, 7):
-    from south.management.commands import patch_for_test_db_setup
-    patch_for_test_db_setup()
-
 from django.core.management import execute_from_command_line
 argv = [sys.argv[0], "test"]
 
 if len(sys.argv) == 1:
-    # Nothing following 'runtests.py':
-    if django.VERSION < (1,6):
-        argv.append("django_nyt")
-    else:
-        argv.append("django_nyt.tests")
+    argv.append("django_nyt.tests")
 else:
     # Allow tests to be specified:
     argv.extend(sys.argv[1:])

@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 
 import os
 from django_nyt import VERSION
-import setuptools
 from setuptools import setup, find_packages
 
 def get_path(fname):
