@@ -25,7 +25,7 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
 
     filter_exclude: a dictionary to exclude special elements of subscriptions
     in the queryset, for instance filter_exclude={''}
-    
+
     :param: recipient_users: A possible iterable of users that should be notified
                              instead of notifying all subscribers of the event.
                              Notice that users still have to be actually subscribed
@@ -58,10 +58,10 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     """
     Creates a new subscription to a given key. If the key does not exist
     as a NotificationType, it will be created
-    
+
     Uses get_or_create to avoid double creation
     See: https://docs.djangoproject.com/en/dev/ref/models/querysets/#get-or-create
-    
+
     :param: settings: A models.Settings instance (user + interval specification)
     :param: key: The unique key that the Settings should subscribe to
     :param: content_type: If notifications are regarding a specific ContentType, it should be set
@@ -69,7 +69,7 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     :param: **kwargs: Additional models.Subscription field values
     """
     notification_type = models.NotificationType.get_by_key(key, content_type=content_type)
-    
+
     return models.Subscription.objects.get_or_create(
         settings=settings,
         notification_type=notification_type,

@@ -43,7 +43,7 @@ class NotificationType(models.Model):
         db_table = settings.DB_TABLE_PREFIX + '_notificationtype'
         verbose_name = _('type')
         verbose_name_plural = _('types')
-    
+
     @classmethod
     def get_by_key(cls, key, content_type=None):
         if key in _notification_type_cache:
@@ -129,7 +129,7 @@ class Subscription(models.Model):
 
 @python_2_unicode_compatible
 class Notification(models.Model):
-    
+
     # Either set the subscription
     subscription = models.ForeignKey(
         Subscription,
@@ -164,7 +164,7 @@ class Notification(models.Model):
             'times with no intermediate notifications'
         ),
     )
-    
+
     def save(self, *args, **kwargs):
         assert self.user or self.subscription
         if not self.user:

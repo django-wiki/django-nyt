@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
     def _send_user_notifications(self, context, connection):
         subject = _(nyt_settings.EMAIL_SUBJECT)
-        
+
         message = render_to_string(
             'emails/notification_email_message.txt',
             context
@@ -74,7 +74,7 @@ class Command(BaseCommand):
             try:
                 fpid = os.fork()
                 if fpid > 0:
-                # Running as daemon now. PID is fpid
+                    # Running as daemon now. PID is fpid
                     self.logger.info("PID: %s" % str(fpid))
                     pid_file = open(nyt_settings.NYT_PID, "w")
                     pid_file.write(str(fpid))
