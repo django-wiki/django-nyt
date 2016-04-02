@@ -1,0 +1,156 @@
+{% load static humanize %}<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>django-nyt notification test panel</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">-->
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="{% static 'testapp/skeleton/css/normalize.css' %}">
+  <link rel="stylesheet" href="{% static 'testapp/skeleton/css/skeleton.css' %}">
+  <link rel="stylesheet" href="{% static 'testapp/css/custom.css' %}">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="{% static 'testapp/skeleton/images/favicon.png' %}">
+
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <ul class="navbar-list">
+        <li class="navbar-item"><a class="navbar-link" href="#intro">Intro</a></li>
+        <li class="navbar-item">
+          <a class="navbar-link" href="#" data-popover="#codeNavPopover">Code</a>
+        </li>
+        <li class="navbar-item"><a class="navbar-link" href="#examples">Examples</a></li>
+        <li class="navbar-item" style="float: right;">
+          <a class="navbar-link" href="#examples">
+            Logged in as {{ user.username|default:"anonymous" }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Notification tests</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>This is a test page with a simple styling to test the notification system and convince potential users that django-nyt is pretty cool.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="create-notification">
+    <h4>Create a notification</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>After filling in the form, everyone subscribed to receive notification instantly for the Test Model object should receive them.</p>
+      </div>
+      <div class="one-half column">
+
+        <form method="POST">
+          {% csrf_token %}
+          <label for="exampleEmailInput">Notification message</label>
+          {{ form.name }}
+          <button type="submit" class="button-primary">Save</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Login as another user</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Select one of the test user accounts and you'll be logged in (this is a test application, so don't use this mechanism in production)</p>
+      </div>
+      <div class="one-half column">
+      
+        {% for user in users %}
+        <p>
+          <a href="{% url 'testapp:login_as' pk=user.pk %}" class="button button-secondary" style="display: block;">Login as {{ user.username }}</a>
+        </p>
+        {% endfor %}
+      
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Notification settings</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Change settings of currently logged in user</p>
+      </div>
+      
+      <div class="one-half column">
+        <form method="POST">
+          {% csrf_token %}
+          {% if settings_form %}
+            {{ settings_form.as_p }}
+            <button type="submit" class="button-primary">Save</button>
+          {% else %}
+            <em>Not logged in</em>
+          {% endif %}
+        </form>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>List of notifications (static)</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Please reload this page to have the list updated</p>
+      </div>
+      <div class="one-half column">
+      </div>
+    </div>
+    <table>
+      <tr>
+        <th>Message</th>
+        <th>Created</th>
+      </tr>
+      
+      {% for notification in notifications %}
+      <tr>
+        <td>{{ notification.message }} x{{ notification.occurrences }}</td>
+        <td>{{ notification.modified|naturaltime }}</td>
+      </tr>
+      {% endfor %}
+      
+    </table>
+  </div>
+
+
+
+</body>
+</html>
+
