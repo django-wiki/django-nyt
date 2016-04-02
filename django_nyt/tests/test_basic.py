@@ -19,7 +19,7 @@ class NotifyTest(TestCase):
         user = User.objects.create_user(
             'lalala'
         )
-        user_settings = models.Settings.objects.create(user=user)
+        user_settings = models.Settings.get_default_setting(user)
         utils.subscribe(user_settings, TEST_KEY)
         utils.notify("Test Is a Test", TEST_KEY)
 

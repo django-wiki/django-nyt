@@ -116,6 +116,7 @@ class Settings(models.Model):
             ).exclude(pk=self.pk)
             if non_default_settings.exists():
                 non_default_settings[0].is_default = True
+                non_default_settings[0].save()
             else:
                 raise ValueError("A user must have a default settings object")
         super(Settings, self).save(*args, **kwargs)
