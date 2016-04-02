@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sites',
     'django_nyt',
+    'testapp',
 ]
 
 

@@ -7,6 +7,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'nyt'
+
 urlpatterns = [
     url('^json/get/$', views.get_notifications, name='json_get'),
     url('^json/get/(?P<latest_id>\d+)/$', views.get_notifications, name='json_get'),
@@ -23,7 +25,7 @@ if DJANGO_VERSION < (1, 8):
     urlpatterns = patterns('', *urlpatterns)
 
 
-def get_pattern(app_name="nyt", namespace="nyt"):
+def get_pattern(app_name=app_name, namespace="nyt"):
     """Every url resolution takes place as "nyt:view_name".
        https://docs.djangoproject.com/en/dev/topics/http/urls/#topics-http-reversing-url-namespaces
     """

@@ -25,7 +25,7 @@ def create_users(apps, schema_editor):
             is_active=True,
         )
         from django_nyt.models import Settings
-        settings = Settings.objects.create(user=user)
+        settings = Settings.get_default_setting(user)
         subscribe(settings, NOTIFICATION_TEST_KEY)
 
 
