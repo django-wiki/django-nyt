@@ -12,19 +12,20 @@ from django.contrib.auth.decorators import login_required
 import django_nyt
 
 
-def disable_notify(func):
+def disable_notify(f):
     """Disable notifications. Example:
 
     @disable_notify
     def your_function():
         notify("no one will be notified", ...)
     """
-    def wrap(request, *args, **kwargs):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
         django_nyt._disable_notifications = True
-        response = func(request, *args, **kwargs)
+        response = f(request, *args, **kwargs)
         django_nyt._disable_notifications = False
         return response
-    return wrap
+    return wrapper
 
 
 def login_required_ajax(f):

@@ -1,10 +1,12 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from . import _disable_notifications
 
 from django.db.models import Model
 from django.utils.translation import ugettext as _
+
+from . import _disable_notifications
 from . import models
+from . import settings
 
 
 def notify(message, key, target_object=None, url=None, filter_exclude={}, recipient_users=None):
@@ -51,6 +53,11 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
         filter_exclude=filter_exclude,
         recipient_users=recipient_users,
     )
+
+    if settings.ENABLE_CHANNELS:
+        from . import tasks
+        tasks.notify_subscribers(objects)
+
     return len(objects)
 
 

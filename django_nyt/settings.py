@@ -54,6 +54,22 @@ else:
 NYT_LOG = getattr(django_settings, 'NYT_LOG', '/tmp/nyt_daemon.log')
 NYT_PID = getattr(django_settings, 'NYT_PID', '/tmp/nyt_daemon.pid')
 
+
+############
+# CHANNELS #
+############
+
+# Channels are enabled automatically when 'channels' application is installed,
+# however you can explicitly disable it with NYT_CHANNELS_DISABLE.
+
+ENABLE_CHANNELS = (
+    'channels' in django_settings.INSTALLED_APPS and
+    not getattr(django_settings, 'NYT_CHANNELS_DISABLE', False)
+)
+
+NOTIFICATION_CHANNEL = "nyt_all"
+
+
 ####################
 # PLANNED SETTINGS #
 ####################
