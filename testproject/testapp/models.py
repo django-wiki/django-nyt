@@ -31,7 +31,7 @@ def notify_test(sender, instance, **kwargs):
     logger.info("New object created: {}".format(str(instance)))
 
     notify(
-        _("A new object was created"),
+        _("Message is: {}".format(instance.name)),
         NOTIFICATION_TEST_KEY,
         target_object=instance,
     )

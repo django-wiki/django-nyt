@@ -1,3 +1,18 @@
+.notification-list
+{
+  list-style: none;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.notification-list li {
+  padding: 5px;
+  border: 1px solid #ddd;
+  background: #eee;
+  display: block;
+  margin: 0;
+}
+
 /* copied from getskeleton.com */
 
 .container {

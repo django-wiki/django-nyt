@@ -109,20 +109,20 @@ import os
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
-        'django': {
+        'django.request': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': 'DEBUG' if DEBUG else 'INFO',
         },
-        '': {
+        'django_nyt': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': 'DEBUG' if DEBUG else 'INFO',
         },
     },
 }
@@ -135,4 +135,23 @@ try:
 except ImportError:
     pass
 
+
+##########################################
+# django-nyt options
+##########################################
+
+_enable_channels = True
+if _enable_channels:
+    INSTALLED_APPS.append('channels')
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "asgiref.inmemory.ChannelLayer",
+            "ROUTING": "django_nyt.routing.channel_routing",
+        },
+    }
+
+
 NYT_ENABLE_ADMIN = True
+
+
+
