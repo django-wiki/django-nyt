@@ -13,10 +13,11 @@ Method:
 .. code-block:: html+django
 
    <script type="text/javascript">
-     URL_NOTIFY_GET_NEW = "{% url "notify:json_get" %}";
-     URL_NOTIFY_MARK_READ = "{% url "notify:json_mark_read_base" %}";
-     URL_NOTIFY_GOTO = "{% url "notify:goto_base" %}";
+     URL_NYT_GET_NEW = "{% url "nyt:json_get" %}";
+     URL_NYT_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
+     URL_NYT_GOTO = "{% url "nyt:goto_base" %}";
    </script>
+   <!-- A custom script that you need to implement yourself using example code below -->
    <script type="text/javascript" src="{{ STATIC_URL }}notifications/js/ui.js"></script>
 
 
@@ -29,13 +30,33 @@ Create the necessary elements for this javascript to run, and you should have a 
 
 .. code-block:: javascript
 
-    notify_oldest_id = 0;
-    notify_latest_id = 0;
-    notify_update_timeout = 30000;
-    notify_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
+    var nyt_oldest_id = 0;
+    var nyt_latest_id = 0;
+    var nyt_update_timeout = 30000;
+    var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
+    
+    function ajaxError(){}
+    
+    $.ajaxSetup({
+      timeout: 7000,
+      cache: false,
+      error: function(e, xhr, settings, exception) {
+          ajaxError();
+      }
+    });
+    
+    function jsonWrapper(url, callback) {
+      $.getJSON(url, function(data) {
+        if (data == null) {
+          ajaxError();
+        } else {
+          callback(data);
+        }
+      });
+    }
 
-    function notify_update() {
-      jsonWrapper(URL_NOTIFY_GET_NEW+notify_latest_id+'/', function (data) {
+    function nyt_update() {
+      jsonWrapper(URL_NYT_GET_NEW+nyt_latest_id+'/', function (data) {
         if (data.success) {
           $('.notification-cnt').html(data.total_count);
           if (data.objects.length> 0) {
@@ -45,13 +66,13 @@ Create the necessary elements for this javascript to run, and you should have a 
             $('.notification-cnt').removeClass('badge-important');
           }
           for (var i=data.objects.length-1; i >=0 ; i--) {
-            n = data.objects[i];
-            notify_latest_id = n.pk>notify_latest_id ? n.pk:notify_latest_id;
-            notify_oldest_id = (n.pk<notify_oldest_id || notify_oldest_id==0) ? n.pk:notify_oldest_id;
+            var n = data.objects[i];
+            nyt_latest_id = n.pk>nyt_latest_id ? n.pk:nyt_latest_id;
+            nyt_oldest_id = (n.pk<nyt_oldest_id || nyt_oldest_id==0) ? n.pk:nyt_oldest_id;
             if (n.occurrences > 1) {
-              element = $('<li><a href="'+URL_NOTIFY_GOTO+n.pk+'/"><div>'+n.message+'</div><div class="since">'+n.occurrences_msg+' - ' + n.since + '</div></a></li>')
+              element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><div>'+n.message+'</div><div class="since">'+n.occurrences_msg+' - ' + n.since + '</div></a></li>')
             } else {
-              element = $('<li><a href="'+URL_NOTIFY_GOTO+n.pk+'/"><div>'+n.message+'</div><div class="since">'+n.since+'</div></a></li>');
+              element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><div>'+n.message+'</div><div class="since">'+n.since+'</div></a></li>');
             }
             element.addClass('notification-li');
             element.insertAfter('.notification-before-list');
@@ -60,22 +81,22 @@ Create the necessary elements for this javascript to run, and you should have a 
       });
     }
 
-    function notify_mark_read() {
+    function nyt_mark_read() {
       $('.notification-li-container').empty();
-      url = URL_NOTIFY_MARK_READ+notify_latest_id+'/'+notify_oldest_id+'/';
-      notify_oldest_id = 0;
-      notify_latest_id = 0;
+      url = URL_NYT_MARK_READ+nyt_latest_id+'/'+nyt_oldest_id+'/';
+      nyt_oldest_id = 0;
+      nyt_latest_id = 0;
       jsonWrapper(url, function (data) {
         if (data.success) {
-          notify_update();
+          nyt_update();
         }
       });
     }
 
     function update_timeout() {
-      setTimeout("notify_update()", notify_update_timeout);
-      setTimeout("update_timeout()", notify_update_timeout);
-      notify_update_timeout *= notify_update_timeout_adjust;
+      setTimeout("nyt_update()", nyt_update_timeout);
+      setTimeout("update_timeout()", nyt_update_timeout);
+      nyt_update_timeout *= nyt_update_timeout_adjust;
     }
 
     $(document).ready(function () {
@@ -83,7 +104,7 @@ Create the necessary elements for this javascript to run, and you should have a 
     });
 
     // Don't check immediately... some users just click through pages very quickly.
-    setTimeout("notify_update()", 2000);
+    setTimeout("nyt_update()", 2000);
 
 
 Example HTML
@@ -93,19 +114,11 @@ Example HTML
 
     <h2>Notifications:</h2>
     <ul>
+      <li class="notification-before-list">Notifications (<span class="badge notification-cnt">0</span>):</li>
       <li class="notifications-empty"><a href="#"><em>{% trans "No notifications" %}</em></a></li>
-      <li class="divider"></li>
-      <li>
-        <a href="#" onclick="notify_mark_read()">
-          <i class="icon-check"></i>
-          {% trans "Clear notifications list" %}
-        </a>
-      </li>
-      <!-- Example of a settings page linked directly under the notifications -->
-      <li>
-        <a href="{% url 'wiki:notification_settings' %}">
-          <i class="icon-wrench"></i>
-          {% trans "Notification settings" %}
-        </a>
-      </li>
     </ul>
+
+    <a href="#" onclick="nyt_mark_read()">
+      <i class="icon-check"></i>
+      {% trans "Clear notifications list" %}
+    </a>
