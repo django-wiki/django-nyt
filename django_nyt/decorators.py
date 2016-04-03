@@ -3,6 +3,9 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import json
+
+from functools import wraps
+
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
@@ -24,28 +27,34 @@ def disable_notify(func):
     return wrap
 
 
-def login_required_ajax(func):
+def login_required_ajax(f):
     """Similar to login_required. But if the request is an ajax request, then
     it returns an error in json with a 403 status code."""
 
-    def wrap(request, *args, **kwargs):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
         if request.is_ajax():
             if not request.user or not request.user.is_authenticated():
                 return json_view(lambda *a,
                                  **kw: {'error': 'not logged in'})(request,
                                                                    status=403)
-            return func(request, *args, **kwargs)
+            return f(request, *args, **kwargs)
         else:
-            return login_required(func)(request, *args, **kwargs)
-    return wrap
+            return login_required(f)(request, *args, **kwargs)
+    return wrapper
 
 
-def json_view(func):
-    def wrap(request, *args, **kwargs):
-        obj = func(request, *args, **kwargs)
-        data = json.dumps(obj, ensure_ascii=False)
-        status = kwargs.get('status', 200)
-        response = HttpResponse(content_type='application/json', status=status)
-        response.write(data)
-        return response
-    return wrap
+def data2jsonresponse(data, **kwargs):
+    json_data = json.dumps(data, ensure_ascii=False)
+    status = kwargs.get('status', 200)
+    response = HttpResponse(content_type='application/json', status=status)
+    response.write(json_data)
+    return response
+
+
+def json_view(f):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
+        data = f(request, *args, **kwargs)
+        return data2jsonresponse(data, **kwargs)
+    return wrapper
