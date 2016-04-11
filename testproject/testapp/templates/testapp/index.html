@@ -277,28 +277,31 @@
   }
 
   function update_timeout() {
-    // setTimeout("nyt_update()", nyt_update_timeout);
-    // setTimeout("update_timeout()", nyt_update_timeout);
+    setTimeout("nyt_update()", nyt_update_timeout);
+    setTimeout("update_timeout()", nyt_update_timeout);
     nyt_update_timeout *= nyt_update_timeout_adjust;
   }
 
-  $(document).ready(function () {
-    update_timeout();
-  });
-
   // Don't check immediately... some users just click through pages very quickly.
-  // setTimeout("nyt_update()", 2000);
+  setTimeout("nyt_update()", 2000);
 
   // Note that the path doesn't matter for routing; any WebSocket
   // connection gets bumped over to WebSocket consumers
-  socket = new WebSocket("ws://127.0.0.1:8000/");
-  socket.onmessage = function(e) {
-    console.log("Got some message")
-    nyt_update();
-  }
-  // socket.onopen = function() {
-  //    socket.send("hello world");
-  //}
+  var socket = new WebSocket("ws://127.0.0.1:8000/asdasd");
+
+  $(document).ready(function () {
+    // update_timeout();
+    socket.onopen = function() {
+        console.log("Sending hello world");
+        socket.send("hello world");
+    }
+    socket.onmessage = function(e) {
+      console.log("Got some message, so going to update");
+      nyt_update();
+    }
+
+  });
+
 </script>
 
 </body>
