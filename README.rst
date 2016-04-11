@@ -25,6 +25,13 @@ notifications at an interval of their choice.
 Data can be accessed easily from Django models or from the included JSON
 views.
 
+Channels
+--------
+
+Starting from django-nyt 1.0, support for the upcoming
+`channels <http://channels.readthedocs.org/>`_ has been added together with
+Django 1.9 support.
+
 Why should you do this?
 -----------------------
 
