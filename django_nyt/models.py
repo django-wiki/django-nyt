@@ -66,6 +66,7 @@ class Settings(models.Model):
         settings.USER_MODEL,
         on_delete=models.CASCADE,  # If a user is deleted, remove all settings
         verbose_name=_("user"),
+        related_name='nyt_settings',
     )
     interval = models.SmallIntegerField(
         choices=settings.INTERVALS,
@@ -189,6 +190,7 @@ class Notification(models.Model):
         blank=True,
         on_delete=models.CASCADE,  # If a user is deleted, remove all notifications
         verbose_name=_("user"),
+        related_name='nyt_notifications',
     )
     message = models.TextField()
     url = models.CharField(
