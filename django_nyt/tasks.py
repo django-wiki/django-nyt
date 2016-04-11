@@ -20,7 +20,5 @@ def notify_subscribers(notifications):
 
     g = Group(settings.NOTIFICATION_CHANNEL)
     g.send(
-        {'event': 'new-notification'}
+        {'text': 'new-notification'}
     )
-
-    print g.channel_layer._groups
