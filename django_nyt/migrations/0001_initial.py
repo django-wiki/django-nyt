@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                      to_field='id',
                      to='contenttypes.ContentType',
                      blank=True,
-                     null=True)),
+                     null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'type',

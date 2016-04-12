@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='Settings', fields=[
                 ('id', models.AutoField(
                     auto_created=True, verbose_name='ID', serialize=False, primary_key=True)), ('user', models.ForeignKey(
-                    to_field='id', to=settings.AUTH_USER_MODEL)), ('interval', models.SmallIntegerField(
+                    to_field='id', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)), ('interval', models.SmallIntegerField(
                     choices=[
                         (0, 'instantly'), (1380, 'daily'), (9660, 'weekly')], default=0, verbose_name='interval')), ], options={
                 'verbose_name': 'settings', 'db_table': 'nyt_settings', 'verbose_name_plural': 'settings', }, bases=(
