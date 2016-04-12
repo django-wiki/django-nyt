@@ -8,6 +8,8 @@ django-nyt
    :alt: Documentation Status
 .. image:: https://badge.fury.io/py/django-nyt.svg
    :target: https://pypi.python.org/pypi/django-nyt
+.. image:: https://coveralls.io/repos/github/benjaoming/django-nyt/badge.svg?branch=master
+   :target: https://coveralls.io/github/benjaoming/django-nyt?branch=master 
 
 django-nyt does this:
 
