@@ -1,21 +1,23 @@
 language: python
 # See tox.ini for env list
 env:
-- TOXENV=py27-django17
-- TOXENV=py27-django18
-- TOXENV=py27-django19
-- TOXENV=py33-django17
-- TOXENV=py33-django18
-- TOXENV=py34-django17
-- TOXENV=py34-django18
-- TOXENV=py34-django19
+  - TOXENV=py27-django17
+  - TOXENV=py27-django18
+  - TOXENV=py27-django19
+  - TOXENV=py33-django17
+  - TOXENV=py33-django18
+  - TOXENV=py34-django17
+  - TOXENV=py34-django18
+  - TOXENV=py34-django19
 install:
-- pip install tox coverage coveralls
+  - pip install tox coverage coveralls
 script:
-- tox
-- coverage combine
-- coveralls
+  - tox
 notifications:
     irc:
         - "irc.freenode.org#django-wiki"
 sudo: false
+after_success:
+  - coverage combine
+  - coveralls
+
