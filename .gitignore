@@ -8,6 +8,8 @@
 
 docs/_build
 docs/_static
+docs/django_nyt*rst
+docs/modules.rst
 
 # Packages
 *.egg

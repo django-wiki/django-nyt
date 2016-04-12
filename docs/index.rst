@@ -10,6 +10,7 @@ Contents:
    configuration
    integration
    javascript
+   modules
 
 django-nyt
 =============
@@ -74,7 +75,7 @@ around and ask "for this object, are there any notifications?"
    notify(_("OMG! Something happened"), EVENT_KEY, target_object=my_model_instance)
 
 
-Excluding certain recepients
+Excluding certain recipients
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By setting the kwarg ``filter_exclude`` to a dictionary of lookup fields for
@@ -102,19 +103,6 @@ For instance:
    @disable_notify
    def my_view(request):
        ...
-
-
-*This is a work in progress*
-----------------------------
-
-This application should live outside django-wiki. 
-It will! But only as soon as there's time to package it separately...
-
-TODO:
-
- * A custom Model Manager to easily retrive notifications and mark them as read
- * Some easy-to-use template tags and templates to override.
- * Examples of how to extend
 
 
 Indices and tables

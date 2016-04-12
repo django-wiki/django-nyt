@@ -37,10 +37,13 @@ coverage:
 	coverage report -m
 
 docs:
+	rm -f docs/modules.rst
+	rm -f docs/django_nyt*.rst
 	$(MAKE) -C docs clean
+	sphinx-apidoc -d 10 -H "Python Reference" -o docs/ django_nyt django_nyt/tests django_nyt/migrations
 	$(MAKE) -C docs html
-	sphinx-build -b linkcheck ./docs _build/
-	sphinx-build -b html ./docs _build/
+	sphinx-build -b linkcheck ./docs docs/_build/
+	sphinx-build -b html ./docs docs/_build/
 
 release: clean
 	echo "Creating HISTORY.rst..."
