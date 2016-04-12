@@ -26,8 +26,11 @@ if settings.DEBUG:
         }),
     ]
 
+
+from django_nyt.urls import get_pattern
+
 urlpatterns += [
-    url(r'^nyt/', include('django_nyt.urls',)),
+    url(r'^nyt/', get_pattern()),
 ]
 
 if DJANGO_VERSION < (1, 8):
