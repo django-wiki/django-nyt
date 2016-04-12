@@ -57,5 +57,5 @@ else:
     # Allow tests to be specified:
     argv.extend(sys.argv[1:])
 
-sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'testproject'))
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test-project'))
 execute_from_command_line(argv)
