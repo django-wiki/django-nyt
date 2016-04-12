@@ -10,9 +10,11 @@ env:
 - TOXENV=py34-django18
 - TOXENV=py34-django19
 install:
-- pip install tox
+- pip install tox coverage coveralls
 script:
 - tox
+- coverage combine
+- coveralls
 notifications:
     irc:
         - "irc.freenode.org#django-wiki"
