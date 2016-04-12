@@ -215,12 +215,12 @@ class Command(BaseCommand):
                         self.logger.error(
                             "E-mail refused by SMTP server ({}), skipping!".format(setting.user.email))
                         continue
-                    except smtplib.SMTPException, e:
+                    except smtplib.SMTPException as e:
                         self.logger.error(
                             "You have an error with your SMTP server connection, error is: {}".format(e))
                         self.logger.error("Sleeping for 30s then retrying...")
                         time.sleep(30)
-                    except Exception, e:
+                    except Exception as e:
                         self.logger.error(
                             "Unhandled exception while sending, giving up: {}".format(e))
                         break
