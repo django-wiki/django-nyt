@@ -37,6 +37,12 @@ Starting from django-nyt 1.0, support for the upcoming
 Django 1.9 support.
 
 
+Docs
+----
+
+http://django-nyt.readthedocs.org/en/latest/
+
+
 Why should you do this?
 -----------------------
 
@@ -44,50 +50,77 @@ Users need a cleverly sifted stream of events that's highly customizable
 as well. By using django-nyt, your users can subscribe to global events
 or specific events pertaining specific objects.
 
-Each event can be associated with a link so the user can use the
-notifications as shortcuts in their work flow.
+Instead of inventing your own notification system, use this and you won't have
+to design your own models, and you will have a nice guide that goes through
+the various steps of implementing notifications for your project.
 
 Let's try to summarize the reasons you want to be using django-nyt:
 
- - Simple API (call ``notify()`` where-ever you want)
+ - Simple API: call ``notify()`` where-ever you want.
  - CLI for sending emails (as cron job, daemon or Celery task)
- - Support for django-channels and webhooks
+ - Support for django-channels and Web Sockets (optional, fallback for JSON-based polling)
  - Basic JavaScript / HTML example code
  - Multi-lingual
  - Individual subscription settings for each type of event, for instance:
    - Event type A spawns instant email notifications, but Event B only gets emailed weekly.
+ - Customizable intervals for which users can receive notifications
+ - Optional URL for action target for each notification
+ - Avoid clutter: Notifications don't get repeated, instead a counter is incremented.
+
+This project exists with ``django.contrib.messages`` in mind, to serve a simple,
+best-practice, scalable solution for notifications. There are loads of other
+notification apps for Django, some focus on integration of specific communication
+protocols
 
 What do you need to do?
 -----------------------
 
-You need to do a lot! But django-nyt does everything to meet as many
-needs as possible. Firstly, you need to write some javascript that will
+django-nyt does everything it can to meet as many needs as possible and
+have sane defaults.
+
+But you need to do a lot! Firstly, you need to write some JavaScript that will
 fetch the latest notifications and display them in some area of the
-screen. Upon clicking that icon, the latest notifications are displayed.
+screen. Upon clicking that icon, the latest notifications are displayed, and
+clicking an individual notification will redirect the user through a page
+that marks the notification as read.
+
 Something like this:
 
 .. image:: https://raw.githubusercontent.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
    :alt: Javascript drop-down
 
-Javascript drop-down: Some examples are provided in the docs, but there
+JavaScript drop-down: Some examples are provided in the docs, but there
 is no real easy way to place this nifty little thing at the top of your
-site, you're gonna have to work it out on your own.
+site, you're going to have to work it out on your own.
 
-Other things for your TODO list:
+Other items for your TODO list:
 
 -  Provide your users with options to customize their subscriptions and
-   notification preferences
--  Customize contents of notification emails
--  Make the mail notification daemon script run
-   ``python manage.py notifymail --daemon``
--  Put calls to ``notify(...)`` where ever necessary
+   notification preferences. Create your own ``Form`` inheriting from
+   ``django_nyt.forms.SettingsForm``.
+-  Customize contents of notification emails by overwriting templates in
+   ``django_nyt/emails/notification_email_message.txt`` and
+   ``django_nyt/emails/notification_email_subject.txt``.
+-  Make the mail notification daemon script run either constantly
+   ``python manage.py notifymail --daemon`` or with some interval by invoking
+   ``python manage.py notifymail --cron`` as a cronjob. You can also call it
+   from a Celery task or similar with ``call_command('notifymail', cron=True)``.
 
-Docs
-----
 
-Here:
+Development / demo project
+--------------------------
 
-http://django-nyt.readthedocs.org/en/latest/
+In your Git fork, run ``pip install -r requirements.txt`` to install the
+requirements.
+
+The folder **test-project/** contains a pre-configured django project and
+an SQlite database. Login for django admin is *admin:admin*::
+
+    cd test-project
+    python manage.py runserver
+
+After this, navigate to `http://localhost:8000 <http://localhost:8000>`_
+
 
 Community
 ---------
@@ -95,18 +128,3 @@ Community
 Please visit #django-wiki on irc.freenode.net as many django-wiki users
 are also familiar with django-nyt which previously lived inside
 django-wiki.
-
-Development
------------
-
-In your Git fork, run ``pip install -r requirements.txt`` to install the
-requirements.
-
-The folder **testproject/** contains a pre-configured django project and
-an sqlite database. Login for django admin is *admin:admin*.
-
-*This is a work in progre..*
-----------------------------
-
-Please refer to the
-`TODO <https://github.com/benjaoming/django-nyt/blob/master/TODO.md>`__
