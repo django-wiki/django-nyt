@@ -14,7 +14,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include((admin.site.get_urls(), 'admin'))),
     url(r'', include('testapp.urls')),
 ]
 
@@ -26,9 +26,8 @@ if settings.DEBUG:
         }),
     ]
 
-from django_nyt.urls import get_pattern as get_nyt_pattern
 urlpatterns += [
-    url(r'^nyt/', get_nyt_pattern()),
+    url(r'^nyt/', include('django_nyt.urls',)),
 ]
 
 if DJANGO_VERSION < (1, 8):
