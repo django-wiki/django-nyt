@@ -20,19 +20,22 @@ django-nyt does this:
     EVENT_KEY = "my_key"
     notify(_("OMG! Something happened"), EVENT_KEY)
 
-All users subscribing to ``EVENT_KEY`` will have a notification created
-in their stack. If you have emails enabled, they may get a summary of
-notifications at an interval of their choice.
+All users subscribing to ``"my_key"`` will have a notification created
+in their stack when ``notify()`` is called.
+
+If you have emails enabled, subscribers receive a summary of notifications at
+an interval of their choice.
 
 Data can be accessed easily from Django models or from the included JSON
 views.
 
-Channels
---------
+Channels (django-channels)
+--------------------------
 
 Starting from django-nyt 1.0, support for the upcoming
 `channels <http://channels.readthedocs.org/>`_ has been added together with
 Django 1.9 support.
+
 
 Why should you do this?
 -----------------------
@@ -43,6 +46,16 @@ or specific events pertaining specific objects.
 
 Each event can be associated with a link so the user can use the
 notifications as shortcuts in their work flow.
+
+Let's try to summarize the reasons you want to be using django-nyt:
+
+ - Simple API (call ``notify()`` where-ever you want)
+ - CLI for sending emails (as cron job, daemon or Celery task)
+ - Support for django-channels and webhooks
+ - Basic JavaScript / HTML example code
+ - Multi-lingual
+ - Individual subscription settings for each type of event, for instance:
+   - Event type A spawns instant email notifications, but Event B only gets emailed weekly.
 
 What do you need to do?
 -----------------------
