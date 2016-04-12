@@ -11,16 +11,47 @@ except ImportError:
     from django.contrib.auth.models import User
 
 
-class NotifyTest(TestCase):
+class NotifyTestBase(TestCase):
 
-    def test_simple(self):
+    def setUp(self):
+        super(NotifyTestBase, self).setUp()
+        self.TEST_KEY = 'test_key'
 
-        TEST_KEY = 'test_key'
-        user = User.objects.create_user(
-            'lalala'
-        )
-        user_settings = models.Settings.get_default_setting(user)
-        utils.subscribe(user_settings, TEST_KEY)
-        utils.notify("Test Is a Test", TEST_KEY)
+        # These two users are created by migrations in testproject.testapp
+        # Reason is to make the testproject easy to setup and use.
+        self.user1 = User.objects.get(username='alice')
+        self.user1_settings = models.Settings.get_default_setting(self.user1)
+        self.user2 = User.objects.get(username='bob')
+        self.user2_settings = models.Settings.get_default_setting(self.user2)
 
+    def tearDown(self):
+        self.user1.delete()
+        self.user2.delete()
+        super(NotifyTestBase, self).tearDown()
+
+
+class NotifyTest(NotifyTestBase):
+
+    def test_notify(self):
+
+        # Subscribe User 1 to test key
+        utils.subscribe(self.user1_settings, self.TEST_KEY)
+        utils.notify("Test is a test", self.TEST_KEY)
+
+        # Check that there is exactly 1 notification
         self.assertEqual(models.Notification.objects.all().count(), 1)
+
+    def test_notify_two_users(self):
+
+        # Subscribe User 2 to test key
+        utils.subscribe(self.user2_settings, self.TEST_KEY)
+        utils.subscribe(self.user1_settings, self.TEST_KEY)
+        utils.notify("Another test", self.TEST_KEY)
+
+        self.assertEqual(models.Notification.objects.all().count(), 2)
+
+        # Now create the same notification again, this should not create new
+        # objects in the DB but instead increase the count of that notification!
+        utils.notify("Another test", self.TEST_KEY)
+
+        self.assertEqual(models.Notification.objects.filter(occurrences=2).count(), 2)

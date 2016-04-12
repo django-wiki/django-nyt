@@ -34,7 +34,7 @@ class NotificationType(models.Model):
         blank=True,
         null=True
     )
-    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.key
@@ -141,6 +141,7 @@ class Subscription(models.Model):
     notification_type = models.ForeignKey(
         NotificationType,
         verbose_name=_("notification type"),
+        on_delete=models.CASCADE
     )
     object_id = models.CharField(
         max_length=64,
@@ -159,6 +160,7 @@ class Subscription(models.Model):
         blank=True,
         related_name='latest_for',
         verbose_name=_("latest notification"),
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):
