@@ -110,6 +110,11 @@ html_theme = 'default'
 
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+
+if on_rtd:
+    os.system("sphinx-apidoc --doc-project='Python Reference' -f -o . ../django_nyt ../django_nyt/tests ../django_nyt/migrations")
+
 if on_rtd:
     html_theme = 'default'
 else:
