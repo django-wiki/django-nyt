@@ -20,6 +20,10 @@ from django_nyt import models
 from django_nyt import settings as nyt_settings
 
 
+# Daemon / mail loop sleep between each database poll (seconds)
+SLEEP_TIME = 120
+
+
 class Command(BaseCommand):
     can_import_settings = True
     # @ReservedAssignment
@@ -50,6 +54,11 @@ class Command(BaseCommand):
                     dest='no_sys_exit',
                     default=False,
                     help='Skip sys-exit after forking daemon (for testing purposes)'),
+        make_option('--daemon-sleep-interval', '',
+                    action='store',
+                    dest='sleep_time',
+                    default=SLEEP_TIME,
+                    help='How much to sleep between each polling of the database.'),
     )
 
     def _send_user_notifications(self, context, connection):
@@ -123,14 +132,14 @@ class Command(BaseCommand):
             if not daemon:
                 print("Entering send-loop, CTRL+C to exit")
             try:
-                self.send_loop(connection)
+                self.send_loop(connection, int(options['sleep_time']))
             except KeyboardInterrupt:
                 print("\nQuitting...")
 
         # deactivate the language
         deactivate()
 
-    def send_loop(self, connection):
+    def send_loop(self, connection, sleep_time):
 
         # This could be /improved by looking up the last notified person
         last_sent = None
@@ -159,7 +168,7 @@ class Command(BaseCommand):
             time.sleep(
                 max(
                     (min(nyt_settings.INTERVALS)[0] - elapsed_seconds) * 60,
-                    nyt_settings.NYT_SLEEP_TIME,
+                    sleep_time,
                     0
                 )
             )

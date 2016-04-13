@@ -17,18 +17,19 @@ SEND_EMAILS = getattr(django_settings, 'NYT_SEND_EMAILS', True)
 emails, both instant and scheduled digests.
 Remeber that emails are sent with ``python manage.py notifymail``."""
 
-EMAIL_SUBJECT = getattr(django_settings,
-                        'NYT_EMAIL_SUBJECT', _("You have new notifications"))
+EMAIL_SUBJECT = getattr(
+    django_settings,
+    'NYT_EMAIL_SUBJECT',
+    _("You have new notifications")
+)
 """Subject of all emails sent"""
 
-EMAIL_SENDER = getattr(django_settings,
-                       'NYT_EMAIL_SENDER', "notifications@example.com")
+EMAIL_SENDER = getattr(
+    django_settings,
+    'NYT_EMAIL_SENDER',
+    "notifications@example.com"
+)
 """Default sender email"""
-
-NYT_SLEEP_TIME = 120
-"""Seconds to sleep between each database poll
-(leave high unless you really want to send extremely real time
-notifications)"""
 
 # You can always make up more numbers... they simply identify which notifications
 # to send when invoking the script, and the number indicates how many hours
@@ -75,8 +76,8 @@ NOTIFICATION_CHANNEL = "nyt_all"
 # PLANNED SETTINGS #
 ####################
 
-AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
+# AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
 """After how many days should viewed notifications be deleted? (not implemented)"""
 
-AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
+# AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
 """After how many days should both viewed and unviewed notifications be deleted? (not implemented)"""
