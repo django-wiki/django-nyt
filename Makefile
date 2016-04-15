@@ -45,7 +45,7 @@ docs:
 	sphinx-build -b linkcheck ./docs docs/_build/
 	sphinx-build -b html ./docs docs/_build/
 
-release: clean
+release: clean sdist
 	echo "Creating HISTORY.rst..."
 	echo "Latest Changes" > HISTORY.rst
 	echo "==============" >> HISTORY.rst
@@ -58,7 +58,6 @@ release: clean
 	echo "Packing source dist..."
 	twine upload -s dist/*
 
-sdist: clean assets
-	python setup.py sdist
+sdist: clean
 	python setup.py bdist_wheel
 	ls -l dist
