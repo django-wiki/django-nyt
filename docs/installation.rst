@@ -6,16 +6,17 @@ From PyPi
 
 Simply run the good old ``pip install django-nyt`` and you'll have the ``django_nyt`` package available.
 
-Adding to your Python project
------------------------------
+
+Configuring your project
+------------------------
+
+Before django-nyt can be used, you need to migrate its models. This is also
+necessary if you update it.
 
 .. code-block:: bash
 
    python manage.py migrate django_nyt
 
-
-Configuring your django project
--------------------------------
 
 INSTALLED_APPS
 ~~~~~~~~~~~~~~

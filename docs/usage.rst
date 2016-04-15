@@ -1,26 +1,13 @@
-Welcome to django-nyt's documentation!
-======================================
+Usage
+=====
 
-Contents:
+This is the overall picture: In your Python code, you call ``notify()`` with
+some string message for the user, then in your browser application, you
+should implement Websocket or polling based retrieval of those notifications
+from a JSON view.
 
-.. toctree::
-   :maxdepth: 1
-
-   installation
-   configuration
-   channels
-   javascript
-   html
-   emails
-   integration
-   modules
-
-
-.. include:: ../README.rst
-
-
-API Usage
----------
+Python API
+----------
 
 Adding a notification
 ~~~~~~~~~~~~~~~~~~~~~
@@ -75,10 +62,12 @@ For instance:
        ...
 
 
-Indices and tables
-==================
+JSON views
+----------
 
-* :ref:``genindex``
-* :ref:``modindex``
-* :ref:``search``
+The below views can be used for your JavaScript application. Examples of how to
+use them is provided in :doc:`javascript`.
 
+.. automodule:: django_nyt.views
+   :members:
+   :noindex:
