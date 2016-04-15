@@ -64,3 +64,8 @@ Daemon
 Instead of adding a crontab, you can also have the ``notifymail`` script run as
 a daemon.
 
+.. code-block:: bash
+
+    /path/to/your/virtualenv/bin/python /path/to/project/manage.py notifymail --daemon
+
+For more configurability of the daemon, run ``manage.py help notifymail``.
