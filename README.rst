@@ -11,7 +11,10 @@ django-nyt
 .. image:: https://coveralls.io/repos/github/benjaoming/django-nyt/badge.svg?branch=master
    :target: https://coveralls.io/github/benjaoming/django-nyt?branch=master 
 
-django-nyt does this:
+Concept
+-------
+
+django-nyt is a notification framework for Django, it does this:
 
 .. code:: python
 
@@ -35,6 +38,12 @@ Channels (django-channels)
 Starting from django-nyt 1.0, support for the upcoming
 `channels <http://channels.readthedocs.org/>`_ has been added together with
 Django 1.9 support.
+
+In order to install the prerelease, use an extra flag for pip:
+
+.. code:: bash
+
+    pip install django-nyt --pre
 
 
 Docs
