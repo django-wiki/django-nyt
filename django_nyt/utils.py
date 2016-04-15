@@ -26,6 +26,7 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
     filter_exclude: a dictionary to exclude special elements of subscriptions
     in the queryset, for instance filter_exclude={''}
 
+    :param: key <string>: Some identifier of your notification type
     :param: recipient_users: A possible iterable of users that should be notified
                              instead of notifying all subscribers of the event.
                              Notice that users still have to be actually subscribed
@@ -54,9 +55,10 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
         recipient_users=recipient_users,
     )
 
+    # Notify channel subscribers if we have channels enabled
     if settings.ENABLE_CHANNELS:
         from . import tasks
-        tasks.notify_subscribers(objects)
+        tasks.notify_subscribers(objects, key)
 
     return len(objects)
 

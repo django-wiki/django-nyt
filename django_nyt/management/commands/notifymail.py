@@ -58,7 +58,7 @@ class Command(BaseCommand):
                     action='store',
                     dest='sleep_time',
                     default=SLEEP_TIME,
-                    help='How much to sleep between each polling of the database.'),
+                    help='Minimum sleep between each polling of the database.'),
     )
 
     def _send_user_notifications(self, context, connection):

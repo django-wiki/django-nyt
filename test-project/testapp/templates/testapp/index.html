@@ -215,6 +215,7 @@
   var nyt_update_timeout = 30000;
   var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
   
+  // Customixed error handling?
   function ajaxError(){}
   
   $.ajaxSetup({
@@ -263,9 +264,10 @@
     });
   }
 
+  // Mark all <li> items read and tell the server.
   function nyt_mark_read() {
     $('.notification-li').remove();
-    url = URL_NYT_MARK_READ+nyt_latest_id+'/'+nyt_oldest_id+'/';
+    var url = URL_NYT_MARK_READ+nyt_latest_id+'/'+nyt_oldest_id+'/';
     nyt_oldest_id = 0;
     nyt_latest_id = 0;
     jsonWrapper(url, function (data) {
@@ -276,6 +278,7 @@
     });
   }
 
+  // Call this function to use traditional polling
   function update_timeout() {
     setTimeout("nyt_update()", nyt_update_timeout);
     setTimeout("update_timeout()", nyt_update_timeout);
@@ -285,9 +288,7 @@
   // Don't check immediately... some users just click through pages very quickly.
   setTimeout("nyt_update()", 2000);
 
-  // Note that the path doesn't matter for routing; any WebSocket
-  // connection gets bumped over to WebSocket consumers
-  var socket = new WebSocket("ws://127.0.0.1:8000/asdasd");
+  var socket = new WebSocket("ws://127.0.0.1:8000/nyt/");
 
   $(document).ready(function () {
     // update_timeout();

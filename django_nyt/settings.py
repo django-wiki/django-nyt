@@ -69,7 +69,7 @@ however you can explicitly disable it with NYT_CHANNELS_DISABLE."""
 
 # Name of the global channel (preliminary stuff) that alerts everyone that there
 # is a new notification
-NOTIFICATION_CHANNEL = "nyt_all"
+NOTIFICATION_CHANNEL = "nyt_all-{notification_key:s}"
 
 
 ####################
