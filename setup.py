@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 
 import os
 from django_nyt import VERSION
-import setuptools
 from setuptools import setup, find_packages
 
 def get_path(fname):
@@ -29,7 +28,7 @@ setup(
     zip_safe=False,
     install_requires=read('requirements.txt').split("\n"),
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -38,10 +37,9 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ],
     include_package_data=True,
 )

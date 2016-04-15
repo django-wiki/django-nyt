@@ -26,7 +26,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class NotificationAdmin(admin.ModelAdmin):
-    
+
     raw_id_fields = ('user', 'subscription')
 
 

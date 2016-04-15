@@ -18,6 +18,27 @@ def get_notifications(
         latest_id=None,
         is_viewed=False,
         max_results=10):
+    """
+    View that returns a JSON list of notifications for the current user as according
+    to ``request.user``.
+
+    :param: latest_id: The latest id of a notification. Use this to avoid
+    retrieving the same notifications multiple times.
+    :param: is_viewed: Set this to ``True`` if you also want to retrieve
+    notifications that have already been viewed.
+
+    :returns: An HTTPResponse object with JSON data::
+
+        {'success': True,
+         'total_count': total_count,
+         'objects': [{'pk': n.pk,
+                     'message': n.message,
+                     'url': n.url,
+                     'occurrences': n.occurrences,
+                     'occurrences_msg': _('%d times') % n.occurrences,
+                     'type': n.subscription.notification_type.key if n.subscription else None,
+                     'since': naturaltime(n.created)} for n in notifications[:max_results]]}
+    """
 
     notifications = models.Notification.objects.filter(
         Q(subscription__settings__user=request.user) |
@@ -26,9 +47,9 @@ def get_notifications(
 
     if is_viewed is not None:
         notifications = notifications.filter(is_viewed=is_viewed)
-        
+
     total_count = notifications.count()
-    
+
     if latest_id is not None:
         notifications = notifications.filter(id__gt=latest_id)
 

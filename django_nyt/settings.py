@@ -1,32 +1,35 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from django.conf import settings as django_settings
-from django import VERSION as DJANGO_VERSION
 from django.utils.translation import ugettext_lazy as _
-
 
 DB_TABLE_PREFIX = 'nyt'
 
-# You need to switch this setting on, otherwise nothing will happen :)
 ENABLED = getattr(django_settings, 'NYT_ENABLED', True)
+"""Global setting to force-fully disable all propagation and creation of
+notifications."""
 
-# Enable django-admin registration
 ENABLE_ADMIN = getattr(django_settings, 'NYT_ENABLE_ADMIN', False)
+"""Enable django-admin registration for django-nyt's ModelAdmin's"""
 
-# Email notifications won't get sent unless you run
-# python manage.py notifymail
 SEND_EMAILS = getattr(django_settings, 'NYT_SEND_EMAILS', True)
+"""Email notifications global setting, can be used to globally switch off
+emails, both instant and scheduled digests.
+Remeber that emails are sent with ``python manage.py notifymail``."""
 
-EMAIL_SUBJECT = getattr(django_settings,
-                        'NYT_EMAIL_SUBJECT', _("You have new notifications"))
+EMAIL_SUBJECT = getattr(
+    django_settings,
+    'NYT_EMAIL_SUBJECT',
+    _("You have new notifications")
+)
+"""Subject of all emails sent"""
 
-EMAIL_SENDER = getattr(django_settings,
-                       'NYT_EMAIL_SENDER', "notifications@example.com")
-
-# Seconds to sleep between each database poll
-# (leave high unless you really want to send extremely real time
-# notifications)
-NYT_SLEEP_TIME = 120
+EMAIL_SENDER = getattr(
+    django_settings,
+    'NYT_EMAIL_SENDER',
+    "notifications@example.com"
+)
+"""Default sender email"""
 
 # You can always make up more numbers... they simply identify which notifications
 # to send when invoking the script, and the number indicates how many hours
@@ -36,32 +39,45 @@ INSTANTLY = 0
 DAILY = (24 - 1) * 60
 WEEKLY = 7 * (24 - 1) * 60
 
-# List of intervals available. In minutes
-INTERVALS = getattr(django_settings, 'NYT_INTERVALS',
-                    [(INSTANTLY, _('instantly')),
-                     (DAILY, _('daily')),
-                        (WEEKLY, _('weekly'))]
-                    )
+INTERVALS = getattr(
+    django_settings,
+    'NYT_INTERVALS',
+    [
+        (INSTANTLY, _('instantly')),
+        (DAILY, _('daily')),
+        (WEEKLY, _('weekly'))
+    ]
+)
+"""List of intervals available for user selections. In minutes"""
 
 INTERVALS_DEFAULT = INSTANTLY
+"""Default selection for new subscriptions"""
 
-# Django 1.5+
-if DJANGO_VERSION >= (1, 5):
-    USER_MODEL = getattr(django_settings, 'AUTH_USER_MODEL', 'auth.User')
-else:
-    USER_MODEL = 'auth.User'
+USER_MODEL = getattr(django_settings, 'AUTH_USER_MODEL', 'auth.User')
 
-NYT_LOG = getattr(django_settings, 'NYT_LOG', '/tmp/nyt_daemon.log')
-NYT_PID = getattr(django_settings, 'NYT_PID', '/tmp/nyt_daemon.pid')
+
+############
+# CHANNELS #
+############
+
+ENABLE_CHANNELS = (
+    'channels' in django_settings.INSTALLED_APPS and
+    not getattr(django_settings, 'NYT_CHANNELS_DISABLE', False)
+)
+"""Channels are enabled automatically when 'channels' application is installed,
+however you can explicitly disable it with NYT_CHANNELS_DISABLE."""
+
+# Name of the global channel (preliminary stuff) that alerts everyone that there
+# is a new notification
+NOTIFICATION_CHANNEL = "nyt_all-{notification_key:s}"
+
 
 ####################
 # PLANNED SETTINGS #
 ####################
 
-# Minimum logging and digital garbage! Don't save too much crap!
+# AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
+"""After how many days should viewed notifications be deleted? (not implemented)"""
 
-# After how many days should viewed notifications be deleted?
-AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
-
-# After how many days should all types of notifications be deleted?
-AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
+# AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
+"""After how many days should both viewed and unviewed notifications be deleted? (not implemented)"""

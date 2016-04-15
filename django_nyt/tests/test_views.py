@@ -21,7 +21,7 @@ class TestViews(TestCase):
             'lalala',
             password='password',
         )
-        self.user_settings = models.Settings.objects.create(user=self.user)
+        self.user_settings = models.Settings.get_default_setting(self.user)
 
     def test_mark_read(self):
         utils.subscribe(self.user_settings, self.TEST_KEY)

@@ -1,0 +1,310 @@
+{% load i18n static humanize %}<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>django-nyt notification test panel</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">-->
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="{% static 'testapp/skeleton/css/normalize.css' %}">
+  <link rel="stylesheet" href="{% static 'testapp/skeleton/css/skeleton.css' %}">
+  <link rel="stylesheet" href="{% static 'testapp/css/custom.css' %}">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="{% static 'testapp/skeleton/images/favicon.png' %}">
+
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <ul class="navbar-list">
+        <li class="navbar-item"><a class="navbar-link" href="#intro">Intro</a></li>
+        <li class="navbar-item">
+          <a class="navbar-link" href="#" data-popover="#codeNavPopover">Code</a>
+        </li>
+        <li class="navbar-item"><a class="navbar-link" href="#examples">Examples</a></li>
+        <li class="navbar-item" style="float: right;">
+          <a class="navbar-link" href="#examples">
+            Logged in as {{ user.username|default:"anonymous" }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Notification tests</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>This is a test page with a simple styling to test the notification system and convince potential users that django-nyt is pretty cool.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Notification live stream</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Here you'll see new notifications as they arrive from the server.</p>
+      </div>
+      <div class="one-half column">
+        <ul class="notification-list">
+          <li class="notification-before-list">Notifications (<span class="notification-cnt">0</span>):</li>
+          <li class="notifications-empty"><em>{% trans "No notifications found" %}</em></li>
+        </ul>
+        <a href="javascript:void(0)" onclick="nyt_mark_read()" class="button button-secondary">
+          {% trans "Mark seen and clear" %}
+        </a>
+        <a href="javascript:void(0)" onclick="nyt_update()" class="button button-primary">
+          {% trans "Fetch" %}
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container" style="margin-top: 30px" id="create-notification">
+    <h4>Create a notification</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>After filling in the form, everyone subscribed to receive notification instantly for the Test Model object should receive them.</p>
+        <p>
+          <strong>NB!</strong> By design, saving a notification does not trigger displaying one. This way, you can play around with automatic updating and channels.
+        </p>
+      </div>
+      <div class="one-half column">
+
+        <form method="POST" action="{% url 'testapp:create' %}" id="notificationcreateform">
+          {% csrf_token %}
+          <label for="exampleEmailInput">Notification message</label>
+          {{ testmodel_form.name }}
+          <button type="submit" class="button-primary">Save</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Login as another user</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Select one of the test user accounts and you'll be logged in (this is a test application, so don't use this mechanism in production)</p>
+      </div>
+      <div class="one-half column">
+      
+        {% for user in users %}
+        <p>
+          <a href="{% url 'testapp:login_as' pk=user.pk %}" class="button button-secondary" style="display: block;">Login as {{ user.username }}</a>
+        </p>
+        {% endfor %}
+      
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>Notification settings</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Change settings of currently logged in user</p>
+      </div>
+      
+      <div class="one-half column">
+        <form method="POST">
+          {% csrf_token %}
+          {% if settings_form %}
+            {{ settings_form.as_p }}
+            <button type="submit" class="button-primary">Save</button>
+          {% else %}
+            <em>Not logged in</em>
+          {% endif %}
+        </form>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+  <div class="container" style="margin-top: 30px" id="intro">
+    <h4>List of notifications (static)</h4>
+    <div class="row">
+      <div class="one-half column">
+        <p>Please reload this page to have the list updated</p>
+      </div>
+      <div class="one-half column">
+      </div>
+    </div>
+    <table>
+      <tr>
+        <th>Message</th>
+        <th>Created</th>
+        <th>Seen</th>
+        <th>Type</th>
+      </tr>
+      
+      {% for notification in notifications %}
+      <tr>
+        <td>{{ notification.message }} x{{ notification.occurrences }}</td>
+        <td>{{ notification.modified|naturaltime }}</td>
+        <td>{{ notification.is_viewed|yesno }}</td>
+        <td>{{ notification.subscription.notification_type.key }}</td>
+      </tr>
+      {% endfor %}
+      
+    </table>
+  </div>
+
+
+<script type="text/javascript" src="{% static 'testapp/js/jquery.js' %}"></script>
+ 
+<script type="text/javascript">
+
+  $(function() {
+    $("#notificationcreateform").submit(function( event ) {
+      // Stop form from submitting normally
+      event.preventDefault();
+     
+      // Get some values from elements on the page:
+      var $form = $( this );
+      var url = $form.attr( "action" );
+     
+      // Send the data using post
+      var posting = $.post( url, $form.serializeArray() );
+     
+      // Put the results in a div
+      posting.done(function( data ) {
+        $('#id_name').val('');
+      });
+
+    });
+
+  });
+
+</script>
+
+<script type="text/javascript">
+  var URL_NYT_GET_NEW = "{% url "nyt:json_get" %}";
+  var URL_NYT_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
+  var URL_NYT_GOTO = "{% url "nyt:goto_base" %}";
+
+  var nyt_oldest_id = 0;
+  var nyt_latest_id = 0;
+  var nyt_update_timeout = 30000;
+  var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
+  
+  // Customixed error handling?
+  function ajaxError(){}
+  
+  $.ajaxSetup({
+    timeout: 7000,
+    cache: false,
+    error: function(e, xhr, settings, exception) {
+        ajaxError();
+    }
+  });
+  
+  function jsonWrapper(url, callback) {
+    $.getJSON(url, function(data) {
+      if (data == null) {
+        ajaxError();
+      } else {
+        callback(data);
+      }
+    });
+  }
+
+  function nyt_update() {
+    jsonWrapper(URL_NYT_GET_NEW+nyt_latest_id+'/', function (data) {
+      if (data.success) {
+        $('.notification-cnt').html(data.total_count);
+        if (data.objects.length> 0) {
+          $('.notification-cnt').addClass('badge-important');
+          $('.notifications-empty').hide();
+        } else {
+          $('.notification-cnt').removeClass('badge-important');
+        }
+        for (var i=data.objects.length-1; i >=0 ; i--) {
+          var n = data.objects[i];
+          nyt_latest_id = n.pk>nyt_latest_id ? n.pk:nyt_latest_id;
+          nyt_oldest_id = (n.pk<nyt_oldest_id || nyt_oldest_id==0) ? n.pk:nyt_oldest_id;
+          if (n.occurrences > 1) {
+            element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><span>'+n.message+'</span> <span class="since">'+n.occurrences_msg+' - ' + n.since + '</span></a></li>')
+          } else {
+            element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><span>'+n.message+'</span> <span class="since">'+n.since+'</span></a></li>');
+          }
+          element.addClass('notification-li');
+          element.hide();
+          element.insertAfter('.notification-before-list');
+          element.show('slow');
+        }
+      }
+    });
+  }
+
+  // Mark all <li> items read and tell the server.
+  function nyt_mark_read() {
+    $('.notification-li').remove();
+    var url = URL_NYT_MARK_READ+nyt_latest_id+'/'+nyt_oldest_id+'/';
+    nyt_oldest_id = 0;
+    nyt_latest_id = 0;
+    jsonWrapper(url, function (data) {
+      if (data.success) {
+        $('.notifications-empty').show();
+        nyt_update();
+      }
+    });
+  }
+
+  // Call this function to use traditional polling
+  function update_timeout() {
+    setTimeout("nyt_update()", nyt_update_timeout);
+    setTimeout("update_timeout()", nyt_update_timeout);
+    nyt_update_timeout *= nyt_update_timeout_adjust;
+  }
+
+  // Don't check immediately... some users just click through pages very quickly.
+  setTimeout("nyt_update()", 2000);
+
+  var socket = new WebSocket("ws://127.0.0.1:8000/nyt/");
+
+  $(document).ready(function () {
+    // update_timeout();
+    socket.onopen = function() {
+        console.log("Sending hello world");
+        socket.send("hello world");
+    }
+    socket.onmessage = function(e) {
+      console.log("Got some message, so going to update");
+      nyt_update();
+    }
+
+  });
+
+</script>
+
+</body>
+</html>
+

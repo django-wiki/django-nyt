@@ -1,12 +1,17 @@
 *.py[cod]
 
-.idea
+# Tox
+.cache
 
 # C extensions
 *.so
 
 docs/_build
 docs/_static
+docs/django_nyt*rst
+docs/modules.rst
+
+test-project/testproject/prepopulated.db
 
 # Packages
 *.egg
@@ -36,6 +41,8 @@ nosetests.xml
 *.mo
 
 # Mr Developer
+.idea
 .mr.developer.cfg
 .project
 .pydevproject
+.venv
