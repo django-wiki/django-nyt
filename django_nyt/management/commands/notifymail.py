@@ -28,7 +28,7 @@ class Command(BaseCommand):
     can_import_settings = True
     # @ReservedAssignment
     help = 'Sends notification emails to subscribed users taking into account the subscription interval'
-    option_list = BaseCommand.option_list + (
+    option_list = getattr(BaseCommand, 'option_list', ()) + (
         make_option('--daemon', '-d',
                     action='store_true',
                     dest='daemon',
