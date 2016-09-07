@@ -37,7 +37,7 @@ Channels (django-channels)
 
 Starting from django-nyt 1.0, support for the upcoming
 `channels <http://channels.readthedocs.io/>`_ has been added together with
-Django 1.9 support.
+Django 1.9 and 1.10 support.
 
 In order to install the prerelease, use an extra flag for pip:
 
