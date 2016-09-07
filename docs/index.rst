@@ -14,7 +14,7 @@ Contents:
    emails
    integration
    modules
-
+   release_notes
 
 .. include:: ../README.rst
 
