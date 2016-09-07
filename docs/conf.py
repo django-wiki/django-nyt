@@ -34,7 +34,14 @@ django.setup()
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks'
+]
+
+extlinks = {
+    'url-issue': ('https://github.com/benjaoming/django-nyt/issues/%s', '#'),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -122,7 +129,7 @@ else:
         import sphinx_rtd_theme  # @UnusedImport
         html_theme = 'sphinx_rtd_theme'
     except ImportError:
-        html_theme = 'natural'
+        html_theme = 'default'
 
 
 # Theme options are theme-specific and customize the look and feel of a theme

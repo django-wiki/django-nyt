@@ -4,7 +4,7 @@ django-nyt
 .. image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
    :target: https://travis-ci.org/benjaoming/django-nyt
 .. image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
-   :target: http://django-nyt.readthedocs.org/en/latest/?badge=latest
+   :target: http://django-nyt.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 .. image:: https://badge.fury.io/py/django-nyt.svg
    :target: https://pypi.python.org/pypi/django-nyt
@@ -36,7 +36,7 @@ Channels (django-channels)
 --------------------------
 
 Starting from django-nyt 1.0, support for the upcoming
-`channels <http://channels.readthedocs.org/>`_ has been added together with
+`channels <http://channels.readthedocs.io/>`_ has been added together with
 Django 1.9 support.
 
 In order to install the prerelease, use an extra flag for pip:
@@ -49,7 +49,7 @@ In order to install the prerelease, use an extra flag for pip:
 Docs
 ----
 
-http://django-nyt.readthedocs.org/en/latest/
+http://django-nyt.readthedocs.io/en/latest/
 
 
 Why should you do this?
