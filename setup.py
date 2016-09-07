@@ -23,7 +23,7 @@ setup(
     url="https://github.com/benjaoming/django-nyt",
     description="A pluggable notification system written for the Django framework.",
     license="Apache License 2.0",
-    keywords="django notification alerts",
+    keywords=["django", "notification" "alerts"],
     packages=find_packages(exclude=["testproject", "testproject.*"]),
     zip_safe=False,
     install_requires=read('requirements.txt').split("\n"),
