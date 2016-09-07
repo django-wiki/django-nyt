@@ -57,8 +57,8 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
 
     # Notify channel subscribers if we have channels enabled
     if settings.ENABLE_CHANNELS:
-        from . import tasks
-        tasks.notify_subscribers(objects, key)
+        from django_nyt import subscribers
+        subscribers.notify_subscribers(objects, key)
 
     return len(objects)
 
