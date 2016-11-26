@@ -237,37 +237,42 @@
   }
 
   function nyt_update() {
-    jsonWrapper(URL_NYT_GET_NEW+nyt_latest_id+'/', function (data) {
-      if (data.success) {
-        $('.notification-cnt').html(data.total_count);
-        if (data.objects.length> 0) {
-          $('.notification-cnt').addClass('badge-important');
-          $('.notifications-empty').hide();
-        } else {
-          $('.notification-cnt').removeClass('badge-important');
-        }
-        for (var i=data.objects.length-1; i >=0 ; i--) {
-          var n = data.objects[i];
-          nyt_latest_id = n.pk>nyt_latest_id ? n.pk:nyt_latest_id;
-          nyt_oldest_id = (n.pk<nyt_oldest_id || nyt_oldest_id==0) ? n.pk:nyt_oldest_id;
-          if (n.occurrences > 1) {
-            element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><span>'+n.message+'</span> <span class="since">'+n.occurrences_msg+' - ' + n.since + '</span></a></li>')
+
+    jsonWrapper(
+      URL_NYT_GET_NEW + nyt_latest_id + '/',
+      function (data) {
+        if (data.success) {
+          $('.notification-cnt').html(data.total_count);
+          if (data.objects.length> 0) {
+            $('.notification-cnt').addClass('badge-important');
+            $('.notifications-empty').hide();
           } else {
-            element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><span>'+n.message+'</span> <span class="since">'+n.since+'</span></a></li>');
+            $('.notification-cnt').removeClass('badge-important');
           }
-          element.addClass('notification-li');
-          element.hide();
-          element.insertAfter('.notification-before-list');
-          element.show('slow');
+          for (var i = data.objects.length - 1; i >= 0; i--) {
+            var n = data.objects[i];
+            nyt_latest_id = n.pk>nyt_latest_id ? n.pk:nyt_latest_id;
+            nyt_oldest_id = (n.pk < nyt_oldest_id || nyt_oldest_id == 0) ? n.pk:nyt_oldest_id;
+            if (n.occurrences > 1) {
+              element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><span>'+n.message+'</span> <span class="since">'+n.occurrences_msg+' - ' + n.since + '</span></a></li>')
+            } else {
+              element = $('<li><a href="'+URL_NYT_GOTO+n.pk+'/"><span>'+n.message+'</span> <span class="since">'+n.since+'</span></a></li>');
+            }
+            element.addClass('notification-li');
+            element.hide();
+            element.insertAfter('.notification-before-list');
+            element.show('slow');
+          }
         }
       }
-    });
+    );
+
   }
 
   // Mark all <li> items read and tell the server.
   function nyt_mark_read() {
     $('.notification-li').remove();
-    var url = URL_NYT_MARK_READ+nyt_latest_id+'/'+nyt_oldest_id+'/';
+    var url = URL_NYT_MARK_READ + nyt_latest_id + '/' + nyt_oldest_id + '/';
     nyt_oldest_id = 0;
     nyt_latest_id = 0;
     jsonWrapper(url, function (data) {

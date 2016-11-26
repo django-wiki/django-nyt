@@ -21,7 +21,7 @@ urlpatterns = [
 
 
 if DJANGO_VERSION < (1, 8):
-    from django.conf.urls import patterns
+    from django.conf.urls import patterns  # noqa @UnresolvedImport
     urlpatterns = patterns('', *urlpatterns)
 
 
