@@ -32,18 +32,16 @@ class Command(BaseCommand):
         make_option('--daemon', '-d',
                     action='store_true',
                     dest='daemon',
-                    help='Go to daemon mode and exit',
-                    default=False),
+                    help='Go to daemon mode and exit'),
         make_option('--cron', '-c',
                     action='store_true',
                     dest='cron',
-                    help='Do not loop, just send out emails once and exit',
-                    default=False),
+                    help='Do not loop, just send out emails once and exit'),
         make_option('--pid-file', '',
                     action='store',
                     dest='pid',
                     help='Where to write PID before exiting',
-                    default="/tmp/nyt_daemon.pid",),
+                    default='/tmp/nyt_daemon.pid'),
         make_option('--log-file', '',
                     action='store',
                     dest='log',
@@ -52,8 +50,7 @@ class Command(BaseCommand):
         make_option('--no-sys-exit', '',
                     action='store_true',
                     dest='no_sys_exit',
-                    help='Skip sys-exit after forking daemon (for testing purposes)',
-                    default=False),
+                    help='Skip sys-exit after forking daemon (for testing purposes)'),
         make_option('--daemon-sleep-interval', '',
                     action='store',
                     dest='sleep_time',
@@ -78,6 +75,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # activate the language
         activate(settings.LANGUAGE_CODE)
+
+        options.setdefault('daemon', False)
+        options.setdefault('cron', False)
+        options.setdefault('no_sys_exit', False)
 
         daemon = options['daemon']
         cron = options['cron']
