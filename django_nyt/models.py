@@ -81,7 +81,7 @@ class Settings(models.Model):
     def __str__(self):
         obj_name = _("Settings for %s") % getattr(
             self.user, self.user.USERNAME_FIELD)
-        return obj_name.encode('utf-8')
+        return obj_name
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_settings'
@@ -164,9 +164,9 @@ class Subscription(models.Model):
     )
 
     def __str__(self):
-        obj_name = _("Subscription for: %s") % str(
+        obj_name = _("Subscription for: %s") % (
             getattr(self.settings.user, self.settings.user.USERNAME_FIELD))
-        return obj_name.encode('utf-8')
+        return obj_name
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_subscription'
@@ -281,7 +281,7 @@ class Notification(models.Model):
         return objects_created
 
     def __str__(self):
-        return "%s: %s" % (str(self.user), self.message)
+        return "%s: %s" % (self.user, self.message)
 
     class Meta:
         db_table = settings.DB_TABLE_PREFIX + '_notification'
