@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+1.0b2
+-----
+
+ * Correctly set default options for ``notifymail`` management command (Benjamin Bach) #32
+ * Adds Django 1.11 to test matrix (Benjamin Bach) #32
+ * Do not return ``bytes`` in ``__str__`` (Øystein Hiåsen) #28
+
 1.0b1
 -----
 

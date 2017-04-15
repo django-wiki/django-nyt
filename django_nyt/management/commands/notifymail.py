@@ -40,11 +40,13 @@ class Command(BaseCommand):
         make_option('--pid-file', '',
                     action='store',
                     dest='pid',
-                    help='Where to write PID before exiting'),
+                    help='Where to write PID before exiting',
+                    default='/tmp/nyt_daemon.pid'),
         make_option('--log-file', '',
                     action='store',
                     dest='log',
-                    help='Where daemon should write its log'),
+                    help='Where daemon should write its log',
+                    default="/tmp/nyt_daemon.log"),
         make_option('--no-sys-exit', '',
                     action='store_true',
                     dest='no_sys_exit',
@@ -52,7 +54,8 @@ class Command(BaseCommand):
         make_option('--daemon-sleep-interval', '',
                     action='store',
                     dest='sleep_time',
-                    help='Minimum sleep between each polling of the database.'),
+                    help='Minimum sleep between each polling of the database.',
+                    default=SLEEP_TIME),
     )
 
     def _send_user_notifications(self, context, connection):
@@ -76,9 +79,6 @@ class Command(BaseCommand):
         options.setdefault('daemon', False)
         options.setdefault('cron', False)
         options.setdefault('no_sys_exit', False)
-        options.setdefault('sleep_time', SLEEP_TIME)
-        options.setdefault('pid', "/tmp/nyt_daemon.pid")
-        options.setdefault('pid', "/tmp/nyt_daemon.log")
 
         daemon = options['daemon']
         cron = options['cron']
