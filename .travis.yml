@@ -31,5 +31,5 @@ notifications:
 sudo: false
 after_success:
   - coverage combine
-  - coveralls
+  - codecov
 
