@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.0b3
+-----
+
+ * Fix critical django-channels err (Tomaž Žniderič) #29
+
 1.0b2
 -----
 
