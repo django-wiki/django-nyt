@@ -40,7 +40,6 @@ def ws_disconnect(message):
                 notification_key=subscription.notification_type.key
             )
         ).discard(message.reply_channel)
-    Group(settings.NOTIFICATION_CHANNEL).discard(message.reply_channel)
 
 
 def ws_receive(message):
