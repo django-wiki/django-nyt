@@ -19,6 +19,7 @@ def ws_connect(message):
     Connected to websocket.connect
     """
     logger.debug("Adding new connection for user {}".format(message.user))
+    message.reply_channel.send({"accept": True})
 
     for subscription in models.Subscription.objects.filter(settings__user=message.user):
         Group(
