@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 
 _disable_notifications = False
 
-VERSION = "1.0b3"
-
+VERSION = "1.0b4"
+__version__ = VERSION
 
 def notify(*args, **kwargs):
     """

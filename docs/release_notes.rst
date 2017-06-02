@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.0b4
+-----
+
+ * Explicitly accept WebSocket connections (Kim Desrosiers) #35
+
 1.0b3
 -----
 
