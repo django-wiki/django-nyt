@@ -46,18 +46,10 @@ docs:
 	sphinx-build -b html ./docs docs/_build/
 
 release: clean sdist
-	echo "Creating HISTORY.rst..."
-	echo "Latest Changes" > HISTORY.rst
-	echo "==============" >> HISTORY.rst
-	echo "" >> HISTORY.rst
-	echo "This file is auto-generated upon every new release."
-	echo "" >> HISTORY.rst
-	echo "Compiled on: `date`::" >> HISTORY.rst
-	echo "" >> HISTORY.rst
-	git log --graph --pretty=format:'%h -%d %s (%cr) <%an>' --abbrev-commit | sed "s/^/    /" >> HISTORY.rst
 	echo "Packing source dist..."
 	twine upload -s dist/*
 
 sdist: clean
+	python setup.py sdist
 	python setup.py bdist_wheel
 	ls -l dist
