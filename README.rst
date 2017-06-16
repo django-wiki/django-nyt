@@ -122,6 +122,11 @@ Development / demo project
 In your Git fork, run ``pip install -r requirements.txt`` to install the
 requirements.
 
+Install pre-commit hooks to verify your commits::
+
+    pip install pre-commit
+    pre-commit install
+
 The folder **test-project/** contains a pre-configured django project and
 an SQlite database. Login for django admin is *admin:admin*::
 
