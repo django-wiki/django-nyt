@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.0b5
+-----
+
+ * Clear the notification type cache every time a new notification type is created or deleleted (Benjamin Bach) #34 #36
+
 1.0b4
 -----
 
