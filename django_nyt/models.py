@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import six
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
 from django.utils.encoding import python_2_unicode_compatible
-
+from django.utils.translation import ugettext_lazy as _
 from django_nyt import settings
-from django.core.exceptions import ValidationError
-
 
 _notification_type_cache = {}
 
@@ -22,19 +21,28 @@ class NotificationType(models.Model):
     Notification types are added on-the-fly by the
     applications adding new notifications
     """
+
     key = models.CharField(
         max_length=128,
         primary_key=True,
         verbose_name=_('unique key'),
         unique=True
     )
+
+    # TODO: This isn't translatable
     label = models.CharField(
         max_length=128,
-        verbose_name=_('optional label'),  # TODO: This isn't translatable, why do we have it!?
+        verbose_name=_('optional label'),
         blank=True,
         null=True
     )
-    content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.SET_NULL)
+
+    content_type = models.ForeignKey(
+        ContentType,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
 
     def __str__(self):
         return self.key
@@ -56,6 +64,12 @@ class NotificationType(models.Model):
         return nt
 
 
+@receiver([post_save, post_delete], sender=NotificationType)
+def clear_notification_type_cache(*args, **kwargs):
+    global _notification_type_cache
+    _notification_type_cache = {}
+
+
 @python_2_unicode_compatible
 class Settings(models.Model):
     """
@@ -68,11 +82,13 @@ class Settings(models.Model):
         verbose_name=_("user"),
         related_name='nyt_settings',
     )
+
     interval = models.SmallIntegerField(
         choices=settings.INTERVALS,
         verbose_name=_('interval'),
         default=settings.INTERVALS_DEFAULT,
     )
+
     is_default = models.BooleanField(
         default=False,
         verbose_name=_("Default for new subscriptions"),
@@ -133,16 +149,19 @@ class Settings(models.Model):
 @python_2_unicode_compatible
 class Subscription(models.Model):
 
+    # If settings are deleted, remove all subscriptions (CASCADE)
     settings = models.ForeignKey(
         Settings,
         verbose_name=_("settings"),
-        on_delete=models.CASCADE,  # If settings are deleted, remove all subscriptions
+        on_delete=models.CASCADE,
     )
+
     notification_type = models.ForeignKey(
         NotificationType,
         verbose_name=_("notification type"),
         on_delete=models.CASCADE
     )
+
     object_id = models.CharField(
         max_length=64,
         null=True,
@@ -150,10 +169,12 @@ class Subscription(models.Model):
         help_text=_('Leave this blank to subscribe to any kind of object'),
         verbose_name=_("object ID"),
     )
+
     send_emails = models.BooleanField(
         default=True,
         verbose_name=_("send emails"),
     )
+
     latest = models.ForeignKey(
         'Notification',
         null=True,
@@ -177,7 +198,7 @@ class Subscription(models.Model):
 @python_2_unicode_compatible
 class Notification(models.Model):
 
-    # Either set the subscription
+    #: Either set the subscription
     subscription = models.ForeignKey(
         Subscription,
         null=True,
@@ -185,26 +206,36 @@ class Notification(models.Model):
         on_delete=models.SET_NULL,
         verbose_name=_("subscription"),
     )
-    # Or the user to receive the notification
+
+    #: Or the user to receive the notification
+    # If a user is deleted, remove all notifications (CASCADE)
     user = models.ForeignKey(
         settings.USER_MODEL,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,  # If a user is deleted, remove all notifications
+        on_delete=models.CASCADE,
         verbose_name=_("user"),
         related_name='nyt_notifications',
     )
+
     message = models.TextField()
+
+    # TODO: Why 200?
     url = models.CharField(
         verbose_name=_('link for notification'),
         blank=True,
         null=True,
-        max_length=200,  # TODO: Why 200?
+        max_length=200,
     )
+
     is_viewed = models.BooleanField(default=False)
+
     is_emailed = models.BooleanField(default=False)
+
     created = models.DateTimeField(auto_now_add=True)
+
     modified = models.DateTimeField(auto_now=True)
+
     occurrences = models.PositiveIntegerField(
         default=1,
         verbose_name=_('occurrences'),
@@ -222,7 +253,13 @@ class Notification(models.Model):
 
     @classmethod
     def create_notifications(cls, key, **kwargs):
-        """Creates notifications directly in database -- do not call directly, use django_nyt.notify(...)"""
+        """
+        Creates notifications directly in database -- do not call directly,
+        use django_nyt.notify(...)
+
+        This is the old interface.
+        """
+
         if not key or not isinstance(key, six.string_types):
             raise KeyError('No notification key (string) specified.')
 
