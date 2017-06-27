@@ -1,24 +1,21 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
+import logging
 import os
+import smtplib
 import sys
 import time
-import smtplib
-import logging
 from datetime import datetime
-from optparse import make_option
 
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext as _, activate, deactivate
-from django.conf import settings
-
-from django_nyt import models
+from django.utils.translation import ugettext as _
+from django.utils.translation import activate, deactivate
 from django_nyt import settings as nyt_settings
-
+from django_nyt import models
 
 # Daemon / mail loop sleep between each database poll (seconds)
 SLEEP_TIME = 120
@@ -28,35 +25,40 @@ class Command(BaseCommand):
     can_import_settings = True
     # @ReservedAssignment
     help = 'Sends notification emails to subscribed users taking into account the subscription interval'
-    option_list = getattr(BaseCommand, 'option_list', ()) + (
-        make_option('--daemon', '-d',
-                    action='store_true',
-                    dest='daemon',
-                    help='Go to daemon mode and exit'),
-        make_option('--cron', '-c',
-                    action='store_true',
-                    dest='cron',
-                    help='Do not loop, just send out emails once and exit'),
-        make_option('--pid-file', '',
-                    action='store',
-                    dest='pid',
-                    help='Where to write PID before exiting',
-                    default='/tmp/nyt_daemon.pid'),
-        make_option('--log-file', '',
-                    action='store',
-                    dest='log',
-                    help='Where daemon should write its log',
-                    default="/tmp/nyt_daemon.log"),
-        make_option('--no-sys-exit', '',
-                    action='store_true',
-                    dest='no_sys_exit',
-                    help='Skip sys-exit after forking daemon (for testing purposes)'),
-        make_option('--daemon-sleep-interval', '',
-                    action='store',
-                    dest='sleep_time',
-                    help='Minimum sleep between each polling of the database.',
-                    default=SLEEP_TIME),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--daemon', '-d',
+                            action='store_true',
+                            dest='daemon',
+                            help='Go to daemon mode and exit')
+
+        parser.add_argument('--cron', '-c',
+                            action='store_true',
+                            dest='cron',
+                            help='Do not loop, just send out emails once and exit')
+
+        parser.add_argument('--pid-file',
+                            action='store',
+                            dest='pid',
+                            help='Where to write PID before exiting',
+                            default='/tmp/nyt_daemon.pid')
+
+        parser.add_argument('--log-file',
+                            action='store',
+                            dest='log',
+                            help='Where daemon should write its log',
+                            default="/tmp/nyt_daemon.log")
+
+        parser.add_argument('--no-sys-exit',
+                            action='store_true',
+                            dest='no_sys_exit',
+                            help='Skip sys-exit after forking daemon (for testing purposes)')
+
+        parser.add_argument('--daemon-sleep-interval',
+                            action='store',
+                            dest='sleep_time',
+                            help='Minimum sleep between each polling of the database.',
+                            default=SLEEP_TIME)
 
     def _send_user_notifications(self, context, connection):
         subject = _(nyt_settings.EMAIL_SUBJECT)
