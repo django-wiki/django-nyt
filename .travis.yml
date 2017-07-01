@@ -5,6 +5,7 @@ addons:
       - deadsnakes
     packages:
       - python3.5
+      - python3.6
 # See tox.ini for env list
 env:
   - TOXENV=py27-django17
