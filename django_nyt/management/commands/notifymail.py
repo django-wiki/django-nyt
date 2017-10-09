@@ -1,24 +1,21 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
+import logging
 import os
+import smtplib
 import sys
 import time
-import smtplib
-import logging
 from datetime import datetime
-from optparse import make_option
 
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext as _, activate, deactivate
-from django.conf import settings
-
-from django_nyt import models
+from django.utils.translation import ugettext as _
+from django.utils.translation import activate, deactivate
 from django_nyt import settings as nyt_settings
-
+from django_nyt import models
 
 # Daemon / mail loop sleep between each database poll (seconds)
 SLEEP_TIME = 120
@@ -27,36 +24,51 @@ SLEEP_TIME = 120
 class Command(BaseCommand):
     can_import_settings = True
     # @ReservedAssignment
-    help = 'Sends notification emails to subscribed users taking into account the subscription interval'
-    option_list = getattr(BaseCommand, 'option_list', ()) + (
-        make_option('--daemon', '-d',
-                    action='store_true',
-                    dest='daemon',
-                    help='Go to daemon mode and exit'),
-        make_option('--cron', '-c',
-                    action='store_true',
-                    dest='cron',
-                    help='Do not loop, just send out emails once and exit'),
-        make_option('--pid-file', '',
-                    action='store',
-                    dest='pid',
-                    help='Where to write PID before exiting',
-                    default='/tmp/nyt_daemon.pid'),
-        make_option('--log-file', '',
-                    action='store',
-                    dest='log',
-                    help='Where daemon should write its log',
-                    default="/tmp/nyt_daemon.log"),
-        make_option('--no-sys-exit', '',
-                    action='store_true',
-                    dest='no_sys_exit',
-                    help='Skip sys-exit after forking daemon (for testing purposes)'),
-        make_option('--daemon-sleep-interval', '',
-                    action='store',
-                    dest='sleep_time',
-                    help='Minimum sleep between each polling of the database.',
-                    default=SLEEP_TIME),
+    help = (
+        'Sends notification emails to subscribed users taking into account '
+        'the subscription interval'
     )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--daemon', '-d',
+            action='store_true',
+            dest='daemon',
+            help='Go to daemon mode and exit'
+        )
+        parser.add_argument(
+            '--cron', '-c',
+            action='store_true',
+            dest='cron',
+            help='Do not loop, just send out emails once and exit'
+        )
+        parser.add_argument(
+            '--pid-file',
+            action='store',
+            dest='pid',
+            help='Where to write PID before exiting',
+            default='/tmp/nyt_daemon.pid'
+        )
+        parser.add_argument(
+            '--log-file',
+            action='store',
+            dest='log',
+            help='Where daemon should write its log',
+            default='/tmp/nyt_daemon.log'
+        )
+        parser.add_argument(
+            '--no-sys-exit',
+            action='store_true',
+            dest='no_sys_exit',
+            help='Skip sys-exit after forking daemon (for testing purposes)'
+        )
+        parser.add_argument(
+            '--daemon-sleep-interval',
+            action='store',
+            dest='sleep_time',
+            help='Minimum sleep between each polling of the database.',
+            default=SLEEP_TIME
+        )
 
     def _send_user_notifications(self, context, connection):
         subject = _(nyt_settings.EMAIL_SUBJECT)
@@ -72,7 +84,25 @@ class Command(BaseCommand):
         self.logger.info("Sending to: %s" % context['user'].email)
         email.send(fail_silently=False)
 
-    def handle(self, *args, **options):
+    def _daemonize(self):
+        self.logger.info("Daemon mode enabled, forking")
+        try:
+            fpid = os.fork()
+            if fpid > 0:
+                # Running as daemon now. PID is fpid
+                self.logger.info("PID: %s" % str(fpid))
+                pid_file = open(self.options['pid'], "w")
+                pid_file.write(str(fpid))
+                pid_file.close()
+                if not self.options['no_sys_exit']:
+                    sys.exit(0)
+        except OSError as e:
+            sys.stderr.write(
+                "fork failed: %d (%s)\n" %
+                (e.errno, e.strerror))
+            sys.exit(1)
+
+    def handle(self, *args, **options):  # noqa: max-complexity=12
         # activate the language
         activate(settings.LANGUAGE_CODE)
 
@@ -80,10 +110,14 @@ class Command(BaseCommand):
         options.setdefault('cron', False)
         options.setdefault('no_sys_exit', False)
 
+        self.options = options
+
         daemon = options['daemon']
         cron = options['cron']
 
-        assert not (daemon and cron), "You cannot both choose cron and daemon options"
+        assert not (daemon and cron), (
+            "You cannot both choose cron and daemon options"
+        )
 
         self.logger = logging.getLogger('django_nyt')
 
@@ -103,22 +137,7 @@ class Command(BaseCommand):
 
         # Run as daemon, ie. fork the process
         if daemon:
-            self.logger.info("Daemon mode enabled, forking")
-            try:
-                fpid = os.fork()
-                if fpid > 0:
-                    # Running as daemon now. PID is fpid
-                    self.logger.info("PID: %s" % str(fpid))
-                    pid_file = open(options['pid'], "w")
-                    pid_file.write(str(fpid))
-                    pid_file.close()
-                    if not options['no_sys_exit']:
-                        sys.exit(0)
-            except OSError as e:
-                sys.stderr.write(
-                    "fork failed: %d (%s)\n" %
-                    (e.errno, e.strerror))
-                sys.exit(1)
+            self._daemonize()
 
         # create a connection to smtp server for reuse
         try:
@@ -129,13 +148,14 @@ class Command(BaseCommand):
 
         if cron:
             self.send_mails(connection)
-        else:
-            if not daemon:
-                print("Entering send-loop, CTRL+C to exit")
-            try:
-                self.send_loop(connection, int(options['sleep_time']))
-            except KeyboardInterrupt:
-                print("\nQuitting...")
+            return
+
+        if not daemon:
+            print("Entering send-loop, CTRL+C to exit")
+        try:
+            self.send_loop(connection, int(options['sleep_time']))
+        except KeyboardInterrupt:
+            print("\nQuitting...")
 
         # deactivate the language
         deactivate()
@@ -161,7 +181,11 @@ class Command(BaseCommand):
             else:
                 user_settings = None
 
-            self.send_mails(connection, last_sent=last_sent, user_settings=user_settings)
+            self.send_mails(
+                connection,
+                last_sent=last_sent,
+                user_settings=user_settings
+            )
 
             connection.close()
             last_sent = datetime.now()
@@ -174,9 +198,52 @@ class Command(BaseCommand):
                 )
             )
 
+    def _send_batch(self, context, connection, setting):
+        """
+        Loops through emails in a list of notifications and tries to send
+        to each recepient
+
+        """
+        # STMP connection send loop
+        notifications = context['notifications']
+
+        if len(context['notifications']) == 0:
+            return
+
+        while True:
+            try:
+                self._send_user_notifications(context, connection)
+                for n in notifications:
+                    n.is_emailed = True
+                    n.save()
+                break
+            except smtplib.SMTPSenderRefused:
+                self.logger.error(
+                    (
+                        "E-mail refused by SMTP server ({}), "
+                        "skipping!"
+                    ).format(setting.user.email))
+                continue
+            except smtplib.SMTPException as e:
+                self.logger.error(
+                    (
+                        "You have an error with your SMTP server "
+                        "connection, error is: {}"
+                    ).format(e))
+                self.logger.error("Sleeping for 30s then retrying...")
+                time.sleep(30)
+            except Exception as e:
+                self.logger.error(
+                    (
+                        "Unhandled exception while sending, giving "
+                        "up: {}"
+                    ).format(e))
+                break
+
     def send_mails(self, connection, last_sent=None, user_settings=None):
         """
-        Does the lookups and sends out email digests to anyone who has them due.
+        Does the lookups and sends out email digests to anyone who has them
+        due.
         """
 
         self.logger.debug("Entering send_mails()")
@@ -198,39 +265,19 @@ class Command(BaseCommand):
 
         for setting in user_settings:
             context['user'] = setting.user
-            context['username'] = getattr(setting.user, setting.user.USERNAME_FIELD)
+            context['username'] = getattr(
+                setting.user, setting.user.USERNAME_FIELD)
+            # Which notifications are remaining for the user's settings
             context['notifications'] = []
             # get the index of the tuple corresponding to the interval and
             # get the string name
-            context[
-                'digest'] = nyt_settings.INTERVALS[
-                [y[0] for y in nyt_settings.INTERVALS].index(setting.
-                                                             interval)][
-                1]
+            idx = [y[0] for y in nyt_settings.INTERVALS].index(
+                setting.interval)
+            context['digest'] = nyt_settings.INTERVALS[idx][1]
             for subscription in setting.subscription_set.filter(
                 send_emails=True,
                 latest__is_emailed=False
             ):
                 context['notifications'].append(subscription.latest)
-            if len(context['notifications']) > 0:
-                # STMP connection send loop
-                while True:
-                    try:
-                        self._send_user_notifications(context, connection)
-                        for n in context['notifications']:
-                            n.is_emailed = True
-                            n.save()
-                        break
-                    except smtplib.SMTPSenderRefused:
-                        self.logger.error(
-                            "E-mail refused by SMTP server ({}), skipping!".format(setting.user.email))
-                        continue
-                    except smtplib.SMTPException as e:
-                        self.logger.error(
-                            "You have an error with your SMTP server connection, error is: {}".format(e))
-                        self.logger.error("Sleeping for 30s then retrying...")
-                        time.sleep(30)
-                    except Exception as e:
-                        self.logger.error(
-                            "Unhandled exception while sending, giving up: {}".format(e))
-                        break
+
+            self._send_batch(context, connection, setting)

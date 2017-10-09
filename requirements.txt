@@ -1,2 +1,2 @@
-django>=1.7
+django>=1.8
 six
