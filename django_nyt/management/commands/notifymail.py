@@ -29,7 +29,7 @@ class Command(BaseCommand):
         'the subscription interval'
     )
 
-    def parse_arguments(self, parser):
+    def add_arguments(self, parser):
         parser.add_argument(
             '--daemon', '-d',
             action='store_true',
@@ -43,27 +43,27 @@ class Command(BaseCommand):
             help='Do not loop, just send out emails once and exit'
         )
         parser.add_argument(
-            '--pid-file', '',
+            '--pid-file',
             action='store',
             dest='pid',
             help='Where to write PID before exiting',
             default='/tmp/nyt_daemon.pid'
         )
         parser.add_argument(
-            '--log-file', '',
+            '--log-file',
             action='store',
             dest='log',
             help='Where daemon should write its log',
-            default="/tmp/nyt_daemon.log"
+            default='/tmp/nyt_daemon.log'
         )
         parser.add_argument(
-            '--no-sys-exit', '',
+            '--no-sys-exit',
             action='store_true',
             dest='no_sys_exit',
             help='Skip sys-exit after forking daemon (for testing purposes)'
         )
         parser.add_argument(
-            '--daemon-sleep-interval', '',
+            '--daemon-sleep-interval',
             action='store',
             dest='sleep_time',
             help='Minimum sleep between each polling of the database.',
