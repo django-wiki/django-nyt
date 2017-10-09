@@ -1,14 +1,11 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from django_nyt import utils, models
 
-try:
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-except ImportError:
-    from django.contrib.auth.models import User
+User = get_user_model()
 
 
 class NotifyTestBase(TestCase):
