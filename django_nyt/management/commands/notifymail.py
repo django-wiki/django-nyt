@@ -24,41 +24,51 @@ SLEEP_TIME = 120
 class Command(BaseCommand):
     can_import_settings = True
     # @ReservedAssignment
-    help = 'Sends notification emails to subscribed users taking into account the subscription interval'
+    help = (
+        'Sends notification emails to subscribed users taking into account '
+        'the subscription interval'
+    )
 
-    def add_arguments(self, parser):
-        parser.add_argument('--daemon', '-d',
-                            action='store_true',
-                            dest='daemon',
-                            help='Go to daemon mode and exit')
-
-        parser.add_argument('--cron', '-c',
-                            action='store_true',
-                            dest='cron',
-                            help='Do not loop, just send out emails once and exit')
-
-        parser.add_argument('--pid-file',
-                            action='store',
-                            dest='pid',
-                            help='Where to write PID before exiting',
-                            default='/tmp/nyt_daemon.pid')
-
-        parser.add_argument('--log-file',
-                            action='store',
-                            dest='log',
-                            help='Where daemon should write its log',
-                            default="/tmp/nyt_daemon.log")
-
-        parser.add_argument('--no-sys-exit',
-                            action='store_true',
-                            dest='no_sys_exit',
-                            help='Skip sys-exit after forking daemon (for testing purposes)')
-
-        parser.add_argument('--daemon-sleep-interval',
-                            action='store',
-                            dest='sleep_time',
-                            help='Minimum sleep between each polling of the database.',
-                            default=SLEEP_TIME)
+    def parse_arguments(self, parser):
+        parser.add_argument(
+            '--daemon', '-d',
+            action='store_true',
+            dest='daemon',
+            help='Go to daemon mode and exit'
+        )
+        parser.add_argument(
+            '--cron', '-c',
+            action='store_true',
+            dest='cron',
+            help='Do not loop, just send out emails once and exit'
+        )
+        parser.add_argument(
+            '--pid-file', '',
+            action='store',
+            dest='pid',
+            help='Where to write PID before exiting',
+            default='/tmp/nyt_daemon.pid'
+        )
+        parser.add_argument(
+            '--log-file', '',
+            action='store',
+            dest='log',
+            help='Where daemon should write its log',
+            default="/tmp/nyt_daemon.log"
+        )
+        parser.add_argument(
+            '--no-sys-exit', '',
+            action='store_true',
+            dest='no_sys_exit',
+            help='Skip sys-exit after forking daemon (for testing purposes)'
+        )
+        parser.add_argument(
+            '--daemon-sleep-interval', '',
+            action='store',
+            dest='sleep_time',
+            help='Minimum sleep between each polling of the database.',
+            default=SLEEP_TIME
+        )
 
     def _send_user_notifications(self, context, connection):
         subject = _(nyt_settings.EMAIL_SUBJECT)
@@ -85,7 +95,9 @@ class Command(BaseCommand):
         daemon = options['daemon']
         cron = options['cron']
 
-        assert not (daemon and cron), "You cannot both choose cron and daemon options"
+        assert not (daemon and cron), (
+            "You cannot both choose cron and daemon options"
+        )
 
         self.logger = logging.getLogger('django_nyt')
 
@@ -163,7 +175,11 @@ class Command(BaseCommand):
             else:
                 user_settings = None
 
-            self.send_mails(connection, last_sent=last_sent, user_settings=user_settings)
+            self.send_mails(
+                connection,
+                last_sent=last_sent,
+                user_settings=user_settings
+            )
 
             connection.close()
             last_sent = datetime.now()
@@ -178,7 +194,8 @@ class Command(BaseCommand):
 
     def send_mails(self, connection, last_sent=None, user_settings=None):
         """
-        Does the lookups and sends out email digests to anyone who has them due.
+        Does the lookups and sends out email digests to anyone who has them
+        due.
         """
 
         self.logger.debug("Entering send_mails()")
@@ -200,7 +217,8 @@ class Command(BaseCommand):
 
         for setting in user_settings:
             context['user'] = setting.user
-            context['username'] = getattr(setting.user, setting.user.USERNAME_FIELD)
+            context['username'] = getattr(
+                setting.user, setting.user.USERNAME_FIELD)
             context['notifications'] = []
             # get the index of the tuple corresponding to the interval and
             # get the string name
@@ -225,14 +243,23 @@ class Command(BaseCommand):
                         break
                     except smtplib.SMTPSenderRefused:
                         self.logger.error(
-                            "E-mail refused by SMTP server ({}), skipping!".format(setting.user.email))
+                            (
+                                "E-mail refused by SMTP server ({}), "
+                                "skipping!"
+                            ).format(setting.user.email))
                         continue
                     except smtplib.SMTPException as e:
                         self.logger.error(
-                            "You have an error with your SMTP server connection, error is: {}".format(e))
+                            (
+                                "You have an error with your SMTP server "
+                                "connection, error is: {}"
+                            ).format(e))
                         self.logger.error("Sleeping for 30s then retrying...")
                         time.sleep(30)
                     except Exception as e:
                         self.logger.error(
-                            "Unhandled exception while sending, giving up: {}".format(e))
+                            (
+                                "Unhandled exception while sending, giving "
+                                "up: {}"
+                            ).format(e))
                         break
