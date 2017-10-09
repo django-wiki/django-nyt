@@ -12,6 +12,7 @@ from .. import models
 from .. import utils
 from tempfile import NamedTemporaryFile
 
+
 class CommandTest(NotifyTestBase):
 
     def test_notifymail(self):
