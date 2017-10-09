@@ -84,13 +84,33 @@ class Command(BaseCommand):
         self.logger.info("Sending to: %s" % context['user'].email)
         email.send(fail_silently=False)
 
-    def handle(self, *args, **options):
+    def _daemonize(self):
+        self.logger.info("Daemon mode enabled, forking")
+        try:
+            fpid = os.fork()
+            if fpid > 0:
+                # Running as daemon now. PID is fpid
+                self.logger.info("PID: %s" % str(fpid))
+                pid_file = open(self.options['pid'], "w")
+                pid_file.write(str(fpid))
+                pid_file.close()
+                if not self.options['no_sys_exit']:
+                    sys.exit(0)
+        except OSError as e:
+            sys.stderr.write(
+                "fork failed: %d (%s)\n" %
+                (e.errno, e.strerror))
+            sys.exit(1)
+
+    def handle(self, *args, **options):  # noqa: max-complexity=12
         # activate the language
         activate(settings.LANGUAGE_CODE)
 
         options.setdefault('daemon', False)
         options.setdefault('cron', False)
         options.setdefault('no_sys_exit', False)
+
+        self.options = options
 
         daemon = options['daemon']
         cron = options['cron']
@@ -117,22 +137,7 @@ class Command(BaseCommand):
 
         # Run as daemon, ie. fork the process
         if daemon:
-            self.logger.info("Daemon mode enabled, forking")
-            try:
-                fpid = os.fork()
-                if fpid > 0:
-                    # Running as daemon now. PID is fpid
-                    self.logger.info("PID: %s" % str(fpid))
-                    pid_file = open(options['pid'], "w")
-                    pid_file.write(str(fpid))
-                    pid_file.close()
-                    if not options['no_sys_exit']:
-                        sys.exit(0)
-            except OSError as e:
-                sys.stderr.write(
-                    "fork failed: %d (%s)\n" %
-                    (e.errno, e.strerror))
-                sys.exit(1)
+            self._daemonize()
 
         # create a connection to smtp server for reuse
         try:
@@ -143,13 +148,14 @@ class Command(BaseCommand):
 
         if cron:
             self.send_mails(connection)
-        else:
-            if not daemon:
-                print("Entering send-loop, CTRL+C to exit")
-            try:
-                self.send_loop(connection, int(options['sleep_time']))
-            except KeyboardInterrupt:
-                print("\nQuitting...")
+            return
+
+        if not daemon:
+            print("Entering send-loop, CTRL+C to exit")
+        try:
+            self.send_loop(connection, int(options['sleep_time']))
+        except KeyboardInterrupt:
+            print("\nQuitting...")
 
         # deactivate the language
         deactivate()
@@ -192,6 +198,48 @@ class Command(BaseCommand):
                 )
             )
 
+    def _send_batch(self, context, connection, setting):
+        """
+        Loops through emails in a list of notifications and tries to send
+        to each recepient
+
+        """
+        # STMP connection send loop
+        notifications = context['notifications']
+
+        if len(context['notifications']) == 0:
+            return
+
+        while True:
+            try:
+                self._send_user_notifications(context, connection)
+                for n in notifications:
+                    n.is_emailed = True
+                    n.save()
+                break
+            except smtplib.SMTPSenderRefused:
+                self.logger.error(
+                    (
+                        "E-mail refused by SMTP server ({}), "
+                        "skipping!"
+                    ).format(setting.user.email))
+                continue
+            except smtplib.SMTPException as e:
+                self.logger.error(
+                    (
+                        "You have an error with your SMTP server "
+                        "connection, error is: {}"
+                    ).format(e))
+                self.logger.error("Sleeping for 30s then retrying...")
+                time.sleep(30)
+            except Exception as e:
+                self.logger.error(
+                    (
+                        "Unhandled exception while sending, giving "
+                        "up: {}"
+                    ).format(e))
+                break
+
     def send_mails(self, connection, last_sent=None, user_settings=None):
         """
         Does the lookups and sends out email digests to anyone who has them
@@ -219,47 +267,17 @@ class Command(BaseCommand):
             context['user'] = setting.user
             context['username'] = getattr(
                 setting.user, setting.user.USERNAME_FIELD)
+            # Which notifications are remaining for the user's settings
             context['notifications'] = []
             # get the index of the tuple corresponding to the interval and
             # get the string name
-            context[
-                'digest'] = nyt_settings.INTERVALS[
-                [y[0] for y in nyt_settings.INTERVALS].index(setting.
-                                                             interval)][
-                1]
+            idx = [y[0] for y in nyt_settings.INTERVALS].index(
+                setting.interval)
+            context['digest'] = nyt_settings.INTERVALS[idx][1]
             for subscription in setting.subscription_set.filter(
                 send_emails=True,
                 latest__is_emailed=False
             ):
                 context['notifications'].append(subscription.latest)
-            if len(context['notifications']) > 0:
-                # STMP connection send loop
-                while True:
-                    try:
-                        self._send_user_notifications(context, connection)
-                        for n in context['notifications']:
-                            n.is_emailed = True
-                            n.save()
-                        break
-                    except smtplib.SMTPSenderRefused:
-                        self.logger.error(
-                            (
-                                "E-mail refused by SMTP server ({}), "
-                                "skipping!"
-                            ).format(setting.user.email))
-                        continue
-                    except smtplib.SMTPException as e:
-                        self.logger.error(
-                            (
-                                "You have an error with your SMTP server "
-                                "connection, error is: {}"
-                            ).format(e))
-                        self.logger.error("Sleeping for 30s then retrying...")
-                        time.sleep(30)
-                    except Exception as e:
-                        self.logger.error(
-                            (
-                                "Unhandled exception while sending, giving "
-                                "up: {}"
-                            ).format(e))
-                        break
+
+            self._send_batch(context, connection, setting)
