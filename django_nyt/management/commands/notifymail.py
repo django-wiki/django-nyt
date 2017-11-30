@@ -140,11 +140,7 @@ class Command(BaseCommand):
             self._daemonize()
 
         # create a connection to smtp server for reuse
-        try:
-            connection = mail.get_connection()
-        except:
-            self.logger.error("Could get a mail connection")
-            raise
+        connection = mail.get_connection()
 
         if cron:
             self.send_mails(connection)
@@ -238,7 +234,7 @@ class Command(BaseCommand):
                         "Unhandled exception while sending, giving "
                         "up: {}"
                     ).format(e))
-                break
+                raise
 
     def send_mails(self, connection, last_sent=None, user_settings=None):
         """
@@ -248,11 +244,7 @@ class Command(BaseCommand):
 
         self.logger.debug("Entering send_mails()")
 
-        try:
-            connection.open()
-        except:
-            self.logger.error("Could not use e-mail connection")
-            raise
+        connection.open()
 
         if not user_settings:
             user_settings = models.Settings.objects.all().order_by('user')
