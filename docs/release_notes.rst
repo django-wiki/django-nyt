@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+1.0b6
+-----
+
+ * Error in channels consumer when requested with AnonymousUser (Benjamin Bach) #50 #51
+
 1.0b5
 -----
 
