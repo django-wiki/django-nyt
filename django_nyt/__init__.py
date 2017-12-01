@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 _disable_notifications = False
 
-VERSION = "1.0b5"
+VERSION = "1.0b6"
 __version__ = VERSION
 
 
