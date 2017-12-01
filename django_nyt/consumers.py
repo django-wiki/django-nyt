@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import logging
 
 from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 
-from . import settings
-from . import models
+from . import models, settings
 
 logger = logging.getLogger(__name__)
+
+
+def get_subscriptions(message):
+    """
+    :return: Subscription query for a given message's user
+    """
+    if message.user.is_authenticated():
+        return models.Subscription.objects.filter(settings__user=message.user)
+    else:
+        return models.Subscription.objects.none()
 
 
 @channel_session_user_from_http
@@ -21,7 +29,7 @@ def ws_connect(message):
     logger.debug("Adding new connection for user {}".format(message.user))
     message.reply_channel.send({"accept": True})
 
-    for subscription in models.Subscription.objects.filter(settings__user=message.user):
+    for subscription in get_subscriptions(message):
         Group(
             settings.NOTIFICATION_CHANNEL.format(
                 notification_key=subscription.notification_type.key
@@ -35,7 +43,7 @@ def ws_disconnect(message):
     Connected to websocket.disconnect
     """
     logger.debug("Removing connection for user {} (disconnect)".format(message.user))
-    for subscription in models.Subscription.objects.filter(settings__user=message.user):
+    for subscription in get_subscriptions(message):
         Group(
             settings.NOTIFICATION_CHANNEL.format(
                 notification_key=subscription.notification_type.key
