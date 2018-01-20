@@ -35,7 +35,7 @@ def login_required_ajax(f):
     @wraps(f)
     def wrapper(request, *args, **kwargs):
         if request.is_ajax():
-            if not request.user or not request.user.is_authenticated():
+            if not request.user or not request.user.is_authenticated:
                 return json_view(lambda *a,
                                  **kw: {'error': 'not logged in'})(request,
                                                                    status=403)
