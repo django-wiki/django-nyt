@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
 import django_nyt
+from .compat import is_authenticated
 
 
 def disable_notify(f):
@@ -35,7 +36,7 @@ def login_required_ajax(f):
     @wraps(f)
     def wrapper(request, *args, **kwargs):
         if request.is_ajax():
-            if not request.user or not request.user.is_authenticated():
+            if not request.user or not is_authenticated(request.user):
                 return json_view(lambda *a,
                                  **kw: {'error': 'not logged in'})(request,
                                                                    status=403)

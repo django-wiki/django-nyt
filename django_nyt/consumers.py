@@ -7,6 +7,7 @@ from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 
 from . import models, settings
+from .compat import is_authenticated
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ def get_subscriptions(message):
     """
     :return: Subscription query for a given message's user
     """
-    if message.user.is_authenticated():
+    if is_authenticated(message.user):
         return models.Subscription.objects.filter(settings__user=message.user)
     else:
         return models.Subscription.objects.none()
