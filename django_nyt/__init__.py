@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 _disable_notifications = False
 
-VERSION = "1.0b6"
+VERSION = "1.0"
 __version__ = VERSION
 
 default_app_config = "django_nyt.apps.DjangoNytConfig"
