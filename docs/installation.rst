@@ -25,7 +25,7 @@ INSTALLED_APPS
 
    INSTALLED_APPS = (
        ...
-       'django_nyt'
+       'django_nyt.apps.DjangoNytConfig'
        ...
    )
 
