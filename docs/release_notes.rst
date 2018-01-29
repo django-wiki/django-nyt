@@ -25,7 +25,7 @@ Bug fixes
 
  * Celery will auto-load ``django_nyt.tasks`` when ``channels`` isn't installed :url-issue:`23`
  * Error in channels consumer when requested with AnonymousUser (Benjamin Bach) :url-issue:`50` :url-issue:`51`
- * Clear the notification type cache every time a new notification type is created or deleleted (Benjamin Bach) :url-issue:`34` :url-issue:`36`
+ * Clear the notification type cache every time a new notification type is created or deleted (Benjamin Bach) :url-issue:`34` :url-issue:`36`
  * Explicitly accept WebSocket connections (Kim Desrosiers) :url-issue:`35`
  * Fix critical django-channels err (Tomaž Žniderič) :url-issue:`29`
  * Correctly set default options for ``notifymail`` management command (Benjamin Bach) :url-issue:`32`
