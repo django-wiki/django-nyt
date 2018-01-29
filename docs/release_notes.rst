@@ -6,7 +6,7 @@ Release Notes
 
 Starting from django-nyt 1.0, support for the upcoming
 `channels <http://channels.readthedocs.io/>`_ has been added together with
-Django 1.9 support.
+Django 1.9, 1.10 and 1.11 support.
 
 You can switch off django-channels by setting
 ``settings.NYT_CHANNELS_DISABLE = True``.
@@ -16,7 +16,6 @@ New features
 ^^^^^^^^^^^^
 
  * Support for ``channels`` and web sockets. :url-issue:`21`
- * Django 1.9, 1.10, and 1.11 support :url-issue:`25`
  * Django 1.9, 1.10, and 1.11 support :url-issue:`25`
  * Default AppConfig ``"django_nyt.apps.DjangoNytConfig"`` :url-issue:`57`
 
