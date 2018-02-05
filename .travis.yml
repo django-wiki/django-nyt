@@ -1,6 +1,8 @@
 # Because Python 3.6 is available on GCE
 dist: trusty
 
+cache: pip
+
 language: python
 
 python:
