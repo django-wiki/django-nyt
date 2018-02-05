@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import django.views.static
 
-from django import VERSION as DJANGO_VERSION
 from django.conf.urls import include, url
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -32,7 +31,3 @@ from django_nyt.urls import get_pattern
 urlpatterns += [
     url(r'^nyt/', get_pattern()),
 ]
-
-if DJANGO_VERSION < (1, 8):
-    from django.conf.urls import patterns
-    urlpatterns = patterns('', *urlpatterns)

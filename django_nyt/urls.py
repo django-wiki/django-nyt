@@ -20,11 +20,6 @@ urlpatterns = [
 ]
 
 
-if DJANGO_VERSION < (1, 8):
-    from django.conf.urls import patterns  # noqa @UnresolvedImport
-    urlpatterns = patterns('', *urlpatterns)
-
-
 def get_pattern(app_name=app_name, namespace="nyt"):
     """Every url resolution takes place as "nyt:view_name".
        https://docs.djangoproject.com/en/dev/topics/http/urls/#topics-http-reversing-url-namespaces
