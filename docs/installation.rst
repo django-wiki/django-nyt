@@ -37,16 +37,6 @@ You need to add the following patterns to get JSON views. You need to add it to 
 
 .. code-block:: python
 
-   from django_nyt.urls import get_pattern as get_nyt_pattern
-   urlpatterns += patterns('',
-       url(r'^notifications/', get_nyt_pattern()),
-   )
-
-Or, for Django >= 1.8:
-
-.. code-block:: python
-
-   from django_nyt.urls import get_pattern as get_nyt_pattern
    urlpatterns += [
-       url(r'^notifications/', get_nyt_pattern()),
+       url(r'^notifications/', include('django_nyt.urls')),
    ]
