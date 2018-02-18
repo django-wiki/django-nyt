@@ -4,14 +4,12 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import gettext_lazy as _
 from django_nyt import settings
 
 _notification_type_cache = {}
 
 
-@python_2_unicode_compatible
 class NotificationType(models.Model):
     """
     Notification types are added on-the-fly by the
@@ -66,7 +64,6 @@ def clear_notification_type_cache(*args, **kwargs):
     _notification_type_cache = {}
 
 
-@python_2_unicode_compatible
 class Settings(models.Model):
     """
     Reusable settings object for a subscription
@@ -142,7 +139,6 @@ class Settings(models.Model):
         )[0]
 
 
-@python_2_unicode_compatible
 class Subscription(models.Model):
 
     # If settings are deleted, remove all subscriptions (CASCADE)
@@ -191,7 +187,6 @@ class Subscription(models.Model):
         verbose_name_plural = _('subscriptions')
 
 
-@python_2_unicode_compatible
 class Notification(models.Model):
 
     #: Either set the subscription
