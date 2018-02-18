@@ -7,7 +7,7 @@ Release Notes
 New features
 ^^^^^^^^^^^^
 
- * ...
+ * Django 2.0 support :url-issue:`55`
 
 Bug fixes
 ^^^^^^^^^
@@ -17,7 +17,9 @@ Bug fixes
 Deprecations
 ^^^^^^^^^^^^
 
- * ...
+ * Django < 1.11 support is dropped :url-issue:`62`
+ * Python < 3.4 support is dropped :url-issue:`65` and :url-issue:`68`
+ * Deprecate ``django_nyt.urls.get_pattern``, use ``include('django_nyt.urls')`` instead :url-issue:`63`
 
 1.0
 ---
