@@ -11,6 +11,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^nyt/', include('django_nyt.urls')),
     url(r'', include('testapp.urls')),
 ]
 
@@ -21,10 +22,3 @@ if settings.DEBUG:
             'document_root': settings.MEDIA_ROOT,
         }),
     ]
-
-
-from django_nyt.urls import get_pattern
-
-urlpatterns += [
-    url(r'^nyt/', get_pattern()),
-]

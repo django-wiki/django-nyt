@@ -20,7 +20,9 @@ def get_pattern(app_name=app_name, namespace="nyt"):
     """Every url resolution takes place as "nyt:view_name".
        https://docs.djangoproject.com/en/dev/topics/http/urls/#topics-http-reversing-url-namespaces
     """
-    if DJANGO_VERSION < (1, 9):
-        return urlpatterns, app_name, namespace
-    else:
-        return include('django_nyt.urls',)
+    import warnings
+    warnings.warn(
+        'django_nyt.urls.get_pattern is deprecated and will be removed in next version,'
+        ' just use include(\'django_nyt.urls\')', DeprecationWarning
+    )
+    return include('django_nyt.urls')
