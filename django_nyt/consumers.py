@@ -15,7 +15,7 @@ def get_subscriptions(message):
     """
     :return: Subscription query for a given message's user
     """
-    if message.user.is_authenticated():
+    if message.user.is_authenticated:
         return models.Subscription.objects.filter(settings__user=message.user)
     else:
         return models.Subscription.objects.none()
