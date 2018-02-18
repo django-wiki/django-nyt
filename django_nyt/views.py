@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 from django.db.models import Q
 
 from django_nyt.decorators import json_view, login_required_ajax
 from django_nyt import models
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 
 @login_required_ajax

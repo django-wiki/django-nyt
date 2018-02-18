@@ -1,7 +1,5 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 from django.conf import settings as django_settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 DB_TABLE_PREFIX = 'nyt'
 

@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import django.views.static
 
 from django.conf.urls import include, url

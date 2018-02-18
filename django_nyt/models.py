@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_nyt import settings
 
 _notification_type_cache = {}
@@ -260,7 +256,7 @@ class Notification(models.Model):
         This is the old interface.
         """
 
-        if not key or not isinstance(key, six.string_types):
+        if not key or not isinstance(key, str):
             raise KeyError('No notification key (string) specified.')
 
         object_id = kwargs.pop('object_id', None)

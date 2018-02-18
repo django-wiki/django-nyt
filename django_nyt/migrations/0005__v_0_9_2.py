@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-# encoding: utf8
 from django.db import models, migrations
 import django.db.models.deletion
 from django.conf import settings

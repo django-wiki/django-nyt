@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import logging
 import os
 import smtplib
@@ -12,7 +10,7 @@ from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.translation import activate, deactivate
 from django_nyt import settings as nyt_settings
 from django_nyt import models
