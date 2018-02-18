@@ -47,7 +47,7 @@ settings.configure(
     ],
     USE_TZ=True,
     SOUTH_TESTS_MIGRATE=True,
-    MIDDLEWARE_CLASSES=[
+    MIDDLEWARE=[
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
