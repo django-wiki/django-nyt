@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 from os import path as os_path
 PROJECT_PATH = os_path.abspath(os_path.split(os_path.dirname(__file__))[0])
 

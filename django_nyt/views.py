@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 from django.db.models import Q
 
 from django_nyt.decorators import json_view, login_required_ajax

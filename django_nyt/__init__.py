@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 _disable_notifications = False
 
 VERSION = "1.0"
