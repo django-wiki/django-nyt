@@ -13,9 +13,6 @@ python:
 
 env:
   - LINT="yes"
-  - DJANGO="1.8"
-  - DJANGO="1.9"
-  - DJANGO="1.10"
   - DJANGO="1.11"
 
 matrix:
@@ -26,12 +23,6 @@ matrix:
     env: LINT="yes"
   - python: "3.6"
     env: LINT="yes"
-  - python: "3.6"
-    env: DJANGO="1.8"
-  - python: "3.6"
-    env: DJANGO="1.9"
-  - python: "3.6"
-    env: DJANGO="1.10"
 
 install:
   - pip install tox tox-travis coverage codecov
