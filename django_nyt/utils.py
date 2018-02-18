@@ -1,5 +1,5 @@
 from django.db.models import Model
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from . import _disable_notifications
 from . import models
