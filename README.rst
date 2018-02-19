@@ -1,15 +1,15 @@
 django-nyt
 ==========
 
-.. image:: https://travis-ci.org/benjaoming/django-nyt.png?branch=master
-   :target: https://travis-ci.org/benjaoming/django-nyt
+.. image:: https://travis-ci.org/django-wiki/django-nyt.png?branch=master
+   :target: https://travis-ci.org/django-wiki/django-nyt
 .. image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
    :target: http://django-nyt.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 .. image:: https://badge.fury.io/py/django-nyt.svg
    :target: https://pypi.python.org/pypi/django-nyt
-.. image:: http://codecov.io/github/benjaoming/django-nyt/coverage.svg?branch=master
-  :target: http://codecov.io/github/benjaoming/django-nyt?branch=master
+.. image:: http://codecov.io/github/django-wiki/django-nyt/coverage.svg?branch=master
+  :target: http://codecov.io/github/django-wiki/django-nyt?branch=master
 
 Concept
 -------
@@ -95,7 +95,7 @@ that marks the notification as read.
 
 Something like this:
 
-.. image:: https://raw.githubusercontent.com/benjaoming/django-nyt/master/docs/misc/screenshot_dropdown.png
+.. image:: https://raw.githubusercontent.com/django-wiki/django-nyt/master/docs/misc/screenshot_dropdown.png
    :alt: Javascript drop-down
 
 JavaScript drop-down: Some examples are provided in the docs, but there
