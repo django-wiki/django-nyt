@@ -12,7 +12,7 @@ New features
 Bug fixes
 ^^^^^^^^^
 
- * ...
+ * Restored missing translation files :url-issue:`73`
 
 Deprecations
 ^^^^^^^^^^^^
@@ -20,6 +20,7 @@ Deprecations
  * Django < 1.11 support is dropped :url-issue:`62`
  * Python < 3.4 support is dropped :url-issue:`65` and :url-issue:`68`
  * Deprecate ``django_nyt.urls.get_pattern``, use ``include('django_nyt.urls')`` instead :url-issue:`63`
+ * Removed ``django_nyt.VERSION``, use `django_nyt.__version__` instead :url-issue:`73`
 
 1.0
 ---
