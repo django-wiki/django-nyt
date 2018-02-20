@@ -1,10 +1,9 @@
-from django.db.models import Q
-
-from django_nyt.decorators import json_view, login_required_ajax
-from django_nyt import models
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext as _
+from django_nyt import models
+from django_nyt.decorators import json_view, login_required_ajax
 
 
 @login_required_ajax

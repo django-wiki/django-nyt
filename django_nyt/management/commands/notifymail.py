@@ -10,10 +10,8 @@ from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
-from django.utils.translation import activate, deactivate
-from django_nyt import settings as nyt_settings
-from django_nyt import models
+from django.utils.translation import activate, deactivate, gettext as _
+from django_nyt import models, settings as nyt_settings
 
 # Daemon / mail loop sleep between each database poll (seconds)
 SLEEP_TIME = 120

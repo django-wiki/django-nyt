@@ -1,11 +1,9 @@
 import json
-
 from functools import wraps
 
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-
 import django_nyt
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 
 def disable_notify(f):
