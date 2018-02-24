@@ -2,8 +2,7 @@ import logging
 
 from channels import Group
 
-from . import settings
-from . import models
+from . import models, settings
 
 logger = logging.getLogger(__name__)
 

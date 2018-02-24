@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
-
-from django_nyt import models
-from django_nyt import settings
+from django_nyt import models, settings
 
 
 class SettingsAdmin(admin.ModelAdmin):

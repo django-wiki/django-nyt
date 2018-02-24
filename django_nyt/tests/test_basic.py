@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-
-from django_nyt import utils, models
+from django_nyt import models, utils
 
 User = get_user_model()
 

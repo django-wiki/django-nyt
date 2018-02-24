@@ -2,7 +2,6 @@ from django.db import migrations
 from django_nyt.utils import subscribe
 from testapp.models import NOTIFICATION_TEST_KEY
 
-
 FIXTURES = (
     ('bob', 'bob@example.com'),
     ('alice', 'alice@example.com'),

@@ -1,13 +1,12 @@
 import os
 import signal
 import time
+from tempfile import NamedTemporaryFile
 
 from django.core.management import call_command
 
+from .. import models, utils
 from .test_basic import NotifyTestBase
-from .. import models
-from .. import utils
-from tempfile import NamedTemporaryFile
 
 
 class CommandTest(NotifyTestBase):

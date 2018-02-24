@@ -1,8 +1,7 @@
 import os
 
-from setuptools import find_packages, setup
-
 from django_nyt import __version__
+from setuptools import find_packages, setup
 
 
 def get_path(fname):

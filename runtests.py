@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import os
 import sys
+
 from django.conf import settings
+from django.core.management import execute_from_command_line
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -57,7 +59,6 @@ settings.configure(
 )
 
 
-from django.core.management import execute_from_command_line
 argv = [sys.argv[0], "test"]
 
 if len(sys.argv) == 1:

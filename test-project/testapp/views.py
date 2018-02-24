@@ -1,18 +1,14 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth import login
+from django.contrib.auth import get_user_model, login
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
-
+from django_nyt.decorators import json_view
 from django_nyt.forms import SettingsForm
 from django_nyt.models import Notification, Settings
-from django_nyt.decorators import json_view
 
-from . import forms
-from . import models
-
-from django.utils.decorators import method_decorator
+from . import forms, models
 
 
 class TestIndex(TemplateView):
