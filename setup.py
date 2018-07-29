@@ -1,14 +1,7 @@
-import os
+from setuptools import find_packages
+from setuptools import setup
 
 from django_nyt import __version__
-from setuptools import find_packages, setup
-
-
-def get_path(fname):
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), fname)
-
-def read(fname):
-    return open(get_path(fname)).read()
 
 
 packages = find_packages()
@@ -24,7 +17,7 @@ setup(
     keywords=["django", "notification" "alerts"],
     packages=find_packages(),
     zip_safe=False,
-    install_requires=read('requirements.txt').split("\n"),
+    install_requires=["django>=1.11,<2.1"],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
