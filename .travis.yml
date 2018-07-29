@@ -1,14 +1,6 @@
-# Because Python 3.6 is available on GCE
-dist: trusty
-
 cache: pip
 
 language: python
-
-python:
-  - "3.4"
-  - "3.5"
-  - "3.6"
 
 env:
   - LINT="yes"
@@ -16,12 +8,28 @@ env:
   - DJANGO="2.0"
 
 matrix:
+  include:
+  - python: 3.4
+    dist: trusty
+    sudo: false
+  - python: 3.5
+    dist: trusty
+    sudo: false
+  - python: 3.6
+    dist: trusty
+    sudo: false
+  - python: 3.7
+    dist: xenial
+    sudo: true
+  - python: pypy
+    dist: trusty
+    sudo: false
   exclude:
-  - python: "3.4"
-    env: LINT="yes"
   - python: "3.5"
     env: LINT="yes"
   - python: "3.6"
+    env: LINT="yes"
+  - python: "3.7"
     env: LINT="yes"
 
 install:
@@ -32,7 +40,7 @@ script:
 
 notifications:
     irc:
-        - "irc.freenode.org#django-wiki"
+  - "irc.freenode.org#django-wiki"
 
 after_success:
   - coverage combine
