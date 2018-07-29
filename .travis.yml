@@ -1,28 +1,49 @@
-# Because Python 3.6 is available on GCE
-dist: trusty
-
 cache: pip
 
 language: python
 
-python:
-  - "3.4"
-  - "3.5"
-  - "3.6"
-
-env:
-  - LINT="yes"
-  - DJANGO="1.11"
-  - DJANGO="2.0"
-
 matrix:
-  exclude:
-  - python: "3.4"
+  include:
+  - python: 3.4
+    dist: trusty
+    sudo: false
     env: LINT="yes"
-  - python: "3.5"
-    env: LINT="yes"
-  - python: "3.6"
-    env: LINT="yes"
+  - python: 3.4
+    dist: trusty
+    sudo: false
+    env: DJANGO="1.11"
+  - python: 3.4
+    dist: trusty
+    sudo: false
+    env: DJANGO="2.0"
+
+  - python: 3.5
+    dist: trusty
+    sudo: false
+    env: DJANGO="1.11"
+  - python: 3.5
+    dist: trusty
+    sudo: false
+    env: DJANGO="2.0"
+
+  - python: 3.6
+    dist: trusty
+    sudo: false
+    env: DJANGO="1.11"
+  - python: 3.6
+    dist: trusty
+    sudo: false
+    env: DJANGO="2.0"
+
+  - python: 3.7
+    dist: xenial
+    sudo: true
+    env: DJANGO="2.0"
+
+  - python: pypy
+    dist: trusty
+    sudo: false
+    env: DJANGO="2.0"
 
 install:
   - pip install tox tox-travis coverage codecov
@@ -32,7 +53,7 @@ script:
 
 notifications:
     irc:
-        - "irc.freenode.org#django-wiki"
+    - "irc.freenode.org#django-wiki"
 
 after_success:
   - coverage combine
