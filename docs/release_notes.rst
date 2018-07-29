@@ -1,6 +1,20 @@
 Release Notes
 =============
 
+1.1.1
+-----
+
+Added
+^^^^^
+
+ * Python 3.7 support  :url-issue:`81`
+
+Deprecations
+^^^^^^^^^^^^
+ * Removed ``django_nyt.notify``, use ``django_nyt.utils.notify``
+
+
+
 1.1
 ---
 
