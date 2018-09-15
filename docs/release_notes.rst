@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+1.1.2
+-----
+
+Added
+^^^^^
+
+ * Django 2.1.1 support
+
+
 1.1.1
 -----
 
