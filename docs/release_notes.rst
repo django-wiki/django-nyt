@@ -7,7 +7,7 @@ Release Notes
 Added
 ^^^^^
 
- * Django 2.1.1 support
+ * Django 2.1 support (no changes in code)
 
 
 1.1.1
