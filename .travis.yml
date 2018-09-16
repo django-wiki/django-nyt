@@ -25,6 +25,10 @@ matrix:
     dist: trusty
     sudo: false
     env: DJANGO="2.0"
+  - python: 3.5
+    dist: trusty
+    sudo: false
+    env: DJANGO="2.1"
 
   - python: 3.6
     dist: trusty
@@ -34,16 +38,24 @@ matrix:
     dist: trusty
     sudo: false
     env: DJANGO="2.0"
+  - python: 3.6
+    dist: trusty
+    sudo: false
+    env: DJANGO="2.1"
 
   - python: 3.7
     dist: xenial
     sudo: true
     env: DJANGO="2.0"
+  - python: 3.7
+    dist: xenial
+    sudo: true
+    env: DJANGO="2.1"
 
   - python: pypy
     dist: trusty
     sudo: false
-    env: DJANGO="2.0"
+    env: DJANGO="2.1"
 
 install:
   - pip install tox tox-travis coverage codecov
