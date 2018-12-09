@@ -1,57 +1,56 @@
 import logging
 
-from channels import Group
-from channels.auth import channel_session_user, channel_session_user_from_http
+from channels.consumer import SyncConsumer
+
 
 from . import models, settings
 
 logger = logging.getLogger(__name__)
 
 
-def get_subscriptions(message):
-    """
-    :return: Subscription query for a given message's user
-    """
-    if message.user.is_authenticated:
-        return models.Subscription.objects.filter(settings__user=message.user)
-    else:
-        return models.Subscription.objects.none()
+class NytConsumer(SyncConsumer):
 
+    def get_subscriptions(self):
+        """
+        :return: Subscription query for a given message's user
+        """
+        user = self.scope['user']
+        if user and user.is_authenticated:
+            return models.Subscription.objects.filter(settings__user=user)
+        else:
+            return models.Subscription.objects.none()
 
-@channel_session_user_from_http
-def ws_connect(message):
-    """
-    Connected to websocket.connect
-    """
-    logger.debug("Adding new connection for user {}".format(message.user))
-    message.reply_channel.send({"accept": True})
+    def websocket_connect(self, event):
+        """
+        Connected to websocket.connect
+        """
+        logger.debug("Adding new connection for user {}".format(self.scope['user']))
+        self.send({"type": "websocket.accept"})
 
-    for subscription in get_subscriptions(message):
-        Group(
-            settings.NOTIFICATION_CHANNEL.format(
-                notification_key=subscription.notification_type.key
+        for subscription in self.get_subscriptions():
+            self.channel_layer.group_add(
+                settings.NOTIFICATION_CHANNEL.format(
+                    notification_key=subscription.notification_type.key
+                ), self.channel_name
             )
-        ).add(message.reply_channel)
 
-
-@channel_session_user
-def ws_disconnect(message):
-    """
-    Connected to websocket.disconnect
-    """
-    logger.debug("Removing connection for user {} (disconnect)".format(message.user))
-    for subscription in get_subscriptions(message):
-        Group(
-            settings.NOTIFICATION_CHANNEL.format(
-                notification_key=subscription.notification_type.key
+    def websocket_disconnect(self, event):
+        """
+        Connected to websocket.disconnect
+        """
+        logger.debug("Removing connection for user {} (disconnect)".format(self.scope['user']))
+        for subscription in self.get_subscriptions():
+            self.channel_layer.group_discard(
+                settings.NOTIFICATION_CHANNEL.format(
+                    notification_key=subscription.notification_type.key
+                ), self.channel_name
             )
-        ).discard(message.reply_channel)
 
+    def websocket_receive(self, event):
+        """
+        Receives messages, this is currently just for debugging purposes as there
+        is no communication API for the websockets.
+        """
+        logger.debug("Received a message, responding with a non-API message")
+        self.send({"type": "websocket.send", 'text': event['text']})
 
-def ws_receive(message):
-    """
-    Receives messages, this is currently just for debugging purposes as there
-    is no communication API for the websockets.
-    """
-    logger.debug("Received a message, responding with a non-API message")
-    message.reply_channel.send({'text': 'OK'})

@@ -1,6 +1,6 @@
 import logging
 
-from channels import Group
+from channels.layers import get_channel_layer
 
 from . import models, settings
 
@@ -13,15 +13,13 @@ def notify_subscribers(notifications, key):
     """
 
     logger.debug("Broadcasting to subscribers")
-
+    channel_layer = get_channel_layer()
     notification_type_ids = models.NotificationType.objects.values('key').filter(key=key)
 
     for notification_type in notification_type_ids:
-        g = Group(
+        channel_layer.group_send(
             settings.NOTIFICATION_CHANNEL.format(
                 notification_key=notification_type['key']
-            )
-        )
-        g.send(
+            ),
             {'text': 'new-notification'}
         )
