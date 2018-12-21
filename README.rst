@@ -11,6 +11,35 @@ django-nyt
 .. image:: http://codecov.io/github/django-wiki/django-nyt/coverage.svg?branch=master
   :target: http://codecov.io/github/django-wiki/django-nyt?branch=master
 
+What the fork
+-------------
+It's a fork migrated to channels-2 and pure async code
+Also, added presence trigger to user model.
+For using presence you need add method to your UserModel like
+.. code:: python
+
+    def update_presence(self, presence):
+        UserPresence.objects.update_or_create(
+            defaults={'user': self, 'status': presence or False}
+        )
+
+    class UserPresence(models.Model):
+        user = models.OneToOneField('custom_app.UserCustomModel',
+                                    related_name='presence',
+                                    on_delete=models.CASCADE)
+        status = models.BooleanField(default=False)
+        last_updated = models.DateTimeField(auto_now=True, editable=False)
+
+        class Meta:
+            verbose_name = _('user presence')
+            verbose_name_plural = _("user presences")
+
+        def __str__(self):
+            status = _('Online') if self.status else _('Offline')
+            return f'{status} on {self.last_updated}'
+
+`custom_app.UserCustomModel` replace to your user model or use django's default
+
 Concept
 -------
 
@@ -32,18 +61,13 @@ an interval of their choice.
 Data can be accessed easily from Django models or from the included JSON
 views.
 
-Channels (django-channels)
+Channels (django-channels) UPD in 1.2.0
 --------------------------
 
-Starting from django-nyt 1.0, support for the upcoming
-`channels <http://channels.readthedocs.io/>`_ has been added together with
-Django 1.9 and 1.10 support.
+Starting from django-nyt 1.2.0, working on
+`channels-2 <https://channels.readthedocs.io/en/latest/>`_
+together with Django 2.1+
 
-In order to install the prerelease, use an extra flag for pip:
-
-.. code:: bash
-
-    pip install django-nyt --pre
 
 
 Docs
