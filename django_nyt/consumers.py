@@ -49,9 +49,38 @@ class NytConsumer(AsyncConsumer):
             )
         await self.presence_in()
 
+    async def wsconnect(self, event):
+        """
+        Connected to wsconnect
+        """
+        logger.debug("Adding new connection for user {}".format(self.scope['user']))
+        await self.send({"type": "websocket.accept"})
+        subscriptions = await self.get_subscriptions()
+        for subscription in subscriptions:
+            await self.channel_layer.group_add(
+                settings.NOTIFICATION_CHANNEL.format(
+                    notification_key=subscription.notification_type.key
+                ), self.channel_name
+            )
+        await self.presence_in()
+
     async def websocket_disconnect(self, event):
         """
         Connected to websocket.disconnect
+        """
+        logger.debug("Removing connection for user {} (disconnect)".format(self.scope['user']))
+        subscriptions = await self.get_subscriptions()
+        for subscription in subscriptions:
+            await self.channel_layer.group_discard(
+                settings.NOTIFICATION_CHANNEL.format(
+                    notification_key=subscription.notification_type.key
+                ), self.channel_name
+            )
+        await self.presence_out()
+
+    async def wsdisconnect(self, event):
+        """
+        Connected to wsdisconnect
         """
         logger.debug("Removing connection for user {} (disconnect)".format(self.scope['user']))
         subscriptions = await self.get_subscriptions()
