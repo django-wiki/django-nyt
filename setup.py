@@ -17,7 +17,7 @@ setup(
     keywords=["django", "notification" "alerts"],
     packages=find_packages(),
     zip_safe=False,
-    install_requires=["django>=1.11,<2.2"],
+    install_requires=["django>=1.11,<2.3"],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',

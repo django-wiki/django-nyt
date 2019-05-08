@@ -2,9 +2,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+
 from django_nyt import settings
 
 _notification_type_cache = {}
@@ -266,8 +268,7 @@ class Notification(models.Model):
         )
         if object_id:
             subscriptions = subscriptions.filter(
-                Q(object_id=object_id) |
-                Q(object_id=None)
+                Q(object_id=object_id) | Q(object_id=None)
             )
         if recipient_users:
             subscriptions = subscriptions.filter(
@@ -286,9 +287,9 @@ class Notification(models.Model):
 
             # Check if it's the same as the previous message
             latest = subscription.latest
-            if latest and (latest.message == kwargs.get('message', None) and
-                           latest.url == kwargs.get('url', None) and
-                           latest.is_viewed is False):
+            if latest and (latest.message == kwargs.get('message', None)
+                           and latest.url == kwargs.get('url', None)
+                           and latest.is_viewed is False):
                 # Both message and URL are the same, and it hasn't been viewed
                 # so just increment occurrence count.
                 latest.occurrences = latest.occurrences + 1

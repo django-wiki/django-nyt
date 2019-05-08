@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+1.1.3
+-----
+
+Added
+^^^^^
+
+ * Django 2.2 support (added to test matrix)
+ * Linting (no changes to functionality)
+
+
 1.1.2
 -----
 

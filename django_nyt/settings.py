@@ -59,8 +59,8 @@ USER_MODEL = getattr(django_settings, 'AUTH_USER_MODEL', 'auth.User')
 ############
 
 ENABLE_CHANNELS = (
-    'channels' in django_settings.INSTALLED_APPS and
-    not getattr(django_settings, 'NYT_CHANNELS_DISABLE', False)
+    'channels' in django_settings.INSTALLED_APPS
+    and not getattr(django_settings, 'NYT_CHANNELS_DISABLE', False)
 )
 """Channels are enabled automatically when 'channels' application is installed,
 however you can explicitly disable it with NYT_CHANNELS_DISABLE."""
