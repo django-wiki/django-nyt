@@ -1,9 +1,13 @@
-from channels.routing import route
-
+from django.urls import path
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
 from . import consumers
 
-channel_routing = [
-    route("websocket.connect", consumers.ws_connect, path=r"^/nyt/?$"),
-    route("websocket.disconnect", consumers.ws_disconnect),
-    route("websocket.receive", consumers.ws_receive),
-]
+
+main_router = ProtocolTypeRouter({
+    'websocket': AuthMiddlewareStack(
+        URLRouter([
+            path('nyt', consumers.NytConsumer),
+        ])
+    )
+})

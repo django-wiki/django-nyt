@@ -3,7 +3,6 @@ from setuptools import setup
 
 from django_nyt import __version__
 
-
 packages = find_packages()
 
 setup(
