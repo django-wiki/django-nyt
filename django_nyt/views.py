@@ -1,9 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 from django.utils.translation import gettext as _
+
 from django_nyt import models
-from django_nyt.decorators import json_view, login_required_ajax
+from django_nyt.decorators import json_view
+from django_nyt.decorators import login_required_ajax
 
 
 @login_required_ajax
@@ -36,8 +39,7 @@ def get_notifications(
     """
 
     notifications = models.Notification.objects.filter(
-        Q(subscription__settings__user=request.user) |
-        Q(user=request.user),
+        Q(subscription__settings__user=request.user) | Q(user=request.user),
     )
 
     if is_viewed is not None:
@@ -73,8 +75,7 @@ def goto(request, notification_id=None):
         return redirect(referer)
     notification = get_object_or_404(
         models.Notification,
-        Q(subscription__settings__user=request.user) |
-        Q(user=request.user),
+        Q(subscription__settings__user=request.user) | Q(user=request.user),
         id=notification_id
     )
     notification.is_viewed = True
@@ -89,8 +90,7 @@ def goto(request, notification_id=None):
 def mark_read(request, id_lte, notification_type_id=None, id_gte=None):
 
     notifications = models.Notification.objects.filter(
-        Q(subscription__settings__user=request.user) |
-        Q(user=request.user),
+        Q(subscription__settings__user=request.user) | Q(user=request.user),
         id__lte=id_lte
     )
 
