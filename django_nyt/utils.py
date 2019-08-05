@@ -1,6 +1,6 @@
 from django.db.models import Model
 from django.utils.translation import gettext as _
-
+import json
 from . import _disable_notifications, models, settings
 
 
@@ -80,3 +80,11 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
         object_id=object_id,
         **kwargs
     )[0]
+
+
+def parse_event(event, user):
+    data = json.loads(event['text'])
+    if data.get('event') == 'subscribe':
+        # subscribe user to meeting room
+        subscribe(user.get_nyt_settings(), data['room'])
+    return data

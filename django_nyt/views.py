@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from django_nyt import models
@@ -37,7 +37,7 @@ def get_notifications(
 
     notifications = models.Notification.objects.filter(
         Q(subscription__settings__user=request.user) |
-        Q(user=request.user),
+        Q(user=request.user)
     )
 
     if is_viewed is not None:
@@ -64,6 +64,65 @@ def get_notifications(
                          'occurrences_msg': _('%d times') % n.occurrences,
                          'type': n.subscription.notification_type.key if n.subscription else None,
                          'since': naturaltime(n.created)} for n in notifications[:max_results]]}
+
+
+@login_required_ajax
+@json_view
+def get_tasks(
+        request,
+        latest_id=None,
+        is_viewed=None,
+        is_done=False,
+        max_results=10):
+
+    tasks = models.Notification.objects.filter(
+        Q(subscription__settings__user=request.user) |
+        Q(user=request.user),
+        is_done=is_done
+    )
+
+    if is_viewed is not None:
+        tasks = tasks.filter(is_viewed=is_viewed)
+
+    appointments = Count('id', filter=Q(subscription__notification_type_id='appointment'))
+    consultations = Count('id', filter=Q(subscription__notification_type_id='consultation'))
+    encounters = Count('id', filter=Q(subscription__notification_type_id='encounter'))
+    branches = Count('id', filter=Q(subscription__notification_type_id='branch'))
+    supervisions = Count('id', filter=Q(subscription__notification_type_id='supervision'))
+    services = Count('id', filter=Q(subscription__notification_type_id='service'))
+
+    if latest_id is not None:
+        tasks = tasks.filter(id__gt=latest_id)
+
+    total_count = tasks.count()
+
+    totals = tasks.annotate(appointments=appointments) \
+        .annotate(consultations=consultations) \
+        .annotate(encounters=encounters) \
+        .annotate(branches=branches) \
+        .annotate(supervisions=supervisions) \
+        .annotate(services=services)\
+        .values('appointments', 'consultations', 'encounters', 'branches', 'supervisions', 'services')
+
+    tasks = tasks.order_by('-id')
+    tasks = tasks.prefetch_related(
+        'subscription',
+        'subscription__notification_type')
+
+    from django.contrib.humanize.templatetags.humanize import naturaltime
+
+    return {'success': True,
+            'totals': {
+                "total": total_count,
+                **totals
+            },
+            'objects': [{'pk': n.pk,
+                         'message': n.message,
+                         'url': n.url,
+                         'occurrences': n.occurrences,
+                         'occurrences_msg': _('%d times') % n.occurrences,
+                         'type': n.subscription.notification_type.key if n.subscription else None,
+                         'since': naturaltime(n.created)} for n in tasks[:max_results]]}
 
 
 @login_required

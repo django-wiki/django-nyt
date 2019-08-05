@@ -1,5 +1,5 @@
 _disable_notifications = False
 
-__version__ = "1.2.1"
+__version__ = "1.3.5"
 
 default_app_config = "django_nyt.apps.DjangoNytConfig"
