@@ -52,9 +52,20 @@ class NytConsumer(AsyncConsumer):
         subscriptions = await self.get_subscriptions()
         for subscription in subscriptions:
             channel = settings.NOTIFICATION_CHANNEL.format(
-                notification_key=subscription.notification_type.key)
+                    notification_key=subscription.notification_type.key)
             await self.channel_layer.group_add(channel, self.channel_name)
 
+        await self.channel_layer.group_add(
+            'nyt_personal-{}'.format(self.scope['user'].api_uuid), self.channel_name
+        )
+
+    async def websocket_subscribe(self, event):
+        logger.debug("Adding new subscription on channel layer for user {}".format(self.scope['user']))
+
+        await self.channel_layer.group_add(
+            event['room'], self.channel_name
+        )
+        
     async def wsconnect(self, event):
         """
         Connected to wsconnect
@@ -70,6 +81,10 @@ class NytConsumer(AsyncConsumer):
                 ), self.channel_name
             )
 
+        self.channel_layer.group_add(
+            'nyt_personal-{}'.format(self.scope['user'].api_uuid)
+        )
+
     async def websocket_disconnect(self, event):
         """
         Connected to websocket.disconnect
@@ -84,6 +99,10 @@ class NytConsumer(AsyncConsumer):
                 ), self.channel_name
             )
 
+        await self.channel_layer.group_discard(
+            'nyt_personal-{}'.format(self.scope['user'].api_uuid), self.channel_name
+        )
+        
     async def wsdisconnect(self, event):
         """
         Connected to wsdisconnect
@@ -126,10 +145,10 @@ class NytConsumer(AsyncConsumer):
 
     async def webrtc_send(self, event):
         msg = {"type": "websocket.send", 'text': event['text']}
-
+        
         if not isinstance(msg['text'], six.string_types):
             msg['text'] = json.dumps(msg['text'])
-
+        
         if event['sender'] != str(self.scope['user'].api_uuid):
             await self.send(msg)
 
@@ -138,3 +157,4 @@ class NytConsumer(AsyncConsumer):
         if members > 1:
             msg = {"type": "websocket.send", 'text': json.dumps({'members': members})}
             await self.send(msg)
+            

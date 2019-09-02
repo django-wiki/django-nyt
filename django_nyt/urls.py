@@ -8,6 +8,7 @@ app_name = 'nyt'
 urlpatterns = [
     url('^json/get/$', views.get_notifications, name='json_get'),
     url('^json/get/(?P<latest_id>\d+)/$', views.get_notifications, name='json_get'),
+    url('^json/get/tasks/$', views.get_tasks, name='json_get_tasks'),
     url('^json/mark-read/$', views.mark_read, name='json_mark_read_base'),
     url('^json/mark-read/(\d+)/$', views.mark_read, name='json_mark_read'),
     url('^json/mark-read/(?P<id_lte>\d+)/(?P<id_gte>\d+)/$', views.mark_read, name='json_mark_read'),
