@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+1.1.4
+-----
+
+Added
+^^^^^
+
+ * Django 3.0 support (added to test matrix)
+
 1.1.3
 -----
 
