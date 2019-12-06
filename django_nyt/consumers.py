@@ -2,7 +2,8 @@ from logging import getLogger
 
 from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
-
+import json
+import six
 from . import models, settings
 
 logger = getLogger(name=__name__)
@@ -39,7 +40,9 @@ class NytConsumer(AsyncConsumer):
         Connected to websocket.connect
         """
         logger.debug("Adding new connection for user {}".format(self.scope['user']))
+        await self.presence_in()
         await self.send({"type": "websocket.accept"})
+
         subscriptions = await self.get_subscriptions()
         for subscription in subscriptions:
             await self.channel_layer.group_add(
@@ -47,28 +50,23 @@ class NytConsumer(AsyncConsumer):
                     notification_key=subscription.notification_type.key
                 ), self.channel_name
             )
-        await self.presence_in()
+
+        await self.channel_layer.group_add(
+            'nyt_personal-{}'.format(self.scope['user'].api_uuid)
+        )
 
     async def wsconnect(self, event):
         """
         Connected to wsconnect
         """
-        logger.debug("Adding new connection for user {}".format(self.scope['user']))
-        await self.send({"type": "websocket.accept"})
-        subscriptions = await self.get_subscriptions()
-        for subscription in subscriptions:
-            await self.channel_layer.group_add(
-                settings.NOTIFICATION_CHANNEL.format(
-                    notification_key=subscription.notification_type.key
-                ), self.channel_name
-            )
-        await self.presence_in()
+        await self.websocket_connect(event)
 
     async def websocket_disconnect(self, event):
         """
         Connected to websocket.disconnect
         """
         logger.debug("Removing connection for user {} (disconnect)".format(self.scope['user']))
+        await self.presence_out()
         subscriptions = await self.get_subscriptions()
         for subscription in subscriptions:
             await self.channel_layer.group_discard(
@@ -76,26 +74,37 @@ class NytConsumer(AsyncConsumer):
                     notification_key=subscription.notification_type.key
                 ), self.channel_name
             )
-        await self.presence_out()
+
+        await self.channel_layer.group_discard(
+            'nyt_personal-{}'.format(self.scope['user'].api_uuid), self.channel_name
+        )
 
     async def wsdisconnect(self, event):
         """
         Connected to wsdisconnect
         """
-        logger.debug("Removing connection for user {} (disconnect)".format(self.scope['user']))
-        subscriptions = await self.get_subscriptions()
-        for subscription in subscriptions:
-            await self.channel_layer.group_discard(
-                settings.NOTIFICATION_CHANNEL.format(
-                    notification_key=subscription.notification_type.key
-                ), self.channel_name
-            )
-        await self.presence_out()
+        await self.websocket_disconnect(event)
+
+    async def websocket_subscribe(self, event):
+        logger.debug("Adding new subscription on channel layer for user {}".format(self.scope['user']))
+
+        await self.channel_layer.group_add(
+            event['room'], self.channel_name
+        )
 
     async def websocket_receive(self, event):
-        """
-        Receives messages, this is currently just for debugging purposes as there
-        is no communication API for the websockets.
-        """
-        logger.debug("Received a message, responding with a non-API message")
-        await self.send({"type": "websocket.send", 'text': event['text']})
+        await self.send(self.event_to_msg(event))
+
+    async def websocket_send(self, event):
+        await self.send(self.event_to_msg(event))
+
+    def event_to_msg(self, event):
+        if event.get('text'):
+            return {"type": "websocket.send", 'text': self.parse_event_text(event['text'])}
+        return {"type": "websocket.send", 'text': 'empty message'}
+
+    @staticmethod
+    def parse_event_text(text):
+        if not isinstance(text, six.string_types):
+            return json.dumps(text)
+        return text

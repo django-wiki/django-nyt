@@ -1,7 +1,6 @@
 from django.db.models import Model
 from django.utils.translation import gettext as _
-
-from . import _disable_notifications, models, settings
+from . import _disable_notifications, models, settings as nyt_settings
 
 
 def notify(message, key, target_object=None, url=None, filter_exclude={}, recipient_users=None):
@@ -51,7 +50,7 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
     )
 
     # Notify channel subscribers if we have channels enabled
-    if settings.ENABLE_CHANNELS:
+    if nyt_settings.ENABLE_CHANNELS:
         from django_nyt import subscribers
         subscribers.notify_subscribers(objects, key)
 
@@ -73,10 +72,16 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     :param: **kwargs: Additional models.Subscription field values
     """
     notification_type = models.NotificationType.get_by_key(key, content_type=content_type)
-
-    return models.Subscription.objects.get_or_create(
+    subscription = models.Subscription.objects.get_or_create(
         settings=settings,
         notification_type=notification_type,
         object_id=object_id,
         **kwargs
     )[0]
+
+    # Notify channel subscribers if we have channels enabled
+    if nyt_settings.ENABLE_CHANNELS:
+        from django_nyt import subscribers
+        subscribers.subscribe_channels(subscription)
+
+    return subscription

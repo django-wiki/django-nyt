@@ -37,7 +37,7 @@ def get_notifications(
 
     notifications = models.Notification.objects.filter(
         Q(subscription__settings__user=request.user) |
-        Q(user=request.user),
+        Q(user=request.user)
     )
 
     if is_viewed is not None:
