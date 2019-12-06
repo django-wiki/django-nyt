@@ -52,7 +52,7 @@ class NytConsumer(AsyncConsumer):
             )
 
         await self.channel_layer.group_add(
-            'nyt_personal-{}'.format(self.scope['user'].api_uuid)
+            'nyt_personal-{}'.format(self.scope['user'].api_uuid), self.channel_name
         )
 
     async def wsconnect(self, event):
