@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+1.1.5
+-----
+
+Fixed
+^^^^^
+
+ * Do not access ``Settings.user`` in ``Settings.clean()`` on blank new objects :url-issue:`92`
+
+
 1.1.4
 -----
 
@@ -8,6 +17,7 @@ Added
 ^^^^^
 
  * Django 3.0 support (added to test matrix)
+
 
 1.1.3
 -----

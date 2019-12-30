@@ -100,7 +100,7 @@ class Settings(models.Model):
         verbose_name_plural = _('settings')
 
     def clean(self):
-        if not self.is_default:
+        if not self.is_default and self.pk and self.user:
             default_settings = Settings.objects.filter(
                 user=self.user,
                 is_default=True,
