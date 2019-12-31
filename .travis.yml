@@ -4,27 +4,6 @@ language: python
 
 matrix:
   include:
-  - python: 3.4
-    dist: trusty
-    sudo: false
-    env: LINT="yes"
-  - python: 3.4
-    dist: trusty
-    sudo: false
-    env: DJANGO="1.11"
-  - python: 3.4
-    dist: trusty
-    sudo: false
-    env: DJANGO="2.0"
-
-  - python: 3.5
-    dist: trusty
-    sudo: false
-    env: DJANGO="1.11"
-  - python: 3.5
-    dist: trusty
-    sudo: false
-    env: DJANGO="2.0"
   - python: 3.5
     dist: xenial
     sudo: false
@@ -34,14 +13,6 @@ matrix:
     sudo: false
     env: DJANGO="2.2"
 
-  - python: 3.6
-    dist: trusty
-    sudo: false
-    env: DJANGO="1.11"
-  - python: 3.6
-    dist: trusty
-    sudo: false
-    env: DJANGO="2.0"
   - python: 3.6
     dist: xenial
     sudo: false
@@ -57,11 +28,7 @@ matrix:
 
   - python: 3.7
     dist: xenial
-    sudo: true
-    env: DJANGO="2.0"
-  - python: 3.7
-    dist: xenial
-    sudo: true
+    sudo: false
     env: DJANGO="2.1"
   - python: 3.7
     dist: xenial
@@ -72,14 +39,27 @@ matrix:
     sudo: true
     env: DJANGO="3.0"
 
-  - python: pypy
-    dist: trusty
+  - python: 3.8
+    dist: xenial
     sudo: false
     env: DJANGO="2.1"
+  - python: 3.8
+    dist: bionic
+    sudo: true
+    env: DJANGO="2.2"
+  - python: 3.8
+    dist: bionic
+    sudo: true
+    env: DJANGO="3.0"
+
   - python: pypy
     dist: trusty
     sudo: false
     env: DJANGO="2.2"
+  - python: pypy
+    dist: trusty
+    sudo: false
+    env: DJANGO="3.0"
 
 install:
   - pip install tox tox-travis coverage codecov
