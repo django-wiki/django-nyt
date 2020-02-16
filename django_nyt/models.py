@@ -1,5 +1,4 @@
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_delete
@@ -106,9 +105,11 @@ class Settings(models.Model):
                 is_default=True,
             ).exclude(pk=self.pk)
             if not default_settings.exists():
-                raise ValidationError(
-                    _("At minimum one default setting must exist for the user")
-                )
+                # This used to raise a ValidationError, but currently the
+                # behavior is instead defined such that we automatically set
+                # the very first-to-be-created Settings object as the default
+                # one.
+                self.is_default = True
 
     def save(self, *args, **kwargs):
         # We should check that it's the only default setting manually because
