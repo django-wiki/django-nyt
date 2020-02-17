@@ -91,9 +91,8 @@ class Command(BaseCommand):
             if fpid > 0:
                 # Running as daemon now. PID is fpid
                 self.logger.info("PID: %s" % str(fpid))
-                pid_file = open(self.options['pid'], "w")
-                pid_file.write(str(fpid))
-                pid_file.close()
+                with open(self.options['pid'], "w") as pid_file:
+                    pid_file.write(str(fpid))
                 if not self.options['no_sys_exit']:
                     sys.exit(0)
         except OSError as e:
