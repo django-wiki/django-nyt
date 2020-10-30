@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django_nyt import models, utils
+
+from django_nyt import models
+from django_nyt import utils
 
 User = get_user_model()
 
@@ -21,7 +23,8 @@ class NotifyTestBase(TestCase):
     def tearDown(self):
         self.user1.delete()
         self.user2.delete()
-        super(NotifyTestBase, self).tearDown()
+        models._notification_type_cache = {}
+        super().tearDown()
 
 
 class NotifyTest(NotifyTestBase):

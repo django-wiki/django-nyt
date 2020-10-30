@@ -5,11 +5,16 @@ from tempfile import NamedTemporaryFile
 
 from django.core.management import call_command
 
-from .. import models, utils
+from .. import models
+from .. import utils
 from .test_basic import NotifyTestBase
 
 
 class CommandTest(NotifyTestBase):
+
+    def tearDown(self):
+        models._notification_type_cache = {}
+        super().tearDown()
 
     def test_notifymail(self):
 
