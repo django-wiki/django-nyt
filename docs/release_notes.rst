@@ -1,6 +1,21 @@
 Release Notes
 =============
 
+1.2
+---
+
+Added
+^^^^^
+
+* Django 3.2 and Python 3.9 support (added to test matrix)
+* Travis replaced with Circle CI
+
+Removed
+^^^^^^^
+
+* Django 1.11 and 2.1 support
+
+
 1.1.6
 -----
 
