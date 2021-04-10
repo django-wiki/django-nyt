@@ -17,7 +17,7 @@ setup(
     keywords=["django", "notification" "alerts"],
     packages=find_packages(),
     zip_safe=False,
-    install_requires=["django>=2.2,<3.2"],
+    install_requires=["django>=2.2,<3.3"],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
@@ -32,7 +32,8 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3 :: Only',
     ],
     include_package_data=True,

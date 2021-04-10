@@ -19,6 +19,7 @@ INSTALLED_APPS = [
 
 
 settings.configure(
+    SECRET_KEY="lskfjklsdfjalkfslfjslfksdjfslkfslkfj",
     DEBUG=True,
     # AUTH_USER_MODEL='testdata.CustomUser',
     DATABASES={
