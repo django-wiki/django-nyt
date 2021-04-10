@@ -1,8 +1,8 @@
 django-nyt
 ==========
 
-.. image:: https://travis-ci.org/django-wiki/django-nyt.png?branch=master
-   :target: https://travis-ci.org/django-wiki/django-nyt
+.. |Build status| image:: https://circleci.com/gh/django-wiki/django-nyt.svg?style=shield
+   :target: https://circleci.com/gh/django-wiki/django-nyt
 .. image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
    :target: https://django-nyt.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
