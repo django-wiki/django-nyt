@@ -2,11 +2,7 @@ import django.views.static
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
-try:
-    from django.urls import include, re_path as url
-except ImportError:
-    from django.conf.urls import include, url
+from django.urls import include, re_path as url
 
 
 admin.autodiscover()
