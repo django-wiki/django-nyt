@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+1.2.1
+-----
+
+* Django 4.0 and Python 3.10 support (added to test matrix)
+
+
 1.2
 ---
 
