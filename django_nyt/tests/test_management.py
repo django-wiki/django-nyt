@@ -41,7 +41,8 @@ class CommandTest(NotifyTestBase):
             # It's normal for this command to exit
             pass
 
-        pid = open(pid_file.name, 'r').read()
+        with open(pid_file.name, 'r') as fp:
+            pid = fp.read()
         os.unlink(pid_file.name)
 
         # Give it a second to start

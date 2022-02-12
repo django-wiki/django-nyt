@@ -142,7 +142,7 @@ except ImportError:
 # django-nyt options
 ##########################################
 
-_enable_channels = True
+_enable_channels = False
 if _enable_channels:
     INSTALLED_APPS.append('channels')
     CHANNEL_LAYERS = {
