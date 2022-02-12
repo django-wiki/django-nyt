@@ -50,7 +50,6 @@ settings.configure(
         },
     ],
     USE_TZ=True,
-    SOUTH_TESTS_MIGRATE=True,
     MIDDLEWARE=[
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',

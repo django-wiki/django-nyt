@@ -2,6 +2,7 @@
 
 # Tox
 .cache
+coverage.xml
 
 # C extensions
 *.so
