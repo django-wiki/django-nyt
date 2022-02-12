@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+1.2.2
+-----
+
+* Adds a no-op migration because of auto-detected changes
+
+
 1.2.1
 -----
 
