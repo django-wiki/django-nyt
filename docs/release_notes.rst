@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+1.2.3
+-----
+
+* Add missing .txt email template files in distributed packages #109
+
+
 1.2.2
 -----
 
