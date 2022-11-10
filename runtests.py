@@ -57,6 +57,7 @@ settings.configure(
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
     ],
+    DEFAULT_AUTO_FIELD='django.db.models.AutoField',
 )
 
 
