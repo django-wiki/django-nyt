@@ -1,23 +1,29 @@
-from setuptools import find_packages
-from setuptools import setup
+from pathlib import Path
+from setuptools import find_packages, setup
 
 from django_nyt import __version__
 
 
-packages = find_packages()
+this_directory = Path(__file__).parent
+long_description = (this_directory / 'README.rst').read_text()
+
 
 setup(
-    name="django-nyt",
+    name='django-nyt',
     version=__version__,
-    author="Benjamin Bach",
-    author_email="benjamin@overtag.dk",
-    url="https://github.com/benjaoming/django-nyt",
-    description="A pluggable notification system written for the Django framework.",
-    license="Apache License 2.0",
-    keywords=["django", "notification" "alerts"],
+    author='Benjamin Bach',
+    description='A pluggable notification system written for the Django framework.',
+    long_description=long_description,
+    long_description_content_type='text/x-rst',
+    author_email='benjamin@overtag.dk',
+    url='https://github.com/benjaoming/django-nyt',
+    license='Apache License 2.0',
+    keywords=['django', 'notification', 'alerts'],
     packages=find_packages(),
+    include_package_data=True,
     zip_safe=False,
-    install_requires=["django>=2.2,<4.1"],
+    install_requires=['django>=2.2,<4.2'],
+    python_requires='>=3.5',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
@@ -38,5 +44,11 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3 :: Only',
     ],
-    include_package_data=True,
+    project_urls={
+        'Funding': 'https://donate.pypi.org',
+        'Documentation': 'https://django-nyt.readthedocs.io/en/latest/',
+        'Release notes': 'https://github.com/django-wiki/django-nyt/releases',
+        'Source': 'https://github.com/django-wiki/django-nyt',
+        'Tracker': 'https://github.com/django-wiki/django-nyt/issues',
+    },
 )

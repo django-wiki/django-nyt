@@ -37,8 +37,7 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os_path.join(PROJECT_PATH, 'static')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-)
+STATICFILES_DIRS = ()
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -154,3 +153,4 @@ if _enable_channels:
 
 
 NYT_ENABLE_ADMIN = True
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
