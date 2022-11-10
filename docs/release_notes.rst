@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+
+1.2.4
+-----
+
+* Adds Django 4.1 support #113 (Oscar Cortez)
+
+
 1.2.3
 -----
 
