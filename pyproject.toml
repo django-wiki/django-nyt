@@ -61,15 +61,29 @@ include = [
     "/django_nyt",
 ]
 
+[tool.hatch.envs.default]
+dependencies = [
+    "coverage[toml]",
+    "codecov",
+    "flake8>=3.7,<5.1",
+    "pre-commit",
+]
+
 [tool.hatch.envs.default.scripts]
-lint = "flake8 --max-line-length=213 --extend-ignore=E203 --max-complexity=10 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,*/*migrations,testproject django_nyt/"
+lint = [
+    "flake8 --max-line-length=213 --extend-ignore=E203 --max-complexity=10 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,*/*migrations,testproject django_nyt/",
+    "pre-commit install -f --install-hooks",
+    "pre-commit run --all-files --show-diff-on-failure",
+]
 
 [tool.hatch.envs.test]
 dependencies = [
     "coverage[toml]",
     "codecov",
     "flake8>=3.7,<5.1",
+    "pre-commit",
 ]
+matrix-name-format = "dj{value}"
 
 [tool.hatch.envs.test.overrides]
 matrix.django.dependencies = [
@@ -102,6 +116,13 @@ clean = [
     "rm -fr .tox/",
     "rm -f .coverage",
     "rm -fr htmlcov/",
+]
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "sphinx",
+    "channels",
+    "sphinx_rtd_theme",
 ]
 
 [tool.isort]
