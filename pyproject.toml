@@ -83,7 +83,6 @@ clean = [
 ]
 lint = [
     "flake8 --max-line-length=213 --extend-ignore=E203 --max-complexity=10 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,*/*migrations,testproject django_nyt/",
-    "pep8 django_nyt",
     "pre-commit install -f --install-hooks",
     "pre-commit run --all-files --show-diff-on-failure",
 ]
