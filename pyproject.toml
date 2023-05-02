@@ -120,7 +120,7 @@ django = ["4.1", "4.2"]
 
 [tool.hatch.envs.test.scripts]
 all = [
-    "sh -c 'test-project/manage.py makemigrations --check'",
+    "sh -c 'python test-project/manage.py makemigrations --check'",
     "python -W all:'':'':'':0 -m coverage run --source=django_nyt runtests.py",
     "coverage run --source django_nyt runtests.py",
     "coverage report -m",
