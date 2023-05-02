@@ -1,10 +1,14 @@
 from django.db.models import Model
 from django.utils.translation import gettext as _
 
-from . import _disable_notifications, models, settings
+from . import _disable_notifications
+from . import models
+from . import settings
 
 
-def notify(message, key, target_object=None, url=None, filter_exclude={}, recipient_users=None):
+def notify(
+    message, key, target_object=None, url=None, filter_exclude={}, recipient_users=None
+):
     """
     Notify subscribing users of a new event. Key can be any kind of string,
     just make sure to reuse it where applicable.
@@ -36,7 +40,10 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
     if target_object:
         if not isinstance(target_object, Model):
             raise TypeError(
-                _("You supplied a target_object that's not an instance of a django Model."))
+                _(
+                    "You supplied a target_object that's not an instance of a django Model."
+                )
+            )
         object_id = target_object.id
     else:
         object_id = None
@@ -53,6 +60,7 @@ def notify(message, key, target_object=None, url=None, filter_exclude={}, recipi
     # Notify channel subscribers if we have channels enabled
     if settings.ENABLE_CHANNELS:
         from django_nyt import subscribers
+
         subscribers.notify_subscribers(objects, key)
 
     return len(objects)
@@ -72,7 +80,9 @@ def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
     :param: object_id: If the notifications should only regard a specific object_id
     :param: **kwargs: Additional models.Subscription field values
     """
-    notification_type = models.NotificationType.get_by_key(key, content_type=content_type)
+    notification_type = models.NotificationType.get_by_key(
+        key, content_type=content_type
+    )
 
     return models.Subscription.objects.get_or_create(
         settings=settings,

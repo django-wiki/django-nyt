@@ -28,7 +28,7 @@ Adding a notification
 .. code-block:: python
 
    from django_nyt.utils import notify
-   
+
    EVENT_KEY = "my_key"
    notify(_("OMG! Something happened"), EVENT_KEY)
 
@@ -55,7 +55,7 @@ For instance, if a notification is solely for staff members:
 .. code-block:: html+django
 
    notify(
-       _("OMG! Something happened"), EVENT_KEY, 
+       _("OMG! Something happened"), EVENT_KEY,
        filter_exclude={'settings__user__is_staff': True}
    )
 
@@ -81,4 +81,3 @@ Indices and tables
 * :ref:``genindex``
 * :ref:``modindex``
 * :ref:``search``
-

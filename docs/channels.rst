@@ -13,7 +13,7 @@ steps below.
 
 Configure channels
 ------------------
- 
+
 You need channels to be running a websocket server. The below example can be
 used for a development server, but other than that, you would have to configure
 a real integration with a channel worker server and Redis.
@@ -49,15 +49,15 @@ mentioned, but you can also use the same CSS class names as defined in
       var URL_NYT_GET_NEW = "{% url "nyt:json_get" %}";
       var URL_NYT_MARK_READ = "{% url "nyt:json_mark_read_base" %}";
       var URL_NYT_GOTO = "{% url "nyt:goto_base" %}";
-    
+
       var nyt_oldest_id = 0;
       var nyt_latest_id = 0;
       var nyt_update_timeout = 30000;
       var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
-      
+
       // Customixed error handling?
       function ajaxError(){}
-      
+
       $.ajaxSetup({
         timeout: 7000,
         cache: false,
@@ -65,7 +65,7 @@ mentioned, but you can also use the same CSS class names as defined in
             ajaxError();
         }
       });
-      
+
       function jsonWrapper(url, callback) {
         $.getJSON(url, function(data) {
           if (data == null) {
@@ -75,7 +75,7 @@ mentioned, but you can also use the same CSS class names as defined in
           }
         });
       }
-    
+
       function nyt_update() {
         jsonWrapper(URL_NYT_GET_NEW+nyt_latest_id+'/', function (data) {
           if (data.success) {
@@ -103,7 +103,7 @@ mentioned, but you can also use the same CSS class names as defined in
           }
         });
       }
-    
+
       // Mark all <li> items read and tell the server.
       function nyt_mark_read() {
         $('.notification-li').remove();
@@ -117,19 +117,19 @@ mentioned, but you can also use the same CSS class names as defined in
           }
         });
       }
-    
+
       // Call this function to use traditional polling
       function update_timeout() {
         setTimeout("nyt_update()", nyt_update_timeout);
         setTimeout("update_timeout()", nyt_update_timeout);
         nyt_update_timeout *= nyt_update_timeout_adjust;
       }
-    
+
       // Don't check immediately... some users just click through pages very quickly.
       setTimeout("nyt_update()", 2000);
-    
+
       var socket = new WebSocket("ws://127.0.0.1:8000/nyt");
-    
+
       $(document).ready(function () {
         // update_timeout();
         socket.onopen = function() {
@@ -140,9 +140,7 @@ mentioned, but you can also use the same CSS class names as defined in
           console.log("Got some message, so going to update");
           nyt_update();
         }
-    
+
       });
-    
+
     </script>
-
-

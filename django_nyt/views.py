@@ -11,11 +11,7 @@ from django_nyt.decorators import login_required_ajax
 
 @login_required_ajax
 @json_view
-def get_notifications(
-        request,
-        latest_id=None,
-        is_viewed=False,
-        max_results=10):
+def get_notifications(request, latest_id=None, is_viewed=False, max_results=10):
     """
     View that returns a JSON list of notifications for the current user as according
     to ``request.user``.
@@ -50,33 +46,42 @@ def get_notifications(
     if latest_id is not None:
         notifications = notifications.filter(id__gt=latest_id)
 
-    notifications = notifications.order_by('-id')
+    notifications = notifications.order_by("-id")
     notifications = notifications.prefetch_related(
-        'subscription',
-        'subscription__notification_type')
+        "subscription", "subscription__notification_type"
+    )
 
     from django.contrib.humanize.templatetags.humanize import naturaltime
 
-    return {'success': True,
-            'total_count': total_count,
-            'objects': [{'pk': n.pk,
-                         'message': n.message,
-                         'url': n.url,
-                         'occurrences': n.occurrences,
-                         'occurrences_msg': _('%d times') % n.occurrences,
-                         'type': n.subscription.notification_type.key if n.subscription else None,
-                         'since': naturaltime(n.created)} for n in notifications[:max_results]]}
+    return {
+        "success": True,
+        "total_count": total_count,
+        "objects": [
+            {
+                "pk": n.pk,
+                "message": n.message,
+                "url": n.url,
+                "occurrences": n.occurrences,
+                "occurrences_msg": _("%d times") % n.occurrences,
+                "type": n.subscription.notification_type.key
+                if n.subscription
+                else None,
+                "since": naturaltime(n.created),
+            }
+            for n in notifications[:max_results]
+        ],
+    }
 
 
 @login_required
 def goto(request, notification_id=None):
-    referer = request.META.get('HTTP_REFERER', '')
+    referer = request.META.get("HTTP_REFERER", "")
     if not notification_id:
         return redirect(referer)
     notification = get_object_or_404(
         models.Notification,
         Q(subscription__settings__user=request.user) | Q(user=request.user),
-        id=notification_id
+        id=notification_id,
     )
     notification.is_viewed = True
     notification.save()
@@ -91,16 +96,15 @@ def mark_read(request, id_lte, notification_type_id=None, id_gte=None):
 
     notifications = models.Notification.objects.filter(
         Q(subscription__settings__user=request.user) | Q(user=request.user),
-        id__lte=id_lte
+        id__lte=id_lte,
     )
 
     if notification_type_id:
-        notifications = notifications.filter(
-            notification_type__id=notification_type_id)
+        notifications = notifications.filter(notification_type__id=notification_type_id)
 
     if id_gte:
         notifications = notifications.filter(id__gte=id_gte)
 
     notifications.update(is_viewed=True)
 
-    return {'success': True}
+    return {"success": True}

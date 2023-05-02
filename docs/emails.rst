@@ -23,9 +23,9 @@ of the other methods.
 You need to run something like this:
 
 .. code-block:: python
-    
+
     from django.core.management import call_command
-    
+
     @shared_task
     def send_nyt_emails()
         call_command('notifymail', cron=True)
@@ -47,7 +47,7 @@ guaranteed to reach the user. If you are using channels, you don't need to
 worry about instant notifications as they're sent asynchronously in this case.
 
 .. code-block:: bash
-    
+
     sudo su YOUR_HTTPD_USER -c bash  # e.g. www-data
     crontab -e  # Edit the cron tab
 

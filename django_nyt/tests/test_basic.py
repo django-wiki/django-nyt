@@ -8,16 +8,15 @@ User = get_user_model()
 
 
 class NotifyTestBase(TestCase):
-
     def setUp(self):
         super(NotifyTestBase, self).setUp()
-        self.TEST_KEY = 'test_key'
+        self.TEST_KEY = "test_key"
 
         # These two users are created by migrations in testproject.testapp
         # Reason is to make the testproject easy to setup and use.
-        self.user1 = User.objects.get(username='alice')
+        self.user1 = User.objects.get(username="alice")
         self.user1_settings = models.Settings.get_default_setting(self.user1)
-        self.user2 = User.objects.get(username='bob')
+        self.user2 = User.objects.get(username="bob")
         self.user2_settings = models.Settings.get_default_setting(self.user2)
 
     def tearDown(self):
@@ -28,7 +27,6 @@ class NotifyTestBase(TestCase):
 
 
 class NotifyTest(NotifyTestBase):
-
     def test_notify(self):
 
         # Subscribe User 1 to test key
