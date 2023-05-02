@@ -7,7 +7,7 @@ name = "django-nyt"
 description = "A pluggable notification system written for the Django framework."
 readme = "README.rst"
 requires-python = ">=3.5"
-license = "Apache License 2.0"
+license = "GPL-3.0"
 keywords = ["django", "alerts", "notification"]
 authors = [
     { name = "Benjamin Bach", email = "benjamin@overtag.dk" },
@@ -37,7 +37,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
 dependencies = [
-    "django>=2.2,<4.2",
+    "django>=2.2,<4.3",
 ]
 dynamic = ["version"]
 
@@ -70,16 +70,28 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
+clean = [
+    "rm -fr build/",
+    "rm -fr dist/",
+    "rm -fr *.egg-info",
+    "rm -fr .tox/",
+    "rm -f .coverage",
+    "rm -fr htmlcov/",
+    "find . -name '*.pyc' -exec rm -f {{}} +",
+    "find . -name '*.pyo' -exec rm -f {{}} +",
+    "find . -name '*~' -exec rm -f {{}} +",
+]
 lint = [
     "flake8 --max-line-length=213 --extend-ignore=E203 --max-complexity=10 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,*/*migrations,testproject django_nyt/",
+    "pep8 django_nyt",
     "pre-commit install -f --install-hooks",
     "pre-commit run --all-files --show-diff-on-failure",
 ]
 
 [tool.hatch.envs.test]
 dependencies = [
-    "coverage[toml]",
     "codecov",
+    "coverage[toml]",
     "flake8>=3.7,<5.1",
     "pre-commit",
 ]
@@ -108,14 +120,10 @@ django = ["4.1", "4.2"]
 
 [tool.hatch.envs.test.scripts]
 all = [
-    "bash -c '! python test-project/manage.py makemigrations --dry-run --exit --noinput'",
+    "sh -c 'test-project/manage.py makemigrations --check'",
     "python -W all:'':'':'':0 -m coverage run --source=django_nyt runtests.py",
-    "codecov",
-]
-clean = [
-    "rm -fr .tox/",
-    "rm -f .coverage",
-    "rm -fr htmlcov/",
+    "coverage run --source django_nyt runtests.py",
+    "coverage report -m",
 ]
 
 [tool.hatch.envs.docs]
@@ -124,6 +132,18 @@ dependencies = [
     "channels",
     "sphinx_rtd_theme",
 ]
+
+[tool.hatch.envs.docs.scripts]
+clean = "rm -rf docs/_build/*"
+build-html = "sphinx-build -c docs -b html -d docs/_build/doctrees -D latex_paper_size={args} docs/ docs/_build/html"
+build = [
+    "hatch run docs:clean",
+    "rm -f docs/modules.rst",
+    "rm -f docs/django_nyt*.rst",
+    "sphinx-apidoc -d 10 -H 'Python Reference' -o docs/ django_nyt django_nyt/tests django_nyt/migrations",
+    "hatch run docs:build-html {args}",
+]
+link-check = "sphinx-build -b linkcheck ./docs ./docs/_build"
 
 [tool.isort]
 combine_as_imports = true
