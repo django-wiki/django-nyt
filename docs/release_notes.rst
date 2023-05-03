@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+1.3
+---
+
+* Hatch build system, environment management and more #116 (Oscar Cortez)
+* pre-commit configuration updated #116 (Oscar Cortez)
+* Code-base black'ned #116 (Oscar Cortez)
+
 
 1.2.4
 -----
