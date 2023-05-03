@@ -111,13 +111,13 @@
         <p>Select one of the test user accounts and you'll be logged in (this is a test application, so don't use this mechanism in production)</p>
       </div>
       <div class="one-half column">
-      
+
         {% for user in users %}
         <p>
           <a href="{% url 'testapp:login_as' pk=user.pk %}" class="button button-secondary" style="display: block;">Login as {{ user.username }}</a>
         </p>
         {% endfor %}
-      
+
       </div>
     </div>
   </div>
@@ -130,7 +130,7 @@
       <div class="one-half column">
         <p>Change settings of currently logged in user</p>
       </div>
-      
+
       <div class="one-half column">
         <form method="POST">
           {% csrf_token %}
@@ -142,7 +142,7 @@
           {% endif %}
         </form>
       </div>
-      
+
     </div>
   </div>
 
@@ -164,7 +164,7 @@
         <th>Seen</th>
         <th>Type</th>
       </tr>
-      
+
       {% for notification in notifications %}
       <tr>
         <td>{{ notification.message }} x{{ notification.occurrences }}</td>
@@ -173,27 +173,27 @@
         <td>{{ notification.subscription.notification_type.key }}</td>
       </tr>
       {% endfor %}
-      
+
     </table>
   </div>
 
 
 <script type="text/javascript" src="{% static 'testapp/js/jquery.js' %}"></script>
- 
+
 <script type="text/javascript">
 
   $(function() {
     $("#notificationcreateform").submit(function( event ) {
       // Stop form from submitting normally
       event.preventDefault();
-     
+
       // Get some values from elements on the page:
       var $form = $( this );
       var url = $form.attr( "action" );
-     
+
       // Send the data using post
       var posting = $.post( url, $form.serializeArray() );
-     
+
       // Put the results in a div
       posting.done(function( data ) {
         $('#id_name').val('');
@@ -214,10 +214,10 @@
   var nyt_latest_id = 0;
   var nyt_update_timeout = 30000;
   var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
-  
+
   // Customixed error handling?
   function ajaxError(){}
-  
+
   $.ajaxSetup({
     timeout: 7000,
     cache: false,
@@ -225,7 +225,7 @@
         ajaxError();
     }
   });
-  
+
   function jsonWrapper(url, callback) {
     $.getJSON(url, function(data) {
       if (data == null) {
@@ -312,4 +312,3 @@
 
 </body>
 </html>
-

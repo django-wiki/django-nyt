@@ -19,34 +19,25 @@ class NotificationType(models.Model):
     """
 
     key = models.CharField(
-        max_length=128,
-        primary_key=True,
-        verbose_name=_('unique key'),
-        unique=True
+        max_length=128, primary_key=True, verbose_name=_("unique key"), unique=True
     )
 
     # TODO: This isn't translatable
     label = models.CharField(
-        max_length=128,
-        verbose_name=_('optional label'),
-        blank=True,
-        null=True
+        max_length=128, verbose_name=_("optional label"), blank=True, null=True
     )
 
     content_type = models.ForeignKey(
-        ContentType,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL
+        ContentType, blank=True, null=True, on_delete=models.SET_NULL
     )
 
     def __str__(self):
         return self.key
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + '_notificationtype'
-        verbose_name = _('type')
-        verbose_name_plural = _('types')
+        db_table = settings.DB_TABLE_PREFIX + "_notificationtype"
+        verbose_name = _("type")
+        verbose_name_plural = _("types")
 
     @classmethod
     def get_by_key(cls, key, content_type=None):
@@ -75,12 +66,12 @@ class Settings(models.Model):
         settings.USER_MODEL,
         on_delete=models.CASCADE,  # If a user is deleted, remove all settings
         verbose_name=_("user"),
-        related_name='nyt_settings',
+        related_name="nyt_settings",
     )
 
     interval = models.SmallIntegerField(
         choices=settings.INTERVALS,
-        verbose_name=_('interval'),
+        verbose_name=_("interval"),
         default=settings.INTERVALS_DEFAULT,
     )
 
@@ -90,14 +81,13 @@ class Settings(models.Model):
     )
 
     def __str__(self):
-        obj_name = _("Settings for %s") % getattr(
-            self.user, self.user.USERNAME_FIELD)
+        obj_name = _("Settings for %s") % getattr(self.user, self.user.USERNAME_FIELD)
         return obj_name
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + '_settings'
-        verbose_name = _('settings')
-        verbose_name_plural = _('settings')
+        db_table = settings.DB_TABLE_PREFIX + "_settings"
+        verbose_name = _("settings")
+        verbose_name_plural = _("settings")
 
     def clean(self):
         if not self.is_default and self.pk and self.user:
@@ -135,10 +125,7 @@ class Settings(models.Model):
 
     @classmethod
     def get_default_setting(cls, user):
-        return cls.objects.get_or_create(
-            user=user,
-            is_default=True
-        )[0]
+        return cls.objects.get_or_create(user=user, is_default=True)[0]
 
 
 class Subscription(models.Model):
@@ -151,16 +138,14 @@ class Subscription(models.Model):
     )
 
     notification_type = models.ForeignKey(
-        NotificationType,
-        verbose_name=_("notification type"),
-        on_delete=models.CASCADE
+        NotificationType, verbose_name=_("notification type"), on_delete=models.CASCADE
     )
 
     object_id = models.CharField(
         max_length=64,
         null=True,
         blank=True,
-        help_text=_('Leave this blank to subscribe to any kind of object'),
+        help_text=_("Leave this blank to subscribe to any kind of object"),
         verbose_name=_("object ID"),
     )
 
@@ -170,23 +155,24 @@ class Subscription(models.Model):
     )
 
     latest = models.ForeignKey(
-        'Notification',
+        "Notification",
         null=True,
         blank=True,
-        related_name='latest_for',
+        related_name="latest_for",
         verbose_name=_("latest notification"),
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
         obj_name = _("Subscription for: %s") % (
-            getattr(self.settings.user, self.settings.user.USERNAME_FIELD))
+            getattr(self.settings.user, self.settings.user.USERNAME_FIELD)
+        )
         return obj_name
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + '_subscription'
-        verbose_name = _('subscription')
-        verbose_name_plural = _('subscriptions')
+        db_table = settings.DB_TABLE_PREFIX + "_subscription"
+        verbose_name = _("subscription")
+        verbose_name_plural = _("subscriptions")
 
 
 class Notification(models.Model):
@@ -208,14 +194,14 @@ class Notification(models.Model):
         blank=True,
         on_delete=models.CASCADE,
         verbose_name=_("user"),
-        related_name='nyt_notifications',
+        related_name="nyt_notifications",
     )
 
     message = models.TextField()
 
     # TODO: Why 200?
     url = models.CharField(
-        verbose_name=_('link for notification'),
+        verbose_name=_("link for notification"),
         blank=True,
         null=True,
         max_length=200,
@@ -231,10 +217,10 @@ class Notification(models.Model):
 
     occurrences = models.PositiveIntegerField(
         default=1,
-        verbose_name=_('occurrences'),
+        verbose_name=_("occurrences"),
         help_text=_(
-            'If the same notification was fired multiple '
-            'times with no intermediate notifications'
+            "If the same notification was fired multiple "
+            "times with no intermediate notifications"
         ),
     )
 
@@ -254,16 +240,14 @@ class Notification(models.Model):
         """
 
         if not key or not isinstance(key, str):
-            raise KeyError('No notification key (string) specified.')
+            raise KeyError("No notification key (string) specified.")
 
-        object_id = kwargs.pop('object_id', None)
-        filter_exclude = kwargs.pop('filter_exclude', {})
-        recipient_users = kwargs.pop('recipient_users', None)
+        object_id = kwargs.pop("object_id", None)
+        filter_exclude = kwargs.pop("filter_exclude", {})
+        recipient_users = kwargs.pop("recipient_users", None)
 
         objects_created = []
-        subscriptions = Subscription.objects.filter(
-            notification_type__key=key
-        ).exclude(
+        subscriptions = Subscription.objects.filter(notification_type__key=key).exclude(
             **filter_exclude
         )
         if object_id:
@@ -275,8 +259,8 @@ class Notification(models.Model):
                 settings__user__in=recipient_users,
             )
 
-        subscriptions = subscriptions.prefetch_related('latest', 'settings')
-        subscriptions = subscriptions.order_by('settings__user')
+        subscriptions = subscriptions.prefetch_related("latest", "settings")
+        subscriptions = subscriptions.order_by("settings__user")
         prev_user = None
 
         for subscription in subscriptions:
@@ -287,9 +271,11 @@ class Notification(models.Model):
 
             # Check if it's the same as the previous message
             latest = subscription.latest
-            if latest and (latest.message == kwargs.get('message', None)
-                           and latest.url == kwargs.get('url', None)
-                           and latest.is_viewed is False):
+            if latest and (
+                latest.message == kwargs.get("message", None)
+                and latest.url == kwargs.get("url", None)
+                and latest.is_viewed is False
+            ):
                 # Both message and URL are the same, and it hasn't been viewed
                 # so just increment occurrence count.
                 latest.occurrences = latest.occurrences + 1
@@ -297,12 +283,8 @@ class Notification(models.Model):
                 latest.save()
             else:
                 # Insert a new notification
-                new_obj = cls.objects.create(
-                    subscription=subscription,
-                    **kwargs)
-                objects_created.append(
-                    new_obj
-                )
+                new_obj = cls.objects.create(subscription=subscription, **kwargs)
+                objects_created.append(new_obj)
                 subscription.latest = new_obj
                 subscription.save()
             prev_user = subscription.settings.user
@@ -313,7 +295,7 @@ class Notification(models.Model):
         return "%s: %s" % (self.user, self.message)
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + '_notification'
-        verbose_name = _('notification')
-        verbose_name_plural = _('notifications')
-        ordering = ('-id',)
+        db_table = settings.DB_TABLE_PREFIX + "_notification"
+        verbose_name = _("notification")
+        verbose_name_plural = _("notifications")
+        ordering = ("-id",)

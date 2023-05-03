@@ -72,7 +72,7 @@
   white-space: pre;
   word-wrap: break-word }
 .example {
-  position: relative; 
+  position: relative;
   margin-top: 4rem; }
 .example-header {
   font-weight: 600;
@@ -189,7 +189,7 @@
     -webkit-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));
        -moz-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));
             filter: drop-shadow(0 0 6px rgba(0,0,0,.1)); }
-  .popover-item:first-child .popover-link:after, 
+  .popover-item:first-child .popover-link:after,
   .popover-item:first-child .popover-link:before {
     bottom: 100%;
     left: 50%;

@@ -4,7 +4,6 @@ from . import models
 
 
 class TestModelForm(forms.ModelForm):
-
     class Meta:
         model = models.TestModel
-        fields = ('name',)
+        fields = ("name",)

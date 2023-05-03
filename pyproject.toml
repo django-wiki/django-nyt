@@ -1,0 +1,155 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-nyt"
+description = "A pluggable notification system written for the Django framework."
+readme = "README.rst"
+requires-python = ">=3.5"
+license = "GPL-3.0"
+keywords = ["django", "alerts", "notification"]
+authors = [
+    { name = "Benjamin Bach", email = "benjamin@overtag.dk" },
+]
+maintainers = [
+  { name = "Oscar Cortez", email = "om.cortez.2010@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "django>=2.2,<4.3",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/django-wiki/django-nyt"
+Documentation = "https://django-nyt.readthedocs.io/en/latest/"
+Tracker = "https://github.com/django-wiki/django-nyt/issues"
+Source = "https://github.com/django-wiki/django-nyt"
+Funding = "https://donate.pypi.org"
+"Release notes" = "https://github.com/django-wiki/django-nyt/releases"
+
+[tool.hatch.publish.index]
+disable = true
+
+[tool.hatch.version]
+path = "django_nyt/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "README.rst",
+    "/django_nyt",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "coverage[toml]",
+    "codecov",
+    "flake8>=3.7,<5.1",
+    "pre-commit",
+]
+
+[tool.hatch.envs.default.scripts]
+clean = [
+    "rm -fr build/",
+    "rm -fr dist/",
+    "rm -fr *.egg-info",
+    "rm -fr .tox/",
+    "rm -f .coverage",
+    "rm -fr htmlcov/",
+    "find . -name '*.pyc' -exec rm -f {{}} +",
+    "find . -name '*.pyo' -exec rm -f {{}} +",
+    "find . -name '*~' -exec rm -f {{}} +",
+]
+lint = [
+    "flake8 --max-line-length=213 --extend-ignore=E203 --max-complexity=10 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,*/*migrations,testproject django_nyt/",
+    "pre-commit install -f --install-hooks",
+    "pre-commit run --all-files --show-diff-on-failure",
+]
+
+[tool.hatch.envs.test]
+dependencies = [
+    "codecov",
+    "coverage[toml]",
+    "flake8>=3.7,<5.1",
+    "pre-commit",
+]
+matrix-name-format = "dj{value}"
+
+[tool.hatch.envs.test.overrides]
+matrix.django.dependencies = [
+  { value = "django~={matrix:django}" },
+]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.5", "3.6", "3.7", "3.8", "3.9"]
+django = ["2.2", "3.0", "3.1", "3.2"]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.10"]
+django = ["3.2"]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.8", "3.9", "3.10"]
+django = ["4.0"]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11"]
+django = ["4.1", "4.2"]
+
+[tool.hatch.envs.test.scripts]
+all = [
+    "sh -c 'python test-project/manage.py makemigrations --check'",
+    "python -W all:'':'':'':0 -m coverage run --source=django_nyt runtests.py",
+    "coverage run --source django_nyt runtests.py",
+    "coverage report -m",
+]
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "sphinx",
+    "channels",
+    "sphinx_rtd_theme",
+]
+
+[tool.hatch.envs.docs.scripts]
+clean = "rm -rf docs/_build/*"
+build-html = "sphinx-build -c docs -b html -d docs/_build/doctrees -D latex_paper_size={args} docs/ docs/_build/html"
+build = [
+    "hatch run docs:clean",
+    "rm -f docs/modules.rst",
+    "rm -f docs/django_nyt*.rst",
+    "sphinx-apidoc -d 10 -H 'Python Reference' -o docs/ django_nyt django_nyt/tests django_nyt/migrations",
+    "hatch run docs:build-html {args}",
+]
+link-check = "sphinx-build -b linkcheck ./docs ./docs/_build"
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+line_length = 160
+multi_line_output = 5
+not_skip = "__init__.py"
+skip = "docs/conf.py"
+indent = 4

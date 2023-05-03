@@ -1,3 +1,3 @@
-from testproject.settings import *
+from testproject.settings import *  # noqa
 
-SECRET_KEY = 'b^fv_)t39h%9p40)fnkfblo##jkr!$0)lkp6bpy!fi*f$4*92!'
+SECRET_KEY = "b^fv_)t39h%9p40)fnkfblo##jkr!$0)lkp6bpy!fi*f$4*92!"

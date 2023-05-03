@@ -36,9 +36,9 @@ Create the necessary elements for this javascript to run, and you should have a 
     var nyt_latest_id = 0;
     var nyt_update_timeout = 30000;
     var nyt_update_timeout_adjust = 1.2; // factor to adjust between each timeout.
-    
+
     function ajaxError(){}
-    
+
     $.ajaxSetup({
       timeout: 7000,
       cache: false,
@@ -46,7 +46,7 @@ Create the necessary elements for this javascript to run, and you should have a 
           ajaxError();
       }
     });
-    
+
     function jsonWrapper(url, callback) {
       $.getJSON(url, function(data) {
         if (data == null) {

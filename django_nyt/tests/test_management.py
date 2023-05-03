@@ -11,7 +11,6 @@ from .test_basic import NotifyTestBase
 
 
 class CommandTest(NotifyTestBase):
-
     def tearDown(self):
         models._notification_type_cache = {}
         super().tearDown()
@@ -25,7 +24,9 @@ class CommandTest(NotifyTestBase):
         call_command("notifymail", cron=True)
 
         # No un-mailed notifications can be left!
-        self.assertEqual(models.Notification.objects.filter(is_emailed=False).count(), 0)
+        self.assertEqual(
+            models.Notification.objects.filter(is_emailed=False).count(), 0
+        )
 
         # Test that calling it again works but nothing gets sent
         call_command("notifymail", cron=True)
@@ -36,12 +37,14 @@ class CommandTest(NotifyTestBase):
         pid_file.close()
 
         try:
-            call_command('notifymail', daemon=True, pid=pid_file.name, no_sys_exit=False)
+            call_command(
+                "notifymail", daemon=True, pid=pid_file.name, no_sys_exit=False
+            )
         except SystemExit:
             # It's normal for this command to exit
             pass
 
-        with open(pid_file.name, 'r') as fp:
+        with open(pid_file.name, "r") as fp:
             pid = fp.read()
         os.unlink(pid_file.name)
 

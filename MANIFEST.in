@@ -1,5 +1,0 @@
-include LICENSE
-include README.rst
-include setup.cfg
-include requirements.txt
-recursive-include django_nyt *.html *.js *.mo *.po *.txt

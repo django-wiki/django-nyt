@@ -1,9 +1,11 @@
 import logging
 
 from channels import Group
-from channels.auth import channel_session_user, channel_session_user_from_http
+from channels.auth import channel_session_user
+from channels.auth import channel_session_user_from_http
 
-from . import models, settings
+from . import models
+from . import settings
 
 logger = logging.getLogger(__name__)
 
@@ -54,4 +56,4 @@ def ws_receive(message):
     is no communication API for the websockets.
     """
     logger.debug("Received a message, responding with a non-API message")
-    message.reply_channel.send({'text': 'OK'})
+    message.reply_channel.send({"text": "OK"})

@@ -1,14 +1,17 @@
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
+from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
+
+from . import forms
+from . import models
 from django_nyt.decorators import json_view
 from django_nyt.forms import SettingsForm
-from django_nyt.models import Notification, Settings
-
-from . import forms, models
+from django_nyt.models import Notification
+from django_nyt.models import Settings
 
 
 class TestIndex(TemplateView):
@@ -18,17 +21,15 @@ class TestIndex(TemplateView):
     def get_context_data(self, **kwargs):
         c = TemplateView.get_context_data(self, **kwargs)
         user_model = get_user_model()
-        c['users'] = user_model.objects.all()
+        c["users"] = user_model.objects.all()
         if self.request.user.is_authenticated():
-            c['notifications'] = Notification.objects.filter(
+            c["notifications"] = Notification.objects.filter(
                 user=self.request.user
-            ).order_by(
-                '-created'
-            )
-            c['settings_form'] = SettingsForm(
+            ).order_by("-created")
+            c["settings_form"] = SettingsForm(
                 instance=Settings.get_default_setting(self.request.user)
             )
-            c['testmodel_form'] = forms.TestModelForm()
+            c["testmodel_form"] = forms.TestModelForm()
         return c
 
 
@@ -43,14 +44,10 @@ class CreateTestModelView(CreateView):
     def form_valid(self, form):
         # There is a signal on TestModel that will create notifications
         form.save()
-        return {
-            'OK': True
-        }
+        return {"OK": True}
 
     def form_invalid(self, form):
-        return {
-            'OK': False
-        }
+        return {"OK": False}
 
 
 class TestLoginAsUser(DetailView):
@@ -59,6 +56,6 @@ class TestLoginAsUser(DetailView):
 
     def get(self, *args, **kwargs):
         user = self.get_object()
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        user.backend = "django.contrib.auth.backends.ModelBackend"
         login(self.request, user)
-        return redirect('testapp:index')
+        return redirect("testapp:index")

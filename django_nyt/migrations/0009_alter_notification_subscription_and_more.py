@@ -7,23 +7,37 @@ from django.db import models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_nyt', '0008_auto_20161023_1641'),
+        ("django_nyt", "0008_auto_20161023_1641"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notification',
-            name='subscription',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='django_nyt.subscription', verbose_name='subscription'),
+            model_name="notification",
+            name="subscription",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="django_nyt.subscription",
+                verbose_name="subscription",
+            ),
         ),
         migrations.AlterField(
-            model_name='subscription',
-            name='notification_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='django_nyt.notificationtype', verbose_name='notification type'),
+            model_name="subscription",
+            name="notification_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="django_nyt.notificationtype",
+                verbose_name="notification type",
+            ),
         ),
         migrations.AlterField(
-            model_name='subscription',
-            name='settings',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='django_nyt.settings', verbose_name='settings'),
+            model_name="subscription",
+            name="settings",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="django_nyt.settings",
+                verbose_name="settings",
+            ),
         ),
     ]
