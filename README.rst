@@ -2,14 +2,14 @@ django-nyt
 ==========
 
 .. |Build status| image:: https://circleci.com/gh/django-wiki/django-nyt.svg?style=shield
-   :target: https://circleci.com/gh/django-wiki/django-nyt
+   :target: https://app.circleci.com/pipelines/github/django-wiki/django-nyt
 .. image:: https://readthedocs.org/projects/django-nyt/badge/?version=latest
    :target: https://django-nyt.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 .. image:: https://badge.fury.io/py/django-nyt.svg
-   :target: https://pypi.python.org/pypi/django-nyt
+   :target: https://pypi.org/project/django-nyt/
 .. image:: https://codecov.io/github/django-wiki/django-nyt/coverage.svg?branch=master
-  :target: https://codecov.io/github/django-wiki/django-nyt?branch=master
+  :target: https://app.codecov.io/github/django-wiki/django-nyt?branch=master
 
 Concept
 -------
@@ -36,7 +36,7 @@ Channels (django-channels)
 --------------------------
 
 Starting from django-nyt 1.0, support for the upcoming
-`channels <https://channels.readthedocs.io/>`_ has been added together with
+`channels <https://channels.readthedocs.io/en/stable/>`_ has been added together with
 Django 1.9 and 1.10 support.
 
 Docs

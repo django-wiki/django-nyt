@@ -41,6 +41,13 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.optional-dependencies]
+docs = [
+    "sphinx==6.2.1",
+    "channels==4.0.0",
+    "sphinx_rtd_theme==1.2.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/django-wiki/django-nyt"
 Documentation = "https://django-nyt.readthedocs.io/en/latest/"
@@ -127,9 +134,9 @@ all = [
 
 [tool.hatch.envs.docs]
 dependencies = [
-    "sphinx",
-    "channels",
-    "sphinx_rtd_theme",
+    "sphinx==6.2.1",
+    "channels==4.0.0",
+    "sphinx_rtd_theme==1.2.0",
 ]
 
 [tool.hatch.envs.docs.scripts]
