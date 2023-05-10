@@ -29,7 +29,7 @@ a real integration with a channel worker server and Redis.
     }
 
 
-For more on deployment, read `the Channels documentation <http://channels.readthedocs.org/en/latest/deploying.html>`_.
+For more on deployment, read `the Channels documentation <https://channels.readthedocs.io/en/latest/deploying.html>`_.
 
 
 Communicating with websockets

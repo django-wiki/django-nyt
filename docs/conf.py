@@ -38,6 +38,7 @@ extensions = ["sphinx.ext.autodoc", "sphinx.ext.extlinks"]
 
 extlinks = {
     "url-issue": ("https://github.com/django-wiki/django-nyt/issues/%s", "#%s"),
+    "url-pr": ("https://github.com/django-wiki/django-nyt/pull/%s", "#%s"),
 }
 
 # Add any paths that contain templates here, relative to this directory.
