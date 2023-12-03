@@ -58,16 +58,16 @@ the various steps of implementing notifications for your project.
 
 Let's try to summarize the reasons you want to be using django-nyt:
 
- - Simple API: call ``notify()`` where-ever you want.
- - CLI for sending emails (as cron job, daemon or Celery task)
- - Support for django-channels and Web Sockets (optional, fallback for JSON-based polling)
- - Basic JavaScript / HTML example code
- - Multi-lingual
- - Individual subscription settings for each type of event, for instance:
-   - Event type A spawns instant email notifications, but Event B only gets emailed weekly.
- - Customizable intervals for which users can receive notifications
- - Optional URL for action target for each notification
- - Avoid clutter: Notifications don't get repeated, instead a counter is incremented.
+- Simple API: call ``notify()`` where-ever you want.
+- CLI for sending emails (as cron job, daemon or Celery task)
+- Support for django-channels and Web Sockets (optional, fallback for JSON-based polling)
+- Basic JavaScript / HTML example code
+- Multi-lingual
+- Individual subscription settings for each type of event, for instance:
+  - Event type A spawns instant email notifications, but Event B only gets emailed weekly.
+- Customizable intervals for which users can receive notifications
+- Optional URL for action target for each notification
+- Avoid clutter: Notifications don't get repeated, instead a counter is incremented.
 
 This project exists with ``django.contrib.messages`` in mind, to serve a simple,
 best-practice, scalable solution for notifications. There are loads of other
@@ -132,6 +132,8 @@ After this, navigate to `http://localhost:8000 <http://localhost:8000>`_
 Community
 ---------
 
-Please visit #django-wiki on irc.freenode.net as many django-wiki users
-are also familiar with django-nyt which previously lived inside
-django-wiki.
+As many django-wiki users are also familiar with Django,
+please visit the channel #django-wiki on Libera.
+Click here for a web client <https://web.libera.chat/?channel=#django-wiki>`__).
+
+Otherwise, use the `Discussions <https://github.com/django-wiki/django-nyt/discussions>`__ tab on GitHub.
