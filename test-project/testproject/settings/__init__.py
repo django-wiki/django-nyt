@@ -90,7 +90,7 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.admindocs",
     "django_nyt",
-    "testapp",
+    "tests.testapp",
 ]
 
 if VERSION <= (1, 6):
