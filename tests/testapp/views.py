@@ -22,7 +22,7 @@ class TestIndex(TemplateView):
         c = TemplateView.get_context_data(self, **kwargs)
         user_model = get_user_model()
         c["users"] = user_model.objects.all()
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             c["notifications"] = Notification.objects.filter(
                 user=self.request.user
             ).order_by("-created")
