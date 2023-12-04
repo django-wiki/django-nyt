@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+1.4 (unreleased)
+----------------
+
+* Tests migrated to pytest #123 (Benjamin Balder Bach)
+
+
 1.3
 ---
 

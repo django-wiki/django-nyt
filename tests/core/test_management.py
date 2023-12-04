@@ -5,9 +5,9 @@ from tempfile import NamedTemporaryFile
 
 from django.core.management import call_command
 
-from .. import models
-from .. import utils
 from .test_basic import NotifyTestBase
+from django_nyt import models
+from django_nyt import utils
 
 
 class CommandTest(NotifyTestBase):

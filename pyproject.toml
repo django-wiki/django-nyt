@@ -96,10 +96,12 @@ lint = [
 
 [tool.hatch.envs.test]
 dependencies = [
-    "codecov",
-    "coverage[toml]",
     "flake8>=3.7,<5.1",
     "pre-commit",
+    "pytest>=7,<8",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-pythonpath",
 ]
 matrix-name-format = "dj{value}"
 
@@ -127,9 +129,7 @@ django = ["4.1", "4.2"]
 [tool.hatch.envs.test.scripts]
 all = [
     "sh -c 'python test-project/manage.py makemigrations --check'",
-    "python -W all:'':'':'':0 -m coverage run --source=django_nyt runtests.py",
-    "coverage run --source django_nyt runtests.py",
-    "coverage report -m",
+    "pytest --cov=django_nyt tests/ {args}",
 ]
 
 [tool.hatch.envs.docs]
@@ -160,3 +160,21 @@ multi_line_output = 5
 not_skip = "__init__.py"
 skip = "docs/conf.py"
 indent = 4
+
+[tool.pytest.ini_options]
+django_find_project = false
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    "test-project"
+]
+norecursedirs = [
+    "test-project",
+    ".svn",
+    "_build",
+    "tmp*",
+    "dist",
+    "*.egg-info",
+]
+DJANGO_SETTINGS_MODULE = "tests.settings"
