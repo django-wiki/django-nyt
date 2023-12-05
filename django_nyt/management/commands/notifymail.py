@@ -12,7 +12,6 @@ from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 from django.utils.translation import activate
 from django.utils.translation import deactivate
-from django.utils.translation import gettext as _
 
 from django_nyt import models
 from django_nyt import settings as nyt_settings
@@ -72,10 +71,18 @@ class Command(BaseCommand):
             default=SLEEP_TIME,
         )
 
-    def _send_user_notifications(self, context, connection):
-        subject = _(nyt_settings.EMAIL_SUBJECT)
+    def _render_and_send(
+        self, template_name, template_subject_name, context, connection
+    ):
 
-        message = render_to_string("emails/notification_email_message.txt", context)
+        # This setting overrides everything
+        if nyt_settings.EMAIL_SUBJECT:
+            # Notice that this usually is a lazy translation object
+            subject = str(nyt_settings.EMAIL_SUBJECT)
+        else:
+            subject = render_to_string(template_subject_name, context).strip()
+
+        message = render_to_string(template_name, context)
         email = mail.EmailMessage(
             subject,
             message,
@@ -184,7 +191,9 @@ class Command(BaseCommand):
                 )
             )
 
-    def _send_batch(self, context, connection, setting):
+    def _send_with_retry(
+        self, template_name, subject_template_name, context, connection, setting
+    ):
         """
         Loops through emails in a list of notifications and tries to send
         to each recepient
@@ -198,7 +207,9 @@ class Command(BaseCommand):
 
         while True:
             try:
-                self._send_user_notifications(context, connection)
+                self._render_and_send(
+                    template_name, subject_template_name, context, connection
+                )
                 for n in notifications:
                     n.is_emailed = True
                     n.save()
@@ -227,8 +238,9 @@ class Command(BaseCommand):
 
     def send_mails(self, connection, last_sent=None, user_settings=None):
         """
-        Does the lookups and sends out email digests to anyone who has them
-        due.
+        Does the lookups and sends out email digests to anyone who has them due.
+        Since the system may have different templates depending on which notification is being sent,
+        we will generate a call for each template.
         """
 
         self.logger.debug("Entering send_mails()")
@@ -236,28 +248,56 @@ class Command(BaseCommand):
         connection.open()
 
         if not user_settings:
-            user_settings = models.Settings.objects.all().order_by("user")
-
-        context = {
-            "user": None,
-            "username": None,
-            "notifications": None,
-            "digest": None,
-            "site": Site.objects.get_current(),
-        }
+            user_settings = (
+                models.Settings.objects.all()
+                .select_related("user")
+                .prefetch_related(
+                    "subscription_set", "subscription_set__notification_type"
+                )
+                .order_by("user")
+            )
 
         for setting in user_settings:
+
+            context = {
+                "user": None,
+                "username": None,
+                "notifications": None,
+                "digest": None,
+                "site": Site.objects.get_current(),
+            }
+
             context["user"] = setting.user
             context["username"] = getattr(setting.user, setting.user.USERNAME_FIELD)
-            # Which notifications are remaining for the user's settings
-            context["notifications"] = []
             # get the index of the tuple corresponding to the interval and
             # get the string name
             idx = [y[0] for y in nyt_settings.INTERVALS].index(setting.interval)
             context["digest"] = nyt_settings.INTERVALS[idx][1]
+
+            emails_per_template = {}
+
             for subscription in setting.subscription_set.filter(
                 send_emails=True, latest__is_emailed=False
             ):
-                context["notifications"].append(subscription.latest)
+                template_name = subscription.notification_type.get_email_template_name()
+                subject_template_name = (
+                    subscription.notification_type.get_email_subject_template_name()
+                )
 
-            self._send_batch(context, connection, setting)
+                emails_per_template.setdefault(
+                    (template_name, subject_template_name), []
+                )
+                emails_per_template[(template_name, subject_template_name)].append(
+                    subscription.latest
+                )
+
+            # Send the prepared template names, subjects and context to the user
+            for (
+                template_name,
+                subject_template_name,
+            ), notifications in emails_per_template.items():
+                context["notifications"] = notifications
+
+                self._send_with_retry(
+                    template_name, subject_template_name, context, connection, setting
+                )

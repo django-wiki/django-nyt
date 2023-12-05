@@ -1,3 +1,5 @@
+from pathlib import PurePath
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -49,6 +51,18 @@ class NotificationType(models.Model):
             nt = cls.objects.create(key=key, content_type=content_type)
         _notification_type_cache[key] = nt
         return nt
+
+    def get_email_template_name(self):
+        for key_glob, template_name in settings.EMAIL_TEMPLATE_NAMES:
+            if PurePath(self.key).match(key_glob):
+                return template_name
+        return settings.EMAIL_TEMPLATE_DEFAULT
+
+    def get_email_subject_template_name(self):
+        for key_glob, template_name in settings.EMAIL_SUBJECT_TEMPLATE_NAMES:
+            if PurePath(self.key).match(key_glob):
+                return template_name
+        return settings.EMAIL_SUBJECT_TEMPLATE_DEFAULT
 
 
 @receiver([post_save, post_delete], sender=NotificationType)
