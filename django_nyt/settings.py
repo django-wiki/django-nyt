@@ -23,6 +23,21 @@ EMAIL_SUBJECT = getattr(
 EMAIL_SENDER = getattr(django_settings, "NYT_EMAIL_SENDER", "notifications@example.com")
 """Default sender email"""
 
+EMAIL_TEMPLATE_NAMES = getattr(django_settings, "NYT_EMAIL_TEMPLATE_NAMES", {})
+"""Default dictionary, mapping notification keys to template names. Can be overwritten by database values.
+Keys can have a glob pattern, like USER_CHANGED_*."""
+
+EMAIL_SUBJECT_TEMPLATE_NAMES = getattr(
+    django_settings, "NYT_EMAIL_SUBJECT_TEMPLATE_NAMES", {}
+)
+"""Default dictionary, mapping notification keys to template names. The templates are used to generate a single-line email subject.
+Can be overwritten by database values.
+Keys can have a glob pattern, like USER_CHANGED_*."""
+
+ENABLE_CHANNELS = "channels" in django_settings.INSTALLED_APPS and not getattr(
+    django_settings, "NYT_CHANNELS_DISABLE", False
+)
+
 # You can always make up more numbers... they simply identify which notifications
 # to send when invoking the script, and the number indicates how many hours
 # to minimum pass between each notification.
