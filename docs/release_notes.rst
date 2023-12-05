@@ -13,6 +13,7 @@ Release Notes
 **Changed**
 
 * Tests migrated to pytest #123 (Benjamin Balder Bach)
+* Default email notification paths are changed to ``notifications/emails/default.txt`` and ``notifications/emails/default_subject.txt`` #125 (Benjamin Balder Bach)
 * Notification URLs added to emails have a hard-coded `https://` (before, this was `http://`) #125 (Benjamin Balder Bach)
 
 **Fixed**

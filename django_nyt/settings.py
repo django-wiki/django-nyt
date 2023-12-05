@@ -23,8 +23,8 @@ EMAIL_SUBJECT = getattr(django_settings, "NYT_EMAIL_SUBJECT", None)
 EMAIL_SENDER = getattr(django_settings, "NYT_EMAIL_SENDER", "notifications@example.com")
 """Default sender email"""
 
-EMAIL_TEMPLATE_DEFAULT = "emails/notification_email_message.txt"
-EMAIL_SUBJECT_TEMPLATE_DEFAULT = "emails/notification_email_subject.txt"
+EMAIL_TEMPLATE_DEFAULT = "notifications/emails/default.txt"
+EMAIL_SUBJECT_TEMPLATE_DEFAULT = "notifications/emails/default_subject.txt"
 
 EMAIL_TEMPLATE_NAMES = getattr(
     django_settings, "NYT_EMAIL_TEMPLATE_NAMES", OrderedDict()

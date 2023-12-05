@@ -27,7 +27,7 @@ class NotifyTest(NotifyTestBase):
             mail.outbox[0].body
             == """Dear alice,
 
-These are the instantly notifications from example.com.
+These are notifications sent instantly from example.com.
 
  * Test is a test
 
@@ -58,7 +58,7 @@ example.com
             mail.outbox[0].body
             == """Dear alice,
 
-These are the instantly notifications from example.com.
+These are notifications sent instantly from example.com.
 
  * Test is a test
    https://example.com/test
@@ -96,7 +96,7 @@ example.com
                 mail.outbox[0].body
                 == """Dear alice,
 
-These are the instantly notifications from example.com.
+These are notifications sent instantly from example.com.
 
  * Test is a test
    https://example.com/test
