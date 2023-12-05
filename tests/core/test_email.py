@@ -25,7 +25,6 @@ class NotifyTest(NotifyTestBase):
 These are the instantly notifications from example.com.
 
  * Test is a test
-   http://example.comNone
 
 
 Thanks for using our site!
