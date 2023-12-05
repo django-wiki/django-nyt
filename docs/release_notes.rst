@@ -4,7 +4,21 @@ Release Notes
 1.4 (unreleased)
 ----------------
 
+**Added**
+
+* Custom email templates per notification type:
+  For instance, a site admin and a user may now receive different notification emails, both for content and subject line.
+  This is controlled by two new dictionaries in your settings ``NYT_EMAIL_TEMPLATE_NAMES`` and ``NYT_EMAIL_SUBJECT_TEMPLATE_NAMES`` #125 (Benjamin Balder Bach)
+
+**Changed**
+
 * Tests migrated to pytest #123 (Benjamin Balder Bach)
+* Notification URLs added to emails have a hard-coded `https://` (before, this was `http://`) #125 (Benjamin Balder Bach)
+
+**Fixed**
+
+* Template files possible for email subjects. Previously, this file was ignored #125 (Benjamin Balder Bach)
+* Notifications without URLs had a broken URL in emails #125 (Benjamin Balder Bach)
 
 
 1.3

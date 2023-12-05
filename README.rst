@@ -97,16 +97,31 @@ site, you're going to have to work it out on your own.
 
 Other items for your TODO list:
 
--  Provide your users with options to customize their subscriptions and
-   notification preferences. Create your own ``Form`` inheriting from
-   ``django_nyt.forms.SettingsForm``.
--  Customize contents of notification emails by overwriting templates in
-   ``django_nyt/emails/notification_email_message.txt`` and
-   ``django_nyt/emails/notification_email_subject.txt``.
--  Make the mail notification daemon script run either constantly
-   ``python manage.py notifymail --daemon`` or with some interval by invoking
-   ``python manage.py notifymail --cron`` as a cronjob. You can also call it
-   from a Celery task or similar with ``call_command('notifymail', cron=True)``.
+- Provide your users with options to customize their subscriptions and
+  notification preferences. Create your own ``Form`` inheriting from
+  ``django_nyt.forms.SettingsForm``.
+- Customize contents of notification emails by overwriting templates in
+  ``django_nyt/emails/notification_email_message.txt`` and
+  ``django_nyt/emails/notification_email_subject.txt``.
+- You can also have separate email templates per notification key.
+  This includes using glob patterns.
+  For instance, you can add this in your settings:
+
+  .. code-block:: python
+
+     NYT_EMAIL_TEMPLATE_NAMES = OrderedDict({
+        "ADMIN_*": "myapp/notifications/email/admins.txt"
+        "*": "myapp/notifications/email/default.txt"
+     })
+     NYT_EMAIL_TEMPLATE_SUBJECT_NAMES = OrderedDict({
+        "ADMIN_*": "myapp/notifications/email/admins_subject.txt"
+        "*": "myapp/notifications/email/default_subject.txt"
+     })
+
+- Make the mail notification daemon script run either constantly
+  ``python manage.py notifymail --daemon`` or with some interval by invoking
+  ``python manage.py notifymail --cron`` as a cronjob. You can also call it
+  from a Celery task or similar with ``call_command('notifymail', cron=True)``.
 
 
 Development / demo project
