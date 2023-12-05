@@ -14,7 +14,7 @@ django-nyt
 Concept
 -------
 
-django-nyt is a notification framework for Django, it does this:
+django-nyt is a notification framework for Django. It does this:
 
 .. code:: python
 
@@ -32,12 +32,28 @@ an interval of their choice.
 Data can be accessed easily from Django models or from the included JSON
 views.
 
+By using generic object relations, custom URLs, and custom email templates,
+you can expand your notification logic to create email messages that both marks the notification as read when clicking a link and at the same time redirects users to a final destination:
+
+.. code:: python
+
+    from django_nyt.utils import notify
+
+    product = product
+    EVENT_KEY = "product_is_in_stock"
+    notify(
+        _(f"{product.name} is in stock"),
+        EVENT_KEY,
+        url=f"/products/{product.id}/",
+        target_object=product
+    )
+
+
 Channels (django-channels)
 --------------------------
 
-Starting from django-nyt 1.0, support for the upcoming
-`channels <https://channels.readthedocs.io/en/stable/>`_ has been added together with
-Django 1.9 and 1.10 support.
+Starting from django-nyt 1.0, support for
+`channels <https://channels.readthedocs.io/en/stable/>`_ 1.0 has been added.
 
 Docs
 ----
