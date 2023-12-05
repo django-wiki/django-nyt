@@ -108,6 +108,52 @@ example.com
         nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict()
         nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict()
 
+    def test_multiple_templates(self):
+        # TODO: https://github.com/django-wiki/django-nyt/issues/124
+        from django_nyt import settings as nyt_settings
+
+        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict(
+            {
+                "key1": "testapp/notifications/email.txt",
+                "admin_*": "testapp/notifications/admin.txt",
+            }
+        )
+        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict(
+            {
+                "key1": "testapp/notifications/email_subject.txt",
+                "admin_*": "testapp/notifications/admin_subject.txt",
+                "*": "notifications/emails/default_subject.txt",
+            }
+        )
+
+        # Subscribe User 1 to 3 keys
+        utils.subscribe(self.user1_settings, "key1", send_emails=True)
+        utils.subscribe(self.user1_settings, "admin_emails", send_emails=True)
+        utils.subscribe(self.user1_settings, "key2", send_emails=True)
+        utils.subscribe(self.user1_settings, "key3", send_emails=False)
+
+        mail.outbox = []
+        utils.notify("Specific key1 test", "key1", url="/test-key1")
+        utils.notify("Default test", "key2", url="/test")
+        utils.notify("Admin test", "admin_emails", url="/test")
+
+        call_command("notifymail", "--cron", "--no-sys-exit")
+
+        assert len(mail.outbox) == 3
+        assert mail.outbox[0].subject == "subject"
+        assert mail.outbox[0].body == "Test\n"
+        assert mail.outbox[1].body == "Admin\n"
+        assert mail.outbox[1].subject == "notifications for admin"
+        assert (
+            mail.outbox[2].subject
+            == "You have new notifications from example.com (type: instantly)"
+        )
+
+        # Reset to default state
+        # TODO: https://github.com/django-wiki/django-nyt/issues/124
+        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict()
+        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict()
+
     @override_settings(NYT_EMAIL_SUBJECT="test")
     def test_nyt_email_subject(self):
 
