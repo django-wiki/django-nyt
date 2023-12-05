@@ -72,43 +72,41 @@ example.com
 """
         )
 
+    @override_settings(
+        NYT_EMAIL_TEMPLATE_NAMES=OrderedDict(
+            {NotifyTestBase.TEST_KEY: "testapp/notifications/email.txt"}
+        ),
+        NYT_EMAIL_SUBJECT_TEMPLATE_NAMES=OrderedDict(
+            {NotifyTestBase.TEST_KEY: "testapp/notifications/email_subject.txt"}
+        ),
+    )
     def test_custom_email_template(self):
-        with override_settings(
-            NYT_EMAIL_TEMPLATES=OrderedDict(
-                {self.TEST_KEY: "testapp/notifications/email.txt"}
-            )
-        ):
-            mail.outbox = []
+        # TODO: https://github.com/django-wiki/django-nyt/issues/124
+        from django_nyt import settings as nyt_settings
 
-            # Subscribe User 1 to test key
-            utils.subscribe(self.user1_settings, self.TEST_KEY, send_emails=True)
-            utils.notify("Test is a test", self.TEST_KEY, url="/test")
+        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict(
+            {NotifyTestBase.TEST_KEY: "testapp/notifications/email.txt"}
+        )
+        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict(
+            {NotifyTestBase.TEST_KEY: "testapp/notifications/email_subject.txt"}
+        )
 
-            call_command("notifymail", "--cron", "--no-sys-exit")
+        mail.outbox = []
 
-            assert len(mail.outbox) == 1
-            print(mail.outbox[0].subject)
-            assert (
-                mail.outbox[0].subject
-                == "You have new notifications from example.com (type: instantly)"
-            )
-            assert (
-                mail.outbox[0].body
-                == """Dear alice,
+        # Subscribe User 1 to test key
+        utils.subscribe(self.user1_settings, self.TEST_KEY, send_emails=True)
+        utils.notify("Test is a test", self.TEST_KEY, url="/test")
 
-These are notifications sent instantly from example.com.
+        call_command("notifymail", "--cron", "--no-sys-exit")
 
- * Test is a test
-   https://example.com/test
+        assert len(mail.outbox) == 1
+        assert mail.outbox[0].subject == "subject"
+        assert mail.outbox[0].body == "Test\n"
 
-
-Thanks for using our site!
-
-Sincerely,
-example.com
-
-"""
-            )
+        # Reset to default state
+        # TODO: https://github.com/django-wiki/django-nyt/issues/124
+        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict()
+        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict()
 
     @override_settings(NYT_EMAIL_SUBJECT="test")
     def test_nyt_email_subject(self):
@@ -116,6 +114,7 @@ example.com
         # TODO: https://github.com/django-wiki/django-nyt/issues/124
         from django_nyt import settings as nyt_settings
 
+        old_setting = nyt_settings.EMAIL_SUBJECT
         nyt_settings.EMAIL_SUBJECT = "test"
 
         mail.outbox = []
@@ -128,3 +127,7 @@ example.com
 
         assert len(mail.outbox) == 1
         assert mail.outbox[0].subject == "test"
+
+        # Reset to default state
+        # TODO: https://github.com/django-wiki/django-nyt/issues/124
+        nyt_settings.EMAIL_SUBJECT = old_setting

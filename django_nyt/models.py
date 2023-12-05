@@ -53,13 +53,13 @@ class NotificationType(models.Model):
         return nt
 
     def get_email_template_name(self):
-        for key_glob, template_name in settings.EMAIL_TEMPLATE_NAMES:
+        for key_glob, template_name in settings.EMAIL_TEMPLATE_NAMES.items():
             if PurePath(self.key).match(key_glob):
                 return template_name
         return settings.EMAIL_TEMPLATE_DEFAULT
 
     def get_email_subject_template_name(self):
-        for key_glob, template_name in settings.EMAIL_SUBJECT_TEMPLATE_NAMES:
+        for key_glob, template_name in settings.EMAIL_SUBJECT_TEMPLATE_NAMES.items():
             if PurePath(self.key).match(key_glob):
                 return template_name
         return settings.EMAIL_SUBJECT_TEMPLATE_DEFAULT
