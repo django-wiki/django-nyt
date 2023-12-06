@@ -1,9 +1,9 @@
 {% load i18n %}{% autoescape off %}{% blocktrans with username as username %}Dear {{ username }},{% endblocktrans %}
 
-{% blocktrans with site.name as site %}These are the {{ digest }} notifications from {{ site }}.{% endblocktrans %}
+{% blocktrans with site.name as site %}These are notifications sent {{ digest }} from {{ site }}.{% endblocktrans %}
 {% for n in notifications %}
- * {{ n.message }}
-   http://{{ site.domain }}{{n.url}}
+ * {{ n.message }}{% if n.url %}
+   https://{{ site.domain }}{{n.url}}{% endif %}
 {% endfor %}
 
 {% trans "Thanks for using our site!" %}

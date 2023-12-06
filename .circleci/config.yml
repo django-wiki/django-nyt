@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@0.2.1
+  codecov: codecov/codecov@3.2.5
 
 jobs:
   hatch:
@@ -19,7 +20,9 @@ jobs:
       - image: cimg/python:<<parameters.python_version>>
     steps:
       - checkout
-      - run: pip install hatch && python -m hatch --env test.<<parameters.hatch_env>> run all
+      - run: pip install coverage[toml] hatch
+      - run: python -m hatch --env test.<<parameters.hatch_env>> run all
+      - codecov/upload
   lint:
     description: "Simple job for linting the pushed code"
     docker:

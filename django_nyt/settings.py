@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.conf import settings as django_settings
 from django.utils.translation import gettext_lazy as _
 
@@ -15,13 +17,31 @@ SEND_EMAILS = getattr(django_settings, "NYT_SEND_EMAILS", True)
 emails, both instant and scheduled digests.
 Remeber that emails are sent with ``python manage.py notifymail``."""
 
-EMAIL_SUBJECT = getattr(
-    django_settings, "NYT_EMAIL_SUBJECT", _("You have new notifications")
-)
-"""Subject of all emails sent"""
+EMAIL_SUBJECT = getattr(django_settings, "NYT_EMAIL_SUBJECT", None)
+"""Hard-code a subject of all emails sent (overrides subject templates)"""
 
 EMAIL_SENDER = getattr(django_settings, "NYT_EMAIL_SENDER", "notifications@example.com")
 """Default sender email"""
+
+EMAIL_TEMPLATE_DEFAULT = "notifications/emails/default.txt"
+EMAIL_SUBJECT_TEMPLATE_DEFAULT = "notifications/emails/default_subject.txt"
+
+EMAIL_TEMPLATE_NAMES = getattr(
+    django_settings, "NYT_EMAIL_TEMPLATE_NAMES", OrderedDict()
+)
+"""Default dictionary, mapping notification keys to template names. Can be overwritten by database values.
+Keys can have a glob pattern, like USER_CHANGED_*."""
+
+EMAIL_SUBJECT_TEMPLATE_NAMES = getattr(
+    django_settings, "NYT_EMAIL_SUBJECT_TEMPLATE_NAMES", OrderedDict()
+)
+"""Default dictionary, mapping notification keys to template names. The templates are used to generate a single-line email subject.
+Can be overwritten by database values.
+Keys can have a glob pattern, like USER_CHANGED_*."""
+
+ENABLE_CHANNELS = "channels" in django_settings.INSTALLED_APPS and not getattr(
+    django_settings, "NYT_CHANNELS_DISABLE", False
+)
 
 # You can always make up more numbers... they simply identify which notifications
 # to send when invoking the script, and the number indicates how many hours

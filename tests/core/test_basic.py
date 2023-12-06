@@ -8,9 +8,11 @@ User = get_user_model()
 
 
 class NotifyTestBase(TestCase):
+
+    TEST_KEY = "test_key"
+
     def setUp(self):
         super(NotifyTestBase, self).setUp()
-        self.TEST_KEY = "test_key"
 
         # These two users are created by migrations in testproject.testapp
         # Reason is to make the testproject easy to setup and use.
