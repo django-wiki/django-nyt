@@ -58,7 +58,7 @@ def notify(
     )
 
     # Notify channel subscribers if we have channels enabled
-    if settings.ENABLE_CHANNELS:
+    if settings.NYT_ENABLE_CHANNELS:
         from django_nyt import subscribers
 
         subscribers.notify_subscribers(objects, key)

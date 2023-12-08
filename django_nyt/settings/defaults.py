@@ -1,11 +1,6 @@
 """
-
 These are the default settings from ``django_nyt.settings`` that can be overridden from
 your Django project's settings module by defining a setting with the same name.
-
-The settings module exposes settings in a very particular way.
-Only settings defined here with a ``NYT_*`` prefix can be accessed from outside,
-and they are internally accessed without the ``NYT`` prefix (currently as a decision to remain backwards compatible).
 """
 from collections import OrderedDict
 
@@ -82,26 +77,3 @@ however you can explicitly disable it with NYT_CHANNELS_DISABLE."""
 # Name of the global channel (preliminary stuff) that alerts everyone that there
 # is a new notification
 NYT_NOTIFICATION_CHANNEL = "nyt_all-{notification_key:s}"
-
-
-def __getattr__(name):
-
-    this_module = globals()
-    settings_prefix = "NYT_"
-
-    if settings_prefix + name in this_module.keys():
-        default = this_module[settings_prefix + name]
-        return getattr(django_settings, settings_prefix + name, default)
-
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
-
-
-####################
-# PLANNED SETTINGS #
-####################
-
-# AUTO_DELETE = getattr(django_settings, 'NYT_AUTO_DELETE', 120)
-"""After how many days should viewed notifications be deleted? (not implemented)"""
-
-# AUTO_DELETE_ALL = getattr(django_settings, 'NYT_AUTO_DELETE_ALL', 120)
-"""After how many days should both viewed and unviewed notifications be deleted? (not implemented)"""

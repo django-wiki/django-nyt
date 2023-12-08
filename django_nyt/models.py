@@ -37,7 +37,7 @@ class NotificationType(models.Model):
         return self.key
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + "_notificationtype"
+        db_table = settings.NYT_DB_TABLE_PREFIX + "_notificationtype"
         verbose_name = _("type")
         verbose_name_plural = _("types")
 
@@ -53,13 +53,16 @@ class NotificationType(models.Model):
         return nt
 
     def get_email_template_name(self):
-        for key_glob, template_name in settings.EMAIL_TEMPLATE_NAMES.items():
+        for key_glob, template_name in settings.NYT_EMAIL_TEMPLATE_NAMES.items():
             if PurePath(self.key).match(key_glob):
                 return template_name
         return settings.EMAIL_TEMPLATE_DEFAULT
 
     def get_email_subject_template_name(self):
-        for key_glob, template_name in settings.EMAIL_SUBJECT_TEMPLATE_NAMES.items():
+        for (
+            key_glob,
+            template_name,
+        ) in settings.NYT_EMAIL_SUBJECT_TEMPLATE_NAMES.items():
             if PurePath(self.key).match(key_glob):
                 return template_name
         return settings.EMAIL_SUBJECT_TEMPLATE_DEFAULT
@@ -77,16 +80,16 @@ class Settings(models.Model):
     """
 
     user = models.ForeignKey(
-        settings.USER_MODEL,
+        settings.NYT_USER_MODEL,
         on_delete=models.CASCADE,  # If a user is deleted, remove all settings
         verbose_name=_("user"),
         related_name="nyt_settings",
     )
 
     interval = models.SmallIntegerField(
-        choices=settings.INTERVALS,
+        choices=settings.NYT_INTERVALS,
         verbose_name=_("interval"),
-        default=settings.INTERVALS_DEFAULT,
+        default=settings.NYT_INTERVALS_DEFAULT,
     )
 
     is_default = models.BooleanField(
@@ -99,7 +102,7 @@ class Settings(models.Model):
         return obj_name
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + "_settings"
+        db_table = settings.NYT_DB_TABLE_PREFIX + "_settings"
         verbose_name = _("settings")
         verbose_name_plural = _("settings")
 
@@ -184,7 +187,7 @@ class Subscription(models.Model):
         return obj_name
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + "_subscription"
+        db_table = settings.NYT_DB_TABLE_PREFIX + "_subscription"
         verbose_name = _("subscription")
         verbose_name_plural = _("subscriptions")
 
@@ -203,7 +206,7 @@ class Notification(models.Model):
     #: Or the user to receive the notification
     # If a user is deleted, remove all notifications (CASCADE)
     user = models.ForeignKey(
-        settings.USER_MODEL,
+        settings.NYT_USER_MODEL,
         null=True,
         blank=True,
         on_delete=models.CASCADE,
@@ -309,7 +312,7 @@ class Notification(models.Model):
         return "%s: %s" % (self.user, self.message)
 
     class Meta:
-        db_table = settings.DB_TABLE_PREFIX + "_notification"
+        db_table = settings.NYT_DB_TABLE_PREFIX + "_notification"
         verbose_name = _("notification")
         verbose_name_plural = _("notifications")
         ordering = ("-id",)

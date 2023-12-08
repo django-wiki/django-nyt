@@ -37,7 +37,7 @@ class NotificationAdmin(admin.ModelAdmin):
     raw_id_fields = ("user", "subscription")
 
 
-if settings.ENABLE_ADMIN:
+if settings.NYT_ENABLE_ADMIN:
     admin.site.register(models.NotificationType)
     admin.site.register(models.Notification, NotificationAdmin)
     admin.site.register(models.Settings, SettingsAdmin)
