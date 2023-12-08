@@ -1,47 +1,52 @@
+"""
+
+These are the default settings from ``django_nyt.settings`` that can be overridden from
+your Django project's settings module by defining a setting with the same name.
+
+The settings module exposes settings in a very particular way.
+Only settings defined here with a ``NYT_*`` prefix can be accessed from outside,
+and they are internally accessed without the ``NYT`` prefix (currently as a decision to remain backwards compatible).
+"""
 from collections import OrderedDict
 
 from django.conf import settings as django_settings
 from django.utils.translation import gettext_lazy as _
 
-DB_TABLE_PREFIX = "nyt"
+NYT_DB_TABLE_PREFIX = "nyt"
+"""The table prefix for tables in the database. Do not change this unless you know what you are doing."""
 
-ENABLED = getattr(django_settings, "NYT_ENABLED", True)
+NYT_ENABLED = True
 """Global setting to force-fully disable all propagation and creation of
 notifications."""
 
-ENABLE_ADMIN = getattr(django_settings, "NYT_ENABLE_ADMIN", False)
-"""Enable django-admin registration for django-nyt's ModelAdmin's"""
+NYT_ENABLE_ADMIN = False
+"""Enable django-admin registration for django-nyt's ModelAdmin classes."""
 
-SEND_EMAILS = getattr(django_settings, "NYT_SEND_EMAILS", True)
+NYT_SEND_EMAILS = True
 """Email notifications global setting, can be used to globally switch off
 emails, both instant and scheduled digests.
-Remeber that emails are sent with ``python manage.py notifymail``."""
+Remember that emails are sent with ``python manage.py notifymail``."""
 
-EMAIL_SUBJECT = getattr(django_settings, "NYT_EMAIL_SUBJECT", None)
-"""Hard-code a subject of all emails sent (overrides subject templates)"""
+NYT_EMAIL_SUBJECT = None
+"""Hard-code a subject for all emails sent (overrides the default subject templates)."""
 
-EMAIL_SENDER = getattr(django_settings, "NYT_EMAIL_SENDER", "notifications@example.com")
-"""Default sender email"""
+NYT_EMAIL_SENDER = "notifications@example.com"
+"""Default sender email for notification emails. You should definitely make this match
+an email address that your email gateway will allow you to send from. You may also
+consider a no-reply kind of email if your notification system has a UI for changing
+notification settings."""
 
 EMAIL_TEMPLATE_DEFAULT = "notifications/emails/default.txt"
 EMAIL_SUBJECT_TEMPLATE_DEFAULT = "notifications/emails/default_subject.txt"
 
-EMAIL_TEMPLATE_NAMES = getattr(
-    django_settings, "NYT_EMAIL_TEMPLATE_NAMES", OrderedDict()
-)
+NYT_EMAIL_TEMPLATE_NAMES = OrderedDict()
 """Default dictionary, mapping notification keys to template names. Can be overwritten by database values.
 Keys can have a glob pattern, like USER_CHANGED_*."""
 
-EMAIL_SUBJECT_TEMPLATE_NAMES = getattr(
-    django_settings, "NYT_EMAIL_SUBJECT_TEMPLATE_NAMES", OrderedDict()
-)
+NYT_EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict()
 """Default dictionary, mapping notification keys to template names. The templates are used to generate a single-line email subject.
 Can be overwritten by database values.
-Keys can have a glob pattern, like USER_CHANGED_*."""
-
-ENABLE_CHANNELS = "channels" in django_settings.INSTALLED_APPS and not getattr(
-    django_settings, "NYT_CHANNELS_DISABLE", False
-)
+Keys can have a glob pattern, like ``USER_CHANGED_*.``"""
 
 # You can always make up more numbers... they simply identify which notifications
 # to send when invoking the script, and the number indicates how many hours
@@ -51,24 +56,24 @@ INSTANTLY = 0
 DAILY = (24 - 1) * 60
 WEEKLY = 7 * (24 - 1) * 60
 
-INTERVALS = getattr(
-    django_settings,
-    "NYT_INTERVALS",
-    [(INSTANTLY, _("instantly")), (DAILY, _("daily")), (WEEKLY, _("weekly"))],
-)
+NYT_INTERVALS = [
+    (INSTANTLY, _("instantly")),
+    (DAILY, _("daily")),
+    (WEEKLY, _("weekly")),
+]
 """List of intervals available for user selections. In minutes"""
 
-INTERVALS_DEFAULT = INSTANTLY
+NYT_INTERVALS_DEFAULT = INSTANTLY
 """Default selection for new subscriptions"""
 
-USER_MODEL = getattr(django_settings, "AUTH_USER_MODEL", "auth.User")
-
+NYT_USER_MODEL = getattr(django_settings, "AUTH_USER_MODEL", "auth.User")
+"""The swappable user model of Django Nyt. The default is to use the contents of ``AUTH_USER_MODEL``."""
 
 ############
 # CHANNELS #
 ############
 
-ENABLE_CHANNELS = "channels" in django_settings.INSTALLED_APPS and not getattr(
+NYT_ENABLE_CHANNELS = "channels" in django_settings.INSTALLED_APPS and not getattr(
     django_settings, "NYT_CHANNELS_DISABLE", False
 )
 """Channels are enabled automatically when 'channels' application is installed,
@@ -76,7 +81,19 @@ however you can explicitly disable it with NYT_CHANNELS_DISABLE."""
 
 # Name of the global channel (preliminary stuff) that alerts everyone that there
 # is a new notification
-NOTIFICATION_CHANNEL = "nyt_all-{notification_key:s}"
+NYT_NOTIFICATION_CHANNEL = "nyt_all-{notification_key:s}"
+
+
+def __getattr__(name):
+
+    this_module = globals()
+    settings_prefix = "NYT_"
+
+    if settings_prefix + name in this_module.keys():
+        default = this_module[settings_prefix + name]
+        return getattr(django_settings, settings_prefix + name, default)
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 ####################
