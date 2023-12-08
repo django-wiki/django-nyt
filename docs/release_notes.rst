@@ -9,6 +9,7 @@ Release Notes
 * Custom email templates per notification type:
   For instance, a site admin and a user may now receive different notification emails, both for content and subject line.
   This is controlled by two new dictionaries in your settings ``NYT_EMAIL_TEMPLATE_NAMES`` and ``NYT_EMAIL_SUBJECT_TEMPLATE_NAMES`` #125 (Benjamin Balder Bach)
+* Django 5 support #128 (Benjamin Balder Bach)
 
 **Changed**
 
