@@ -5,7 +5,7 @@ from channels.auth import channel_session_user
 from channels.auth import channel_session_user_from_http
 
 from . import models
-from . import settings
+from .conf import app_settings
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ def ws_connect(message):
 
     for subscription in get_subscriptions(message):
         Group(
-            settings.NOTIFICATION_CHANNEL.format(
+            app_settings.NOTIFICATION_CHANNEL.format(
                 notification_key=subscription.notification_type.key
             )
         ).add(message.reply_channel)
@@ -44,7 +44,7 @@ def ws_disconnect(message):
     logger.debug("Removing connection for user {} (disconnect)".format(message.user))
     for subscription in get_subscriptions(message):
         Group(
-            settings.NOTIFICATION_CHANNEL.format(
+            app_settings.NOTIFICATION_CHANNEL.format(
                 notification_key=subscription.notification_type.key
             )
         ).discard(message.reply_channel)

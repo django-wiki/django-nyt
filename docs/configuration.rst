@@ -1,6 +1,6 @@
 Configuration
 =============
 
-.. automodule:: django_nyt.settings.defaults
+.. automodule:: django_nyt.conf
    :members:
    :noindex:

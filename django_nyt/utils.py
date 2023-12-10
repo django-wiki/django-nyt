@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from . import _disable_notifications
 from . import models
-from . import settings
+from .conf import app_settings
 
 
 def notify(
@@ -58,7 +58,7 @@ def notify(
     )
 
     # Notify channel subscribers if we have channels enabled
-    if settings.NYT_ENABLE_CHANNELS:
+    if app_settings.NYT_ENABLE_CHANNELS:
         from django_nyt import subscribers
 
         subscribers.notify_subscribers(objects, key)

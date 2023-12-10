@@ -14,7 +14,7 @@ from django.utils.translation import activate
 from django.utils.translation import deactivate
 
 from django_nyt import models
-from django_nyt import settings as nyt_settings
+from django_nyt.conf import app_settings
 
 # Daemon / mail loop sleep between each database poll (seconds)
 SLEEP_TIME = 120
@@ -76,9 +76,9 @@ class Command(BaseCommand):
     ):
 
         # This setting overrides everything
-        if nyt_settings.NYT_EMAIL_SUBJECT:
+        if app_settings.NYT_EMAIL_SUBJECT:
             # Notice that this usually is a lazy translation object
-            subject = str(nyt_settings.NYT_EMAIL_SUBJECT)
+            subject = str(app_settings.NYT_EMAIL_SUBJECT)
         else:
             subject = render_to_string(template_subject_name, context).strip()
 
@@ -86,7 +86,7 @@ class Command(BaseCommand):
         email = mail.EmailMessage(
             subject,
             message,
-            nyt_settings.NYT_EMAIL_SENDER,
+            app_settings.NYT_EMAIL_SENDER,
             [context["user"].email],
             connection=connection,
         )
@@ -135,7 +135,7 @@ class Command(BaseCommand):
 
         self.logger.info("Starting django_nyt e-mail dispatcher")
 
-        if not nyt_settings.NYT_SEND_EMAILS:
+        if not app_settings.NYT_SEND_EMAILS:
             print("E-mails disabled - quitting.")
             sys.exit()
 
@@ -185,7 +185,7 @@ class Command(BaseCommand):
             elapsed_seconds = (last_sent - started_sending_at).seconds
             time.sleep(
                 max(
-                    (min(nyt_settings.NYT_INTERVALS)[0] - elapsed_seconds) * 60,
+                    (min(app_settings.NYT_INTERVALS)[0] - elapsed_seconds) * 60,
                     sleep_time,
                     0,
                 )
@@ -271,8 +271,8 @@ class Command(BaseCommand):
             context["username"] = getattr(setting.user, setting.user.USERNAME_FIELD)
             # get the index of the tuple corresponding to the interval and
             # get the string name
-            idx = [y[0] for y in nyt_settings.NYT_INTERVALS].index(setting.interval)
-            context["digest"] = nyt_settings.NYT_INTERVALS[idx][1]
+            idx = [y[0] for y in app_settings.NYT_INTERVALS].index(setting.interval)
+            context["digest"] = app_settings.NYT_INTERVALS[idx][1]
 
             emails_per_template = {}
 
