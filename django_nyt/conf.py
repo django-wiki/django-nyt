@@ -30,26 +30,27 @@ WEEKLY = 7 * (24 - 1) * 60
 
 @dataclass(frozen=True)
 class AppSettings:
+    """Access this instance as ``django_nyt.conf.app_settings``."""
 
-    NYT_DB_TABLE_PREFIX = "nyt"
+    NYT_DB_TABLE_PREFIX: str = "nyt"
     """The table prefix for tables in the database. Do not change this unless you know what you are doing."""
 
-    NYT_ENABLED = True
+    NYT_ENABLED: bool = True
     """Global setting to force-fully disable all propagation and creation of
     notifications."""
 
-    NYT_ENABLE_ADMIN = False
+    NYT_ENABLE_ADMIN: bool = False
     """Enable django-admin registration for django-nyt's ModelAdmin classes."""
 
-    NYT_SEND_EMAILS = True
+    NYT_SEND_EMAILS: bool = True
     """Email notifications global setting, can be used to globally switch off
     emails, both instant and scheduled digests.
     Remember that emails are sent with ``python manage.py notifymail``."""
 
-    NYT_EMAIL_SUBJECT = None
+    NYT_EMAIL_SUBJECT: str = None
     """Hard-code a subject for all emails sent (overrides the default subject templates)."""
 
-    NYT_EMAIL_SENDER = "notifications@example.com"
+    NYT_EMAIL_SENDER: str = "notifications@example.com"
     """Default sender email for notification emails. You should definitely make this match
     an email address that your email gateway will allow you to send from. You may also
     consider a no-reply kind of email if your notification system has a UI for changing
@@ -60,7 +61,7 @@ class AppSettings:
     Should contain a valid template name.
     If a lookup in ``NYT_EMAIL_TEMPLATE_NAMES`` doesn't return a result, this fallback is used."""
 
-    NYT_EMAIL_SUBJECT_TEMPLATE_DEFAULT = "notifications/emails/default_subject.txt"
+    NYT_EMAIL_SUBJECT_TEMPLATE_DEFAULT: str = "notifications/emails/default_subject.txt"
     """Default template used for rendering the email subject.
     Should contain a valid template name.
     If a lookup in ``NYT_EMAIL_SUBJECT_TEMPLATE_NAMES`` doesn't return a result, this fallback is used."""
