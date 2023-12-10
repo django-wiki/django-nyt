@@ -76,16 +76,33 @@ class AppSettings:
 
     .. code-block:: python
 
-        NYT_EMAIL_TEMPLATE_NAMES = OrderedDict({
-            "admin/product/created": "myapp/notifications/email/admin_product_added.txt",
-            "admin/*": "myapp/notifications/email/admin_default.txt",
-        })
+        NYT_EMAIL_TEMPLATE_NAMES = OrderedDict(
+            [
+                ("admin/product/created", "myapp/notifications/email/admin_product_added.txt"),
+                ("admin/*", "myapp/notifications/email/admin_default.txt"),
+            ]
+        )
     """
 
     NYT_EMAIL_SUBJECT_TEMPLATE_NAMES: dict = field(default_factory=OrderedDict)
     """Default dictionary, mapping notification keys to template names. The templates are used to generate a single-line email subject.
     Can be overwritten by database values.
-    Keys can have a glob pattern, like ``USER_CHANGED_*.``"""
+    Keys can have a glob pattern, like ``USER_*`` or ``user/*``.
+
+    When notification emails are generated,
+    they are grouped by their templates such that notifications sharing the same template can be sent in a combined email.
+
+    Example:
+
+    .. code-block:: python
+
+        NYT_EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict(
+            [
+                ("admin/product/created", "myapp/notifications/email/admin_product_added.txt"),
+                ("admin/*", "myapp/notifications/email/admin_default.txt"),
+            ]
+        )
+    """
 
     NYT_INTERVALS: list[tuple[int, Any]] | tuple[tuple[int, Any]] = (
         (INSTANTLY, _("instantly")),

@@ -96,17 +96,17 @@ example.com
 
     @override_settings(
         NYT_EMAIL_TEMPLATE_NAMES=OrderedDict(
-            {
-                "key1": "testapp/notifications/email.txt",
-                "admin_*": "testapp/notifications/admin.txt",
-            }
+            [
+                ("key1", "testapp/notifications/email.txt"),
+                ("admin_*", "testapp/notifications/admin.txt"),
+            ]
         ),
         NYT_EMAIL_SUBJECT_TEMPLATE_NAMES=OrderedDict(
-            {
-                "key1": "testapp/notifications/email_subject.txt",
-                "admin_*": "testapp/notifications/admin_subject.txt",
-                "*": "notifications/emails/default_subject.txt",
-            }
+            [
+                ("key1", "testapp/notifications/email_subject.txt"),
+                ("admin_*", "testapp/notifications/admin_subject.txt"),
+                ("*", "notifications/emails/default_subject.txt"),
+            ]
         ),
     )
     def test_multiple_templates(self):
