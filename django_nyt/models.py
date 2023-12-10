@@ -56,7 +56,7 @@ class NotificationType(models.Model):
         for key_glob, template_name in app_settings.NYT_EMAIL_TEMPLATE_NAMES.items():
             if PurePath(self.key).match(key_glob):
                 return template_name
-        return app_settings.EMAIL_TEMPLATE_DEFAULT
+        return app_settings.NYT_EMAIL_TEMPLATE_DEFAULT
 
     def get_email_subject_template_name(self):
         for (
@@ -65,7 +65,7 @@ class NotificationType(models.Model):
         ) in app_settings.NYT_EMAIL_SUBJECT_TEMPLATE_NAMES.items():
             if PurePath(self.key).match(key_glob):
                 return template_name
-        return app_settings.EMAIL_SUBJECT_TEMPLATE_DEFAULT
+        return app_settings.NYT_EMAIL_SUBJECT_TEMPLATE_DEFAULT
 
 
 @receiver([post_save, post_delete], sender=NotificationType)

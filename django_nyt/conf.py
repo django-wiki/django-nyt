@@ -55,12 +55,32 @@ class AppSettings:
     consider a no-reply kind of email if your notification system has a UI for changing
     notification settings."""
 
-    EMAIL_TEMPLATE_DEFAULT = "notifications/emails/default.txt"
-    EMAIL_SUBJECT_TEMPLATE_DEFAULT = "notifications/emails/default_subject.txt"
+    NYT_EMAIL_TEMPLATE_DEFAULT: str = "notifications/emails/default.txt"
+    """Default template used for rendering email contents.
+    Should contain a valid template name.
+    If a lookup in ``NYT_EMAIL_TEMPLATE_NAMES`` doesn't return a result, this fallback is used."""
+
+    NYT_EMAIL_SUBJECT_TEMPLATE_DEFAULT = "notifications/emails/default_subject.txt"
+    """Default template used for rendering the email subject.
+    Should contain a valid template name.
+    If a lookup in ``NYT_EMAIL_SUBJECT_TEMPLATE_NAMES`` doesn't return a result, this fallback is used."""
 
     NYT_EMAIL_TEMPLATE_NAMES: dict = field(default_factory=OrderedDict)
     """Default dictionary, mapping notification keys to template names. Can be overwritten by database values.
-    Keys can have a glob pattern, like USER_CHANGED_*."""
+    Keys can have a glob pattern, like ``USER_*`` or ``user/*``.
+
+    When notification emails are generated,
+    they are grouped by their templates such that notifications sharing the same template can be sent in a combined email.
+
+    Example:
+
+    .. code-block:: python
+
+        NYT_EMAIL_TEMPLATE_NAMES = OrderedDict({
+            "admin/product/created": "myapp/notifications/email/admin_product_added.txt",
+            "admin/*": "myapp/notifications/email/admin_default.txt",
+        })
+    """
 
     NYT_EMAIL_SUBJECT_TEMPLATE_NAMES: dict = field(default_factory=OrderedDict)
     """Default dictionary, mapping notification keys to template names. The templates are used to generate a single-line email subject.
