@@ -3,7 +3,7 @@ import logging
 from channels import Group
 
 from . import models
-from . import settings
+from .conf import app_settings
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def notify_subscribers(notifications, key):
 
     for notification_type in notification_type_ids:
         g = Group(
-            settings.NOTIFICATION_CHANNEL.format(
+            app_settings.NOTIFICATION_CHANNEL.format(
                 notification_key=notification_type["key"]
             )
         )

@@ -16,6 +16,7 @@ Release Notes
 * Tests migrated to pytest #123 (Benjamin Balder Bach)
 * Default email notification paths are changed to ``notifications/emails/default.txt`` and ``notifications/emails/default_subject.txt`` #125 (Benjamin Balder Bach)
 * Notification URLs added to emails have a hard-coded `https://` (before, this was `http://`) #125 (Benjamin Balder Bach)
+* New test-friendly settings pattern changes internal names of settings, but has no effects on Django settings #127 (Benjamin Balder Bach).
 
 **Fixed**
 

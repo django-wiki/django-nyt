@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from django_nyt import models
-from django_nyt import settings
+from django_nyt.conf import app_settings
 
 
 class SettingsAdmin(admin.ModelAdmin):
@@ -37,7 +37,7 @@ class NotificationAdmin(admin.ModelAdmin):
     raw_id_fields = ("user", "subscription")
 
 
-if settings.ENABLE_ADMIN:
+if app_settings.NYT_ENABLE_ADMIN:
     admin.site.register(models.NotificationType)
     admin.site.register(models.Notification, NotificationAdmin)
     admin.site.register(models.Settings, SettingsAdmin)

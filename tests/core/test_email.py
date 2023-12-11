@@ -81,15 +81,6 @@ example.com
         ),
     )
     def test_custom_email_template(self):
-        # TODO: https://github.com/django-wiki/django-nyt/issues/124
-        from django_nyt import settings as nyt_settings
-
-        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict(
-            {NotifyTestBase.TEST_KEY: "testapp/notifications/email.txt"}
-        )
-        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict(
-            {NotifyTestBase.TEST_KEY: "testapp/notifications/email_subject.txt"}
-        )
 
         mail.outbox = []
 
@@ -103,28 +94,22 @@ example.com
         assert mail.outbox[0].subject == "subject"
         assert mail.outbox[0].body == "Test\n"
 
-        # Reset to default state
-        # TODO: https://github.com/django-wiki/django-nyt/issues/124
-        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict()
-        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict()
-
+    @override_settings(
+        NYT_EMAIL_TEMPLATE_NAMES=OrderedDict(
+            [
+                ("key1", "testapp/notifications/email.txt"),
+                ("admin_*", "testapp/notifications/admin.txt"),
+            ]
+        ),
+        NYT_EMAIL_SUBJECT_TEMPLATE_NAMES=OrderedDict(
+            [
+                ("key1", "testapp/notifications/email_subject.txt"),
+                ("admin_*", "testapp/notifications/admin_subject.txt"),
+                ("*", "notifications/emails/default_subject.txt"),
+            ]
+        ),
+    )
     def test_multiple_templates(self):
-        # TODO: https://github.com/django-wiki/django-nyt/issues/124
-        from django_nyt import settings as nyt_settings
-
-        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict(
-            {
-                "key1": "testapp/notifications/email.txt",
-                "admin_*": "testapp/notifications/admin.txt",
-            }
-        )
-        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict(
-            {
-                "key1": "testapp/notifications/email_subject.txt",
-                "admin_*": "testapp/notifications/admin_subject.txt",
-                "*": "notifications/emails/default_subject.txt",
-            }
-        )
 
         # Subscribe User 1 to 3 keys
         utils.subscribe(self.user1_settings, "key1", send_emails=True)
@@ -149,19 +134,8 @@ example.com
             == "You have new notifications from example.com (type: instantly)"
         )
 
-        # Reset to default state
-        # TODO: https://github.com/django-wiki/django-nyt/issues/124
-        nyt_settings.EMAIL_TEMPLATE_NAMES = OrderedDict()
-        nyt_settings.EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict()
-
     @override_settings(NYT_EMAIL_SUBJECT="test")
     def test_nyt_email_subject(self):
-
-        # TODO: https://github.com/django-wiki/django-nyt/issues/124
-        from django_nyt import settings as nyt_settings
-
-        old_setting = nyt_settings.EMAIL_SUBJECT
-        nyt_settings.EMAIL_SUBJECT = "test"
 
         mail.outbox = []
 
@@ -173,7 +147,3 @@ example.com
 
         assert len(mail.outbox) == 1
         assert mail.outbox[0].subject == "test"
-
-        # Reset to default state
-        # TODO: https://github.com/django-wiki/django-nyt/issues/124
-        nyt_settings.EMAIL_SUBJECT = old_setting
