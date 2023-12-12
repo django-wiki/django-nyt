@@ -1,3 +1,6 @@
+from typing import Any
+
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.utils.translation import gettext as _
 
@@ -7,13 +10,13 @@ from .conf import app_settings
 
 
 def notify(
-    message,
-    key,
-    target_object=None,
-    url=None,
-    filter_exclude=None,
-    recipient_users=None,
-):
+    message: str,
+    key: str,
+    target_object: Any = None,
+    url: str = None,
+    filter_exclude: dict = None,
+    recipient_users: list = None,
+) -> int:
     """
     Notify subscribing users of a new event. Key can be any kind of string,
     just make sure to reuse it where applicable.
@@ -85,7 +88,13 @@ def notify(
     return len(objects)
 
 
-def subscribe(settings, key, content_type=None, object_id=None, **kwargs):
+def subscribe(
+    settings: models.Settings,
+    key: str,
+    content_type: str | ContentType = None,
+    object_id: int | str = None,
+    **kwargs
+) -> models.Subscription:
     """
     Creates a new subscription to a given key. If the key does not exist
     as a NotificationType, it will be created
