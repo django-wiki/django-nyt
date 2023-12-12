@@ -51,6 +51,20 @@ class Command(BaseCommand):
             default="/tmp/nyt_daemon.pid",
         )
         parser.add_argument(
+            "--domain",
+            action="store",
+            dest="domain",
+            help="Base domain to use for URLs (excluding HTTP protocol).",
+            default="",
+        )
+        parser.add_argument(
+            "--http-only",
+            action="store_true",
+            dest="http",
+            help="Use http:// in URLs instead of https://.",
+            default=False,
+        )
+        parser.add_argument(
             "--log-file",
             action="store",
             dest="log",
@@ -267,7 +281,11 @@ class Command(BaseCommand):
                 "username": None,
                 "notifications": None,
                 "digest": None,
-                "site": Site.objects.get_current(),
+                "site": Site.objects.get_current()
+                if not self.options["domain"]
+                else None,
+                "domain": self.options["domain"] or Site.objects.get_current().domain,
+                "http_scheme": "http" if self.options["http"] else "https",
             }
 
             context["user"] = setting.user
