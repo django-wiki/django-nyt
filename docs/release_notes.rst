@@ -29,6 +29,10 @@ Release Notes
 * Notifications without URLs had a broken URL in emails #125 (Benjamin Balder Bach)
 * Management command ``notifymail`` to send emails is more robust #129 (Benjamin Balder Bach)
 
+**Removed**
+
+* Python 3.7 support removed #129 (Benjamin Balder Bach)
+
 1.3
 ---
 
