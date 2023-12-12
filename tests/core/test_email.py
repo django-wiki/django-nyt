@@ -1,11 +1,21 @@
 from collections import OrderedDict
 
+import pytest
 from django.core import mail
 from django.core.management import call_command
 from django.test import override_settings
 
 from .test_basic import NotifyTestBase
+from django_nyt import models
 from django_nyt import utils
+
+
+@pytest.mark.django_db
+def test_glob_matching():
+    assert models._glob_matches_path("admin/**", "admin/user/notification")
+    assert models._glob_matches_path("*", "WHATEVER")
+    assert not models._glob_matches_path("*", "WHATEVER/BUT/NOT/THIS")
+    assert models._glob_matches_path("admin/**/*", "admin/user/notification")
 
 
 class NotifyTest(NotifyTestBase):
