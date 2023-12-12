@@ -1,4 +1,5 @@
 from typing import Any
+from typing import Union
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
@@ -91,8 +92,8 @@ def notify(
 def subscribe(
     settings: models.Settings,
     key: str,
-    content_type: str | ContentType = None,
-    object_id: int | str = None,
+    content_type: Union[str, ContentType] = None,
+    object_id: Union[int, str] = None,
     **kwargs
 ) -> models.Subscription:
     """
