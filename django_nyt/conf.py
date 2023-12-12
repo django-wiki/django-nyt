@@ -80,7 +80,7 @@ class AppSettings:
         NYT_EMAIL_TEMPLATE_NAMES = OrderedDict(
             [
                 ("admin/product/created", "myapp/notifications/email/admin_product_added.txt"),
-                ("admin/*", "myapp/notifications/email/admin_default.txt"),
+                ("admin/**", "myapp/notifications/email/admin_default.txt"),
             ]
         )
     """
@@ -100,7 +100,7 @@ class AppSettings:
         NYT_EMAIL_SUBJECT_TEMPLATE_NAMES = OrderedDict(
             [
                 ("admin/product/created", "myapp/notifications/email/admin_product_added.txt"),
-                ("admin/*", "myapp/notifications/email/admin_default.txt"),
+                ("admin/**", "myapp/notifications/email/admin_default.txt"),
             ]
         )
     """

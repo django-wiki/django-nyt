@@ -1,11 +1,44 @@
+import re
 from collections import OrderedDict
 
+import pytest
 from django.core import mail
 from django.core.management import call_command
 from django.test import override_settings
 
 from .test_basic import NotifyTestBase
+from django_nyt import models
 from django_nyt import utils
+
+
+@pytest.mark.django_db
+def test_glob_matching():
+    test_cases = [
+        # path, pattern, new_should_match
+        ("/path/to/foo", "*", False),
+        ("/path/to/foo", "**", True),
+        ("/path/to/foo", "/path/*", False),
+        ("/path/to/foo", "/path/**", True),
+        ("/path/to/foo", "/path/to/*", True),
+        ("/path/to", "/path?to", False),
+        ("/path/to", "/path[!abc]to", False),
+        ("/pathlalato", "/path[a-z]*to", True),
+        ("/path-to", "/path-*", True),
+        ("/path-[to", "/path-[*", True),
+        ("admin/user/notification", "admin/**", True),
+        ("WHATEVER", "*", True),
+        ("WHATEVER/BUT/NOT/THIS", "*", False),
+        ("admin/user/notification", "admin/**/*", True),
+    ]
+
+    for path, pattern, new_should_match in test_cases:
+        new_re = re.compile(models._glob_to_re(pattern))
+        new_match = bool(new_re.match(path))
+        if new_match is not new_should_match:
+            raise AssertionError(
+                f"regex from `glob_to_re()` should match path "
+                f"'{path}' when given pattern: {pattern}"
+            )
 
 
 class NotifyTest(NotifyTestBase):

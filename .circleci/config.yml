@@ -35,18 +35,6 @@ workflows:
   main:
     jobs:
       - hatch:
-          hatch_env: "py3.7-dj2.2"
-          python_version: "3.7"
-      - hatch:
-          hatch_env: "py3.7-dj3.0"
-          python_version: "3.7"
-      - hatch:
-          hatch_env: "py3.7-dj3.1"
-          python_version: "3.7"
-      - hatch:
-          hatch_env: "py3.7-dj3.2"
-          python_version: "3.7"
-      - hatch:
           hatch_env: "py3.8-dj2.2"
           python_version: "3.8"
       - hatch:

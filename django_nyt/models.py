@@ -1,4 +1,4 @@
-from pathlib import PurePath
+import re
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -12,6 +12,90 @@ from django.utils.translation import gettext_lazy as _
 from django_nyt.conf import app_settings
 
 _notification_type_cache = {}
+
+
+def _glob_matches_path(glob_pattern, path):
+    """
+    Matches a glob pattern with a string. This is apparently not something that's available in Python's stdlib.
+
+    Examples::
+
+        _glob_matches_path("admin/*", "admin/user/new") == False
+        _glob_matches_path("admin/**", "admin/user/new") == True
+    """
+    return bool(re.compile(_glob_to_re(glob_pattern)).match(path))
+
+
+def _glob_to_re(pat: str) -> str:  # noqa: max-complexity=15
+    """Translate a shell PATTERN to a regular expression.
+
+    Copied from: https://stackoverflow.com/a/72400344/405682
+    """
+
+    i, n = 0, len(pat)
+    res = ""
+    while i < n:
+        c = pat[i]
+        i = i + 1
+        if c == "*":
+            # -------- CHANGE START --------
+            # prevent '*' matching directory boundaries, but allow '**' to match them
+            j = i
+            if j < n and pat[j] == "*":
+                res = res + ".*"
+                i = j + 1
+            else:
+                res = res + "[^/]*"
+            # -------- CHANGE END ----------
+        elif c == "?":
+            # -------- CHANGE START --------
+            # prevent '?' matching directory boundaries
+            res = res + "[^/]"
+            # -------- CHANGE END ----------
+        elif c == "[":
+            j = i
+            if j < n and pat[j] == "!":
+                j = j + 1
+            if j < n and pat[j] == "]":
+                j = j + 1
+            while j < n and pat[j] != "]":
+                j = j + 1
+            if j >= n:
+                res = res + "\\["
+            else:
+                stuff = pat[i:j]
+                if "--" not in stuff:
+                    stuff = stuff.replace("\\", r"\\")
+                else:
+                    chunks = []
+                    k = i + 2 if pat[i] == "!" else i + 1
+                    while True:
+                        k = pat.find("-", k, j)
+                        if k < 0:
+                            break
+                        chunks.append(pat[i:k])
+                        i = k + 1
+                        k = k + 3
+                    chunks.append(pat[i:j])
+                    # Escape backslashes and hyphens for set difference (--).
+                    # Hyphens that create ranges shouldn't be escaped.
+                    stuff = "-".join(
+                        s.replace("\\", r"\\").replace("-", r"\-") for s in chunks
+                    )
+                # Escape set operations (&&, ~~ and ||).
+                stuff = re.sub(r"([&~|])", r"\\\1", stuff)
+                i = j + 1
+                if stuff[0] == "!":
+                    # -------- CHANGE START --------
+                    # ensure sequence negations don't match directory boundaries
+                    stuff = "^/" + stuff[1:]
+                    # -------- CHANGE END ----------
+                elif stuff[0] in ("^", "["):
+                    stuff = "\\" + stuff
+                res = "%s[%s]" % (res, stuff)
+        else:
+            res = res + re.escape(c)
+    return r"(?s:%s)\Z" % res
 
 
 class NotificationType(models.Model):
@@ -54,7 +138,7 @@ class NotificationType(models.Model):
 
     def get_email_template_name(self):
         for key_glob, template_name in app_settings.NYT_EMAIL_TEMPLATE_NAMES.items():
-            if PurePath(self.key).match(key_glob):
+            if _glob_matches_path(key_glob, self.key):
                 return template_name
         return app_settings.NYT_EMAIL_TEMPLATE_DEFAULT
 
@@ -63,7 +147,7 @@ class NotificationType(models.Model):
             key_glob,
             template_name,
         ) in app_settings.NYT_EMAIL_SUBJECT_TEMPLATE_NAMES.items():
-            if PurePath(self.key).match(key_glob):
+            if _glob_matches_path(key_glob, self.key):
                 return template_name
         return app_settings.NYT_EMAIL_SUBJECT_TEMPLATE_DEFAULT
 
@@ -141,8 +225,11 @@ class Settings(models.Model):
         super(Settings, self).save(*args, **kwargs)
 
     @classmethod
-    def get_default_setting(cls, user):
+    def get_default_settings(cls, user):
         return cls.objects.get_or_create(user=user, is_default=True)[0]
+
+    # Fixes an old typo.
+    get_default_setting = get_default_settings
 
 
 class Subscription(models.Model):
@@ -253,14 +340,14 @@ class Notification(models.Model):
         Creates notifications directly in database -- do not call directly,
         use django_nyt.notify(...)
 
-        This is the old interface.
+        This is now an internal interface.
         """
 
         if not key or not isinstance(key, str):
             raise KeyError("No notification key (string) specified.")
 
         object_id = kwargs.pop("object_id", None)
-        filter_exclude = kwargs.pop("filter_exclude", {})
+        filter_exclude = kwargs.pop("filter_exclude", None) or {}
         recipient_users = kwargs.pop("recipient_users", None)
 
         objects_created = []

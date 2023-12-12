@@ -8,7 +8,10 @@ Release Notes
 
 * Custom email templates per notification type:
   For instance, a site admin and a user may now receive different notification emails, both for content and subject line.
-  This is controlled by two new dictionaries in your settings ``NYT_EMAIL_TEMPLATE_NAMES`` and ``NYT_EMAIL_SUBJECT_TEMPLATE_NAMES`` #125 (Benjamin Balder Bach)
+  This is controlled by two new dictionaries in your settings ``NYT_EMAIL_TEMPLATE_NAMES`` and ``NYT_EMAIL_SUBJECT_TEMPLATE_NAMES``.
+  Templates are matched to a notification key pattern that uses glob expressions,
+  so it's now encouraged to use ``/`` separators in notification keys,
+  for instance ``comments/new`` is matched by ``comments/**``. #125 (Benjamin Balder Bach)
 * Django 5 support #128 (Benjamin Balder Bach)
 
 **Changed**
@@ -17,12 +20,18 @@ Release Notes
 * Default email notification paths are changed to ``notifications/emails/default.txt`` and ``notifications/emails/default_subject.txt`` #125 (Benjamin Balder Bach)
 * Notification URLs added to emails have a hard-coded `https://` (before, this was `http://`) #125 (Benjamin Balder Bach)
 * New test-friendly settings pattern changes internal names of settings, but has no effects on Django settings #127 (Benjamin Balder Bach).
+* Corrected name of method to ``Settings.get_default_settings`` #129 (Benjamin Balder Bach)
+* Improvements to docstrings of main methods ``notify()`` and ``subscribe()``. #129 (Benjamin Balder Bach)
 
 **Fixed**
 
 * Template files possible for email subjects. Previously, this file was ignored #125 (Benjamin Balder Bach)
 * Notifications without URLs had a broken URL in emails #125 (Benjamin Balder Bach)
+* Management command ``notifymail`` to send emails is more robust #129 (Benjamin Balder Bach)
 
+**Removed**
+
+* Python 3.7 support removed #129 (Benjamin Balder Bach)
 
 1.3
 ---

@@ -257,6 +257,9 @@ class Command(BaseCommand):
                 .order_by("user")
             )
 
+        # We look up what to send for each user's Settings object
+        # TODO: Ideally, we should own a lock on each settings object to avoid any double-sending in case
+        # this job is running in parallel with another unfinished process. Or a global lock.
         for setting in user_settings:
 
             context = {
@@ -279,7 +282,15 @@ class Command(BaseCommand):
             for subscription in setting.subscription_set.filter(
                 send_emails=True, latest__is_emailed=False
             ):
-                template_name = subscription.notification_type.get_email_template_name()
+                try:
+                    template_name = (
+                        subscription.notification_type.get_email_template_name()
+                    )
+                except models.NotificationType.DoesNotExist:
+                    self.logger.warning(
+                        f"Subscription has non-existent notification type {subscription.notification_type_id}"
+                    )
+                    continue
                 subject_template_name = (
                     subscription.notification_type.get_email_subject_template_name()
                 )
