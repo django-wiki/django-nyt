@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
 from django_nyt import models
 from django_nyt import utils
 from django_nyt.decorators import disable_notify
+from tests.testapp.models import TestModel
 
 User = get_user_model()
 
@@ -73,3 +75,24 @@ class NotifyTest(NotifyTestBase):
         utils.subscribe(self.user1_settings, self.TEST_KEY)
         with self.assertRaises(TypeError):
             utils.notify("Another test", self.TEST_KEY, target_object=object())
+
+    def test_with_target_object(self):
+
+        related_object = TestModel.objects.create(name="test_with_target_object")
+        content_type = ContentType.objects.get_for_model(TestModel)
+        # Subscribe User 1 to test key
+        utils.subscribe(
+            self.user1_settings,
+            self.TEST_KEY,
+            content_type=content_type,
+            object_id=related_object.id,
+        )
+        utils.notify("Test related object", self.TEST_KEY, target_object=related_object)
+
+        self.assertEqual(
+            models.Notification.objects.filter(
+                subscription__object_id=related_object.id,
+                subscription__notification_type__content_type=content_type,
+            ).count(),
+            1,
+        )
