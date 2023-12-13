@@ -52,8 +52,9 @@ def notify(
                             instead of notifying all subscribers of the event.
                             Notice that users still have to be actually subscribed
                             to the event key!
-    :param target_object: Any django model instance that this notification
-                          relates to. Use django content types.
+    :param target_object: Any Django model instance that this notification
+                          relates to. Uses Django content types.
+                          Subscriptions with a matching content_type and object_id will be notified.
     :param filter_exclude: Keyword arguments passed to filter out Subscriptions.
                            Will be handed to ``Subscription.objects.exclude(**filter_exclude)``.
     """

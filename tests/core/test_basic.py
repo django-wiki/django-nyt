@@ -66,3 +66,10 @@ class NotifyTest(NotifyTestBase):
         utils.notify("Another test", self.TEST_KEY)
 
         self.assertEqual(models.Notification.objects.filter(occurrences=2).count(), 2)
+
+    def test_failure_target_object_not_model(self):
+
+        # Subscribe User 1 to test key
+        utils.subscribe(self.user1_settings, self.TEST_KEY)
+        with self.assertRaises(TypeError):
+            utils.notify("Another test", self.TEST_KEY, target_object=object())
