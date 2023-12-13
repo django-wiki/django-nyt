@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.utils.translation import gettext as _
 
-from . import _disable_notifications
+import django_nyt
 from . import models
 from .conf import app_settings
 
@@ -58,7 +58,7 @@ def notify(
                            Will be handed to ``Subscription.objects.exclude(**filter_exclude)``.
     """
 
-    if _disable_notifications:
+    if django_nyt._disable_notifications:
         return []
 
     if target_object:

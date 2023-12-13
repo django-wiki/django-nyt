@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from django_nyt import models
 from django_nyt import utils
+from django_nyt.decorators import disable_notify
 
 User = get_user_model()
 
@@ -37,6 +38,19 @@ class NotifyTest(NotifyTestBase):
 
         # Check that there is exactly 1 notification
         self.assertEqual(models.Notification.objects.all().count(), 1)
+
+    def test_disable_notify(self):
+        # Subscribe User 1 to test key
+        utils.subscribe(self.user1_settings, self.TEST_KEY)
+
+        @disable_notify
+        def inner():
+            utils.notify("Test is a test", self.TEST_KEY)
+
+        inner()
+
+        # Check that there is exactly 1 notification
+        self.assertEqual(models.Notification.objects.all().count(), 0)
 
     def test_notify_two_users(self):
 

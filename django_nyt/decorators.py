@@ -8,17 +8,21 @@ import django_nyt
 
 
 def disable_notify(f):
-    """Disable notifications. Example:
+    """Disable notifications.
 
-    @disable_notify
-    def your_function():
-        notify("no one will be notified", ...)
+    Does not work for async stuff, only disables notify in the same process.
+
+    Example::
+
+        @disable_notify
+        def your_function():
+            notify("no one will be notified", ...)
     """
 
     @wraps(f)
-    def wrapper(request, *args, **kwargs):
+    def wrapper(*args, **kwargs):
         django_nyt._disable_notifications = True
-        response = f(request, *args, **kwargs)
+        response = f(*args, **kwargs)
         django_nyt._disable_notifications = False
         return response
 
