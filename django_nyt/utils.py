@@ -1,4 +1,5 @@
 from typing import Any
+from typing import List
 from typing import Union
 
 from django.contrib.contenttypes.models import ContentType
@@ -17,7 +18,7 @@ def notify(
     url: str = None,
     filter_exclude: dict = None,
     recipient_users: list = None,
-) -> int:
+) -> List[models.Notification]:
     """
     Notify subscribing users of a new event. Key can be any kind of string,
     just make sure to reuse it where applicable.
@@ -58,7 +59,7 @@ def notify(
     """
 
     if _disable_notifications:
-        return 0
+        return []
 
     if target_object:
         if not isinstance(target_object, Model):
@@ -71,7 +72,7 @@ def notify(
     else:
         object_id = None
 
-    objects = models.Notification.create_notifications(
+    notifications = models.Notification.create_notifications(
         key,
         object_id=object_id,
         message=message,
@@ -84,9 +85,9 @@ def notify(
     if app_settings.NYT_ENABLE_CHANNELS:
         from django_nyt import subscribers
 
-        subscribers.notify_subscribers(objects, key)
+        subscribers.notify_subscribers(notifications, key)
 
-    return len(objects)
+    return notifications
 
 
 def subscribe(

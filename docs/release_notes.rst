@@ -23,6 +23,8 @@ Release Notes
 * New test-friendly settings pattern changes internal names of settings, but has no effects on Django settings #127 (Benjamin Balder Bach).
 * Corrected name of method to ``Settings.get_default_settings`` #129 (Benjamin Balder Bach)
 * Improvements to docstrings of main methods ``notify()`` and ``subscribe()``. #129 (Benjamin Balder Bach)
+* Return value of ``notify()`` was changed - it no longer returns an `int` (number of created notifications), instead it returns a list of created notifications.
+  This is very useful, see :doc:`howto/object_relations`.  #133 (Benjamin Balder Bach)
 
 **Fixed**
 
