@@ -271,6 +271,18 @@ class Command(BaseCommand):
                 .order_by("user")
             )
 
+        if self.options["domain"]:
+            site_object = None
+            domain = self.options["domain"]
+        else:
+            site_object = Site.objects.get_current()
+            domain = site_object.domain
+
+        if self.options["http"]:
+            http_scheme = "http"
+        else:
+            http_scheme = "https"
+
         # We look up what to send for each user's Settings object
         # TODO: Ideally, we should own a lock on each settings object to avoid any double-sending in case
         # this job is running in parallel with another unfinished process. Or a global lock.
@@ -281,11 +293,9 @@ class Command(BaseCommand):
                 "username": None,
                 "notifications": None,
                 "digest": None,
-                "site": Site.objects.get_current()
-                if not self.options["domain"]
-                else None,
-                "domain": self.options["domain"] or Site.objects.get_current().domain,
-                "http_scheme": "http" if self.options["http"] else "https",
+                "site": site_object,
+                "domain": domain,
+                "http_scheme": http_scheme,
             }
 
             context["user"] = setting.user
