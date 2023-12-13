@@ -1,5 +1,5 @@
-Channels & websockets
-=====================
+How to setup django-channels & websockets
+=========================================
 
 Avoiding constant polling is important because:
 
