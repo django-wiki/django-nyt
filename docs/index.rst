@@ -4,17 +4,11 @@ Welcome to django-nyt's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    installation
-   configuration
-   channels
-   javascript
-   html
-   emails
-   integration
-   modules
-   release_notes
+   howto/index
+   reference/index
 
 .. include:: ../README.rst
 
@@ -73,11 +67,3 @@ For instance:
    @disable_notify
    def my_view(request):
        ...
-
-
-Indices and tables
-==================
-
-* :ref:``genindex``
-* :ref:``modindex``
-* :ref:``search``

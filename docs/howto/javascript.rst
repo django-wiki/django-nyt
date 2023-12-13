@@ -1,7 +1,5 @@
-JavaScript polling
-==================
-
-
+How to do JavaScript polling
+============================
 
 In order to really make use of a notification system, you would probably want a small icon in the top corner of your websites. Like the privacy destroying
 villains at facebook have. Or the wonderful innovation heroes at Github have.
@@ -107,3 +105,26 @@ Create the necessary elements for this javascript to run, and you should have a 
 
     // Don't check immediately... some users just click through pages very quickly.
     setTimeout("nyt_update()", 2000);
+
+Example HTML
+------------
+
+In order for the example JavaScript for websockets and snippets to work, we
+have assumed a list with notifications. The list contains a
+``.notification-before-list`` element which indicates to the JavaScript code
+that all ``<li>``'s should be appended after this element. Inside this element,
+we also have the ``.notification-cnt`` which is updated every time new
+notifications arrive or are marked as read.
+
+.. code-block:: html+django
+
+    <h2>Notifications:</h2>
+    <ul>
+      <li class="notification-before-list">Notifications (<span class="badge notification-cnt">0</span>):</li>
+      <li class="notifications-empty"><a href="#"><em>{% trans "No notifications" %}</em></a></li>
+    </ul>
+
+    <a href="#" onclick="nyt_mark_read()">
+      <i class="icon-check"></i>
+      {% trans "Clear notifications list" %}
+    </a>

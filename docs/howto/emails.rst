@@ -1,5 +1,5 @@
-Email digests
--------------
+How to send email digests
+-------------------------
 
 A management script is supplied for sending out emails.
 
