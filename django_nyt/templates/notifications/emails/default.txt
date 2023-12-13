@@ -1,13 +1,13 @@
 {% load i18n %}{% autoescape off %}{% blocktrans with username as username %}Dear {{ username }},{% endblocktrans %}
 
-{% blocktrans with site.name as site %}These are notifications sent {{ digest }} from {{ site }}.{% endblocktrans %}
+{% blocktrans with site.name|default:domain as site %}These are notifications sent {{ digest }} from {{ site }}.{% endblocktrans %}
 {% for n in notifications %}
  * {{ n.message }}{% if n.url %}
-   https://{{ site.domain }}{{n.url}}{% endif %}
+   {% if "://" in n.url %}{{ n.url }}{% else %}{{ http_scheme }}://{{ domain }}{{ n.url }}{% endif %}{% endif %}
 {% endfor %}
 
 {% trans "Thanks for using our site!" %}
 
 {% trans "Sincerely" %},
-{{ site.name }}
+{{ site.name|default:domain }}
 {% endautoescape %}

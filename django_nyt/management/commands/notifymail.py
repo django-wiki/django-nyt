@@ -51,6 +51,20 @@ class Command(BaseCommand):
             default="/tmp/nyt_daemon.pid",
         )
         parser.add_argument(
+            "--domain",
+            action="store",
+            dest="domain",
+            help="Base domain to use for URLs (excluding HTTP protocol).",
+            default="",
+        )
+        parser.add_argument(
+            "--http-only",
+            action="store_true",
+            dest="http",
+            help="Use http:// in URLs instead of https://.",
+            default=False,
+        )
+        parser.add_argument(
             "--log-file",
             action="store",
             dest="log",
@@ -257,6 +271,18 @@ class Command(BaseCommand):
                 .order_by("user")
             )
 
+        if self.options["domain"]:
+            site_object = None
+            domain = self.options["domain"]
+        else:
+            site_object = Site.objects.get_current()
+            domain = site_object.domain
+
+        if self.options["http"]:
+            http_scheme = "http"
+        else:
+            http_scheme = "https"
+
         # We look up what to send for each user's Settings object
         # TODO: Ideally, we should own a lock on each settings object to avoid any double-sending in case
         # this job is running in parallel with another unfinished process. Or a global lock.
@@ -267,7 +293,9 @@ class Command(BaseCommand):
                 "username": None,
                 "notifications": None,
                 "digest": None,
-                "site": Site.objects.get_current(),
+                "site": site_object,
+                "domain": domain,
+                "http_scheme": http_scheme,
             }
 
             context["user"] = setting.user

@@ -105,6 +105,38 @@ example.com
 """
         )
 
+    def test_notify_with_url_domain(self):
+        mail.outbox = []
+
+        # Subscribe User 1 to test key
+        utils.subscribe(self.user1_settings, self.TEST_KEY, send_emails=True)
+        utils.notify("Test is a test", self.TEST_KEY, url="/test")
+
+        call_command("notifymail", "--cron", "--no-sys-exit", "--domain=foobar.com")
+
+        assert len(mail.outbox) == 1
+        assert (
+            mail.outbox[0].subject
+            == "You have new notifications from foobar.com (type: instantly)"
+        )
+        assert (
+            mail.outbox[0].body
+            == """Dear alice,
+
+These are notifications sent instantly from foobar.com.
+
+ * Test is a test
+   https://foobar.com/test
+
+
+Thanks for using our site!
+
+Sincerely,
+foobar.com
+
+"""
+        )
+
     @override_settings(
         NYT_EMAIL_TEMPLATE_NAMES=OrderedDict(
             {NotifyTestBase.TEST_KEY: "testapp/notifications/email.txt"}

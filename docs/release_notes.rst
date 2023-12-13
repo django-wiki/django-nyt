@@ -13,6 +13,7 @@ Release Notes
   so it's now encouraged to use ``/`` separators in notification keys,
   for instance ``comments/new`` is matched by ``comments/**``. #125 (Benjamin Balder Bach)
 * Django 5 support #128 (Benjamin Balder Bach)
+* New arguments ``--domain`` and ``--http-only`` for management command ``notifymail`` #130 (Benjamin Balder Bach)
 
 **Changed**
 
