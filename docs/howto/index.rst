@@ -18,8 +18,8 @@ Adding a notification
    notify(_("OMG! Something happened"), EVENT_KEY)
 
 
-Adding a notification with a certain target object
---------------------------------------------------
+Subscribing to a specific object
+--------------------------------
 
 The Subscription model has a generic relation which can link it to any other object.
 This means that aside from subscribing users to a universal event (i.e. "a comment was updated"),
