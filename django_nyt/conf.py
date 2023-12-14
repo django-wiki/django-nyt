@@ -35,10 +35,6 @@ class AppSettings:
     NYT_DB_TABLE_PREFIX: str = "nyt"
     """The table prefix for tables in the database. Do not change this unless you know what you are doing."""
 
-    NYT_ENABLED: bool = True
-    """Global setting to force-fully disable all propagation and creation of
-    notifications."""
-
     NYT_ENABLE_ADMIN: bool = False
     """Enable django-admin registration for django-nyt's ModelAdmin classes."""
 

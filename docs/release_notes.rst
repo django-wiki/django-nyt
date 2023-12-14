@@ -13,16 +13,19 @@ Release Notes
   so it's now encouraged to use ``/`` separators in notification keys,
   for instance ``comments/new`` is matched by ``comments/**``. #125 (Benjamin Balder Bach)
 * Django 5 support #128 (Benjamin Balder Bach)
-* New arguments ``--domain`` and ``--http-only`` for management command ``notifymail`` #130 (Benjamin Balder Bach)
+* New arguments ``--domain`` and ``--http-only`` for management command ``notifymail``. #130 (Benjamin Balder Bach)
+* Documentation reorganized with Diataxis structure and more how-to guides have been added. (Benjamin Balder Bach)
 
 **Changed**
 
 * Tests migrated to pytest #123 (Benjamin Balder Bach)
 * Default email notification paths are changed to ``notifications/emails/default.txt`` and ``notifications/emails/default_subject.txt`` #125 (Benjamin Balder Bach)
 * Notification URLs added to emails have a hard-coded `https://` (before, this was `http://`) #125 (Benjamin Balder Bach)
-* New test-friendly settings pattern changes internal names of settings, but has no effects on Django settings #127 (Benjamin Balder Bach).
+* New test-friendly settings pattern changes internal names of settings, but has no effects on Django settings #127 (Benjamin Balder Bach)
 * Corrected name of method to ``Settings.get_default_settings`` #129 (Benjamin Balder Bach)
-* Improvements to docstrings of main methods ``notify()`` and ``subscribe()``. #129 (Benjamin Balder Bach)
+* Improvements to docstrings of main methods ``notify()`` and ``subscribe()`` #129 (Benjamin Balder Bach)
+* Return value of ``notify()`` was changed - it no longer returns an `int` (number of created notifications), instead it returns a list of created notifications.
+  This is very useful, see :doc:`howto/object_relations` #134 (Benjamin Balder Bach)
 
 **Fixed**
 
@@ -33,6 +36,7 @@ Release Notes
 **Removed**
 
 * Python 3.7 support removed #129 (Benjamin Balder Bach)
+* Unused (!) setting ``NYT_ENABLED`` was removed #134 (Benjamin Balder Bach)
 
 1.3
 ---

@@ -335,7 +335,15 @@ class Notification(models.Model):
         super(Notification, self).save(*args, **kwargs)
 
     @classmethod
-    def create_notifications(cls, key, **kwargs):
+    def create_notifications(
+        cls,
+        key,
+        object_id=None,
+        content_type=None,
+        filter_exclude=None,
+        recipient_users=None,
+        **kwargs
+    ):
         """
         Creates notifications directly in database -- do not call directly,
         use django_nyt.notify(...)
@@ -346,14 +354,15 @@ class Notification(models.Model):
         if not key or not isinstance(key, str):
             raise KeyError("No notification key (string) specified.")
 
-        object_id = kwargs.pop("object_id", None)
-        filter_exclude = kwargs.pop("filter_exclude", None) or {}
-        recipient_users = kwargs.pop("recipient_users", None)
+        if filter_exclude is None:
+            filter_exclude = {}
 
         objects_created = []
         subscriptions = Subscription.objects.filter(notification_type__key=key).exclude(
             **filter_exclude
         )
+
+        # TODO: This query should include notification_type__content_type? Why was this not added?
         if object_id:
             subscriptions = subscriptions.filter(
                 Q(object_id=object_id) | Q(object_id=None)

@@ -29,6 +29,18 @@ users can also be subscribed to specific object (i.e. "*your* comment was update
 
    notify(_("OMG! Something happened"), EVENT_KEY, target_object=my_model_instance)
 
+In order to subscribe a user to receive notifications only for a specific object,
+you can create the subscription like this:
+
+.. code-block:: python
+
+    subscribe(
+        user_setting,
+        EVENT_KEY,
+        content_type=ContentType.objects.get_for_model(MyModel),
+        object_id=my_model_instance.id,
+    )
+
 
 Excluding certain recipients
 ----------------------------
