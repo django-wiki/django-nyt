@@ -1,5 +1,6 @@
 from typing import Any
 from typing import List
+from typing import Tuple
 from typing import Union
 
 from django.contrib.contenttypes.models import ContentType
@@ -121,3 +122,61 @@ def subscribe(
         object_id=object_id,
         **kwargs
     )[0]
+
+
+def unsubscribe(
+    key: str,
+    user: Any = None,
+    settings: models.Settings = None,
+    content_type: Union[str, ContentType] = None,
+    object_id: Union[int, str] = None,
+) -> Tuple[int, dict]:
+    """
+    Shortcut function to remove all subscriptions related to a notification key and either a user or a settings object.
+
+    Unsubscribing does NOT delete old notifications, however the subscription relation is nullified.
+    This means that any objects accessed through that relation will become inaccessible.
+    This is a particular feature chosen to avoid accidentally allowing access to data that may be otherwise have credential-based access.
+
+    :param key: The notification key to unsubscribe a user/user settings.
+    :param user: User to unsubscribe
+    :param settings: ...or a UserSettings object
+    :param content_type: Further narrow down subscriptions to only this content_type
+    :param object_id: Further narrow down subscriptions to only this object_id (provided a content_type)
+    :return: (int, dict) - the return value of Django's queryset.delete() method.
+    """
+
+    assert not (user and settings), "Cannot apply both User and UserSettings object."
+    assert (
+        user or settings
+    ), "Need at least a User and a UserSettings object, refusing to unsubscribe all."
+    assert bool(content_type) == bool(
+        object_id
+    ), "You have to supply both a content_type and object_id or none of them."
+
+    subscriptions = models.Subscription.objects.filter(
+        notification_type__key=key,
+    )
+
+    if object_id and content_type:
+        subscriptions = models.Subscription.objects.filter(
+            notification_type__content_type=content_type,
+            object_id=object_id,
+        )
+    else:
+        subscriptions = models.Subscription.objects.filter(
+            notification_type__content_type=None,
+            object_id=None,
+        )
+
+    if user:
+        subscriptions = subscriptions.filter(
+            settings__user=user,
+        )
+
+    if settings:
+        subscriptions = subscriptions.filter(
+            settings=settings,
+        )
+
+    return subscriptions.delete()
