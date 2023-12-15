@@ -96,3 +96,49 @@ class NotifyTest(NotifyTestBase):
             ).count(),
             1,
         )
+
+    def test_unsubscribe(self):
+
+        related_object = TestModel.objects.create(name="test_with_target_object")
+        content_type = ContentType.objects.get_for_model(TestModel)
+        # Subscribe User 1 to test key
+        utils.subscribe(
+            self.user1_settings,
+            self.TEST_KEY,
+            content_type=content_type,
+            object_id=related_object.id,
+        )
+        # Subscribe User 1 to test key without content type
+        utils.subscribe(
+            self.user1_settings,
+            self.TEST_KEY,
+        )
+        utils.notify("Test related object", self.TEST_KEY, target_object=related_object)
+
+        # Test also that notifications aren't deleted
+        notifications_before = models.Notification.objects.all().count()
+
+        utils.unsubscribe(
+            self.TEST_KEY,
+            settings=self.user1_settings,
+            content_type=content_type,
+            object_id=related_object.id,
+        )
+
+        assert notifications_before == models.Notification.objects.all().count()
+
+        # Check that exactly 1 notification is generated (no content type filter)
+        utils.notify("Test related object", self.TEST_KEY, target_object=related_object)
+        assert models.Notification.objects.all().count() == notifications_before + 1
+
+        # And now we unsubscribe the remaining!
+        utils.unsubscribe(
+            self.TEST_KEY,
+            user=self.user1_settings.user,
+        )
+
+        assert models.Notification.objects.all().count() == notifications_before + 1
+
+        # Check that no notification is generated here
+        utils.notify("Test related object", self.TEST_KEY)
+        assert models.Notification.objects.all().count() == notifications_before + 1
