@@ -33,6 +33,7 @@ Release Notes
 * Template files possible for email subjects. Previously, this file was ignored #125 (Benjamin Balder Bach)
 * Notifications without URLs had a broken URL in emails #125 (Benjamin Balder Bach)
 * Management command ``notifymail`` to send emails is more robust #129 (Benjamin Balder Bach)
+* ``Settings.save`` recursively called itself when adding a non-default setting #140 (Benjamin Balder Bach)
 
 **Removed**
 

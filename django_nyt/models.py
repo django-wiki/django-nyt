@@ -206,13 +206,13 @@ class Settings(models.Model):
         # it's not possible to create a database constraint for this.
         # Instead of having a constraint, we unset all other is_default for
         # the user.
+        default_settings = Settings.objects.filter(
+            user=self.user,
+            is_default=True,
+        ).exclude(pk=self.pk)
         if self.is_default:
-            default_settings = Settings.objects.filter(
-                user=self.user,
-                is_default=True,
-            ).exclude(pk=self.pk)
             default_settings.update(is_default=False)
-        else:
+        elif not default_settings.exists():
             non_default_settings = Settings.objects.filter(
                 user=self.user,
                 is_default=False,
