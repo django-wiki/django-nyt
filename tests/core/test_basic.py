@@ -4,7 +4,9 @@ from django.test import TestCase
 
 from django_nyt import models
 from django_nyt import utils
+from django_nyt.conf import WEEKLY
 from django_nyt.decorators import disable_notify
+from django_nyt.models import Settings
 from tests.testapp.models import TestModel
 
 User = get_user_model()
@@ -142,3 +144,16 @@ class NotifyTest(NotifyTestBase):
         # Check that no notification is generated here
         utils.notify("Test related object", self.TEST_KEY)
         assert models.Notification.objects.all().count() == notifications_before + 1
+
+
+class NotifySettingsTest(NotifyTestBase):
+    def test_create_settings(self):
+        # Create another user setting
+
+        Settings.objects.create(user=self.user1, interval=WEEKLY, is_default=False)
+        assert Settings.objects.filter(user=self.user1, is_default=True).count() == 1
+        assert Settings.objects.filter(user=self.user1).count() == 2
+
+        Settings.objects.create(user=self.user1, interval=WEEKLY, is_default=True)
+        assert Settings.objects.filter(user=self.user1, is_default=True).count() == 1
+        assert Settings.objects.filter(user=self.user1).count() == 3
