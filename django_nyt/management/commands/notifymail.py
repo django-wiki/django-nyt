@@ -144,13 +144,18 @@ class Command(BaseCommand):
                 handler = logging.FileHandler(filename=options["log"])
             else:
                 handler = logging.StreamHandler(self.stdout)
+            handler.setFormatter(
+                logging.Formatter(
+                    "%(asctime)s: %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S"
+                )
+            )
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
         self.logger.info("Starting django_nyt e-mail dispatcher")
 
         if not app_settings.NYT_SEND_EMAILS:
-            print("E-mails disabled - quitting.")
+            self.logger.info("E-mails disabled - quitting.")
             sys.exit()
 
         # Run as daemon, ie. fork the process
@@ -210,7 +215,7 @@ class Command(BaseCommand):
     ):
         """
         Loops through emails in a list of notifications and tries to send
-        to each recepient
+        to each recipient
 
         """
         # STMP connection send loop
@@ -221,6 +226,11 @@ class Command(BaseCommand):
 
         while True:
             try:
+                self.logger.info(
+                    "Sending to notification ids {notification_ids}".format(
+                        notification_ids=", ".join(str(n.id) for n in notifications)
+                    )
+                )
                 self._render_and_send(
                     template_name, subject_template_name, context, connection
                 )

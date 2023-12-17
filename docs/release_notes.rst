@@ -16,6 +16,7 @@ Release Notes
 * New arguments ``--domain`` and ``--http-only`` for management command ``notifymail``. #130 (Benjamin Balder Bach)
 * Documentation reorganized with Diataxis structure and more how-to guides have been added. (Benjamin Balder Bach)
 * New shortcut function ``utils.unsubscribe()``. #137 (Benjamin Balder Bach)
+* Better logging for ``notifymail`` management command #141 (Benjamin Balder Bach)
 
 **Changed**
 
