@@ -94,9 +94,11 @@ class Command(BaseCommand):
             # Notice that this usually is a lazy translation object
             subject = str(app_settings.NYT_EMAIL_SUBJECT)
         else:
-            subject = render_to_string(template_subject_name, context).strip()
+            subject = render_to_string(template_subject_name, context, autoescape=False)
 
-        message = render_to_string(template_name, context)
+        subject = subject.replace("\n", "").strip()
+
+        message = render_to_string(template_name, context, autoescape=False)
         email = mail.EmailMessage(
             subject,
             message,
