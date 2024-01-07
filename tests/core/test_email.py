@@ -1,14 +1,17 @@
 import re
 from collections import OrderedDict
+from datetime import timedelta
 
 import pytest
 from django.core import mail
 from django.core.management import call_command
 from django.test import override_settings
+from django.utils import timezone
 
 from .test_basic import NotifyTestBase
 from django_nyt import models
 from django_nyt import utils
+from django_nyt.conf import WEEKLY
 
 
 @pytest.mark.django_db
@@ -190,10 +193,11 @@ foobar.com
         call_command("notifymail", "--cron", "--no-sys-exit")
 
         assert len(mail.outbox) == 3
-        assert mail.outbox[0].subject == "subject"
-        assert mail.outbox[0].body == "Test\n"
-        assert mail.outbox[1].body == "Admin\n"
-        assert mail.outbox[1].subject == "notifications for admin"
+
+        assert mail.outbox[1].subject == "subject"
+        assert mail.outbox[1].body == "Test\n"
+        assert mail.outbox[0].body == "Admin\n"
+        assert mail.outbox[0].subject == "notifications for admin"
         assert (
             mail.outbox[2].subject
             == "You have new notifications from example.com (type: instantly)"
@@ -212,3 +216,57 @@ foobar.com
 
         assert len(mail.outbox) == 1
         assert mail.outbox[0].subject == "test"
+
+
+class NotifyTestWeekly(NotifyTestBase):
+    def test_notify_weekly_nothing_sent_first_week(self):
+
+        user1_weekly_setting = models.Settings.objects.create(
+            user=self.user1_settings.user,
+            interval=WEEKLY,
+        )
+
+        mail.outbox = []
+
+        # Subscribe User 1 to test key for weekly notifications
+        utils.subscribe(user1_weekly_setting, self.TEST_KEY, send_emails=True)
+
+        # Create a notification
+        utils.notify("Test is a test", self.TEST_KEY)
+
+        call_command("notifymail", "--cron", "--no-sys-exit")
+
+        # Ensure nothing is sent, a week hasn't passed
+        assert len(mail.outbox) == 0
+
+        # Ensure something is sent if we try a week from now
+        mail.outbox = []
+        call_command(
+            "notifymail",
+            "--cron",
+            "--no-sys-exit",
+            now=timezone.now() + timedelta(minutes=WEEKLY + 1),
+        )
+        assert len(mail.outbox) == 1
+        assert "weekly" in mail.outbox[0].subject
+
+        # Now ensure that we receive an instant notification regardless of the previous weekly notification
+        utils.subscribe(self.user1_settings, self.TEST_KEY, send_emails=True)
+        notifications = utils.notify("This is a second test", self.TEST_KEY)
+        print("hello")
+        print(notifications[0].subscription.notification_type)
+        print(notifications[0].subscription.settings.id)
+        print(self.user1_settings.id)
+        assert (
+            models.Notification.objects.filter(
+                subscription__notification_type__key=self.TEST_KEY,
+                subscription__settings=self.user1_settings,
+            ).count()
+            == 1
+        )
+        mail.outbox = []
+        call_command("notifymail", "--cron", "--no-sys-exit")
+        assert len(mail.outbox) == 1
+
+        # Now fast-forward and ensure that the notification is found in the weekly digest
+        ...

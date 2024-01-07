@@ -127,8 +127,10 @@ class NotificationType(models.Model):
 
     @classmethod
     def get_by_key(cls, key, content_type=None):
+
         if key in _notification_type_cache:
             return _notification_type_cache[key]
+
         try:
             nt = cls.objects.get(key=key)
         except cls.DoesNotExist:
@@ -173,12 +175,23 @@ class Settings(models.Model):
     interval = models.SmallIntegerField(
         choices=app_settings.NYT_INTERVALS,
         verbose_name=_("interval"),
+        help_text=_("interval in minutes (0=instant, 60=notify once per hour)"),
         default=app_settings.NYT_INTERVALS_DEFAULT,
     )
 
     is_default = models.BooleanField(
         default=False,
         verbose_name=_("Default for new subscriptions"),
+    )
+
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
+
+    modified = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("modified"),
     )
 
     def __str__(self):
@@ -267,6 +280,22 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
     )
 
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
+
+    modified = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("modified"),
+    )
+
+    last_sent = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("last sent"),
+    )
+
     def __str__(self):
         obj_name = _("Subscription for: %s") % (
             getattr(self.settings.user, self.settings.user.USERNAME_FIELD)
@@ -303,21 +332,33 @@ class Notification(models.Model):
 
     message = models.TextField()
 
-    # TODO: Why 200?
+    # https://stackoverflow.com/a/417184/405682
     url = models.CharField(
         verbose_name=_("link for notification"),
         blank=True,
         null=True,
-        max_length=200,
+        max_length=2000,
     )
 
-    is_viewed = models.BooleanField(default=False)
+    is_viewed = models.BooleanField(
+        default=False,
+        verbose_name=_("notification viewed"),
+    )
 
-    is_emailed = models.BooleanField(default=False)
+    is_emailed = models.BooleanField(
+        default=False,
+        verbose_name=_("mail sent"),
+    )
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created"),
+    )
 
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("modified"),
+    )
 
     occurrences = models.PositiveIntegerField(
         default=1,
@@ -374,13 +415,24 @@ class Notification(models.Model):
 
         subscriptions = subscriptions.prefetch_related("latest", "settings")
         subscriptions = subscriptions.order_by("settings__user")
-        prev_user = None
+
+        seen_key_for_settings = {}
 
         for subscription in subscriptions:
             # Don't alert the same user several times even though overlapping
             # subscriptions occur.
-            if subscription.settings.user == prev_user:
+            # TODO: This is problematic for users that have complex configurations.
+            # It should be made configurable.
+            # if subscription.settings.user == prev_user:
+            #     continue
+
+            # If this settings has already been notified in this loop, then continue.
+            # This happens when there are several overlapping subscriptions for the same key.
+            seen_key_for_settings.setdefault(subscription.settings.id, [])
+            if key in seen_key_for_settings[subscription.settings.id]:
                 continue
+
+            seen_key_for_settings[subscription.settings.id].append(key)
 
             # Check if it's the same as the previous message
             latest = subscription.latest
@@ -400,7 +452,6 @@ class Notification(models.Model):
                 objects_created.append(new_obj)
                 subscription.latest = new_obj
                 subscription.save()
-            prev_user = subscription.settings.user
 
         return objects_created
 

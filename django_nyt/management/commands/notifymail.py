@@ -4,12 +4,15 @@ import smtplib
 import sys
 import time
 from datetime import datetime
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import activate
 from django.utils.translation import deactivate
 
@@ -75,7 +78,7 @@ class Command(BaseCommand):
             "--no-sys-exit",
             action="store_true",
             dest="no_sys_exit",
-            help="Skip sys-exit after forking daemon (for testing purposes)",
+            help="Skip sys-exit after forking daemon (mainly for testing purposes)",
         )
         parser.add_argument(
             "--daemon-sleep-interval",
@@ -83,6 +86,12 @@ class Command(BaseCommand):
             dest="sleep_time",
             help="Minimum sleep between each polling of the database.",
             default=SLEEP_TIME,
+        )
+        parser.add_argument(
+            "--now",
+            action="store",
+            dest="now",
+            help="Simulate when to start sending from (mainly for testing purposes)",
         )
 
     def _render_and_send(
@@ -168,7 +177,13 @@ class Command(BaseCommand):
         connection = mail.get_connection()
 
         if cron:
-            self.send_mails(connection)
+            if self.options.get("now"):
+                now = self.options.get("now")
+                self.logger.info(f"using now: {now}")
+            else:
+                now = timezone.now()
+
+            self.send_mails(connection, now)
             return
 
         if not daemon:
@@ -183,34 +198,33 @@ class Command(BaseCommand):
 
     def send_loop(self, connection, sleep_time):
 
-        # This could be /improved by looking up the last notified person
         last_sent = None
 
         while True:
 
             started_sending_at = datetime.now()
             self.logger.info("Starting send loop at %s" % str(started_sending_at))
+
+            # When we are looping, we don't want to iterate over user_settings that have
+            # an interval greater than our last_sent marker.
             if last_sent:
                 user_settings = models.Settings.objects.filter(
                     interval__lte=((started_sending_at - last_sent).seconds // 60) // 60
                 ).order_by("user")
+                now = self.options.get("now") or timezone.now()
             else:
+                # TOD: This isn't perfect. If we are simulating a "now", we should also make a
+                # step-wise approach to incrementing it.
+                now = timezone.now()
                 user_settings = None
 
             self.send_mails(
-                connection, last_sent=last_sent, user_settings=user_settings
+                connection, now, last_sent=last_sent, user_settings=user_settings
             )
 
             connection.close()
             last_sent = datetime.now()
-            elapsed_seconds = (last_sent - started_sending_at).seconds
-            time.sleep(
-                max(
-                    (min(app_settings.NYT_INTERVALS)[0] - elapsed_seconds) * 60,
-                    sleep_time,
-                    0,
-                )
-            )
+            time.sleep(sleep_time)
 
     def _send_with_retry(
         self, template_name, subject_template_name, context, connection, setting
@@ -239,6 +253,8 @@ class Command(BaseCommand):
                 for n in notifications:
                     n.is_emailed = True
                     n.save()
+                    n.subscription.last_sent = timezone.now()
+                    n.subscription.save()
                 break
             except smtplib.SMTPSenderRefused:
                 self.logger.error(
@@ -262,14 +278,16 @@ class Command(BaseCommand):
                 )
                 raise
 
-    def send_mails(self, connection, last_sent=None, user_settings=None):
+    def send_mails(  # noqa: max-complexity=12
+        self, connection, now, last_sent=None, user_settings=None
+    ):
         """
         Does the lookups and sends out email digests to anyone who has them due.
         Since the system may have different templates depending on which notification is being sent,
         we will generate a call for each template.
         """
 
-        self.logger.debug("Entering send_mails()")
+        self.logger.debug(f"Entering send_mails(now={now}, last_sent={last_sent}, ...)")
 
         connection.open()
 
@@ -300,6 +318,8 @@ class Command(BaseCommand):
         # this job is running in parallel with another unfinished process. Or a global lock.
         for setting in user_settings:
 
+            threshold = now - timedelta(minutes=setting.interval)
+
             context = {
                 "user": None,
                 "username": None,
@@ -319,9 +339,22 @@ class Command(BaseCommand):
 
             emails_per_template = {}
 
+            filter_qs = Q()
+
+            if setting.interval:
+
+                # How much time must have passed since either
+                # a) the subscription was created (in case nothing hast been sent)
+                # b) the subscription was last active (in case something has been sent)
+                filter_qs = Q(Q(created__lte=threshold) & Q(last_sent=None)) | Q(
+                    Q(last_sent__lte=threshold) & Q(latest__is_emailed=False)
+                )
+
+            # The ordering by notification_type__key is because we want a predictable
+            # order currently just for testing purposes.
             for subscription in setting.subscription_set.filter(
-                send_emails=True, latest__is_emailed=False
-            ):
+                filter_qs, send_emails=True
+            ).order_by("notification_type__key"):
                 try:
                     template_name = (
                         subscription.notification_type.get_email_template_name()
@@ -338,15 +371,29 @@ class Command(BaseCommand):
                 emails_per_template.setdefault(
                     (template_name, subject_template_name), []
                 )
-                emails_per_template[(template_name, subject_template_name)].append(
-                    subscription.latest
+
+                # If there is an interval, we use the threshold.
+                if setting.interval:
+                    filter_kwargs = {"created__lte": threshold}
+                else:
+                    filter_kwargs = {}
+                emails_per_template[(template_name, subject_template_name)] += list(
+                    subscription.notification_set.filter(
+                        is_emailed=False, **filter_kwargs
+                    ),
                 )
+                print("found:")
+                print(emails_per_template[(template_name, subject_template_name)])
 
             # Send the prepared template names, subjects and context to the user
             for (
                 template_name,
                 subject_template_name,
             ), notifications in emails_per_template.items():
+
+                if not notifications:
+                    continue
+
                 context["notifications"] = notifications
 
                 self._send_with_retry(
