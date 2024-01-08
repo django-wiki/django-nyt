@@ -250,13 +250,19 @@ class NotifyTestWeekly(NotifyTestBase):
         assert len(mail.outbox) == 1
         assert "weekly" in mail.outbox[0].subject
 
+        # Ensure nothing is sent by re-running the command
+        mail.outbox = []
+        call_command(
+            "notifymail",
+            "--cron",
+            "--no-sys-exit",
+            now=timezone.now() + timedelta(minutes=WEEKLY + 1),
+        )
+        assert len(mail.outbox) == 0
+
         # Now ensure that we receive an instant notification regardless of the previous weekly notification
         utils.subscribe(self.user1_settings, self.TEST_KEY, send_emails=True)
-        notifications = utils.notify("This is a second test", self.TEST_KEY)
-        print("hello")
-        print(notifications[0].subscription.notification_type)
-        print(notifications[0].subscription.settings.id)
-        print(self.user1_settings.id)
+        utils.notify("This is a second test", self.TEST_KEY)
         assert (
             models.Notification.objects.filter(
                 subscription__notification_type__key=self.TEST_KEY,
@@ -268,5 +274,46 @@ class NotifyTestWeekly(NotifyTestBase):
         call_command("notifymail", "--cron", "--no-sys-exit")
         assert len(mail.outbox) == 1
 
-        # Now fast-forward and ensure that the notification is found in the weekly digest
-        ...
+        # Unsubscribe the instant notification
+        mail.outbox = []
+        utils.unsubscribe(self.TEST_KEY, settings=self.user1_settings)
+
+        # Now create 2 notifications and test that it'll get sent when running again a week later
+        notifications = utils.notify("Test is a third test", self.TEST_KEY)
+        notifications += utils.notify("Test is a forth test", self.TEST_KEY)
+
+        call_command("notifymail", "--cron", "--no-sys-exit")
+
+        # Ensure nothing is sent, a week hasn't passed
+        assert len(mail.outbox) == 0
+
+        # Emulate that it was sent ½ week ago and try again
+        user1_weekly_setting.subscription_set.all().update(
+            last_sent=timezone.now() - timedelta(minutes=WEEKLY * 0.5)
+        )
+
+        call_command("notifymail", "--cron", "--no-sys-exit")
+
+        # Ensure nothing is sent, a week hasn't passed
+        assert len(mail.outbox) == 0
+
+        # Emulate that it was sent 1 week ago and try again
+        threshold = timezone.now() - timedelta(
+            minutes=user1_weekly_setting.interval * 1 + 1
+        )
+        user1_weekly_setting.subscription_set.all().update(last_sent=threshold)
+
+        assert user1_weekly_setting.subscription_set.all().exists()
+        assert models.Notification.objects.filter(
+            subscription__settings=user1_weekly_setting,
+            is_emailed=False,
+            subscription__latest__is_emailed=False,
+            subscription__last_sent__lte=threshold,
+        ).exists()
+
+        call_command("notifymail", "--cron", "--no-sys-exit")
+
+        # Ensure that exactly 1 digest is sent
+        assert len(mail.outbox) == 1
+        assert "weekly" in mail.outbox[0].subject
+        assert all(n.message in mail.outbox[0].body for n in notifications)

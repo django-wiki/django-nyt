@@ -241,12 +241,9 @@ class Command(BaseCommand):
             return
 
         while True:
+            notification_ids = [n.id for n in notifications]
             try:
-                self.logger.info(
-                    "Sending to notification ids {notification_ids}".format(
-                        notification_ids=", ".join(str(n.id) for n in notifications)
-                    )
-                )
+                self.logger.info(f"Sending to notification ids {notification_ids}")
                 self._render_and_send(
                     template_name, subject_template_name, context, connection
                 )
@@ -255,6 +252,9 @@ class Command(BaseCommand):
                     n.save()
                     n.subscription.last_sent = timezone.now()
                     n.subscription.save()
+                models.Subscription.objects.filter(
+                    notification__id__in=notification_ids
+                ).update(last_sent=timezone.now())
                 break
             except smtplib.SMTPSenderRefused:
                 self.logger.error(
@@ -372,18 +372,14 @@ class Command(BaseCommand):
                     (template_name, subject_template_name), []
                 )
 
-                # If there is an interval, we use the threshold.
-                if setting.interval:
-                    filter_kwargs = {"created__lte": threshold}
-                else:
-                    filter_kwargs = {}
+                # We assume that if we are sending a digest and we've missed sending it, we can
+                # still just summarize ALL notifications that haven't been emailed.
+                # Always, no matter what.
+                # This also means that if we are sending out emails every 5 minutes, and several
+                # notifications have been triggered meanwhile, they'll go into the same email.
                 emails_per_template[(template_name, subject_template_name)] += list(
-                    subscription.notification_set.filter(
-                        is_emailed=False, **filter_kwargs
-                    ),
+                    subscription.notification_set.filter(is_emailed=False),
                 )
-                print("found:")
-                print(emails_per_template[(template_name, subject_template_name)])
 
             # Send the prepared template names, subjects and context to the user
             for (

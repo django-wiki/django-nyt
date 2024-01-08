@@ -17,6 +17,7 @@ Release Notes
 * Documentation reorganized with Diataxis structure and more how-to guides have been added. (Benjamin Balder Bach)
 * New shortcut function ``utils.unsubscribe()``. #137 (Benjamin Balder Bach)
 * Better logging for ``notifymail`` management command #141 (Benjamin Balder Bach)
+* Added fields ``created`` and ``modified`` on models ``Settings`` and ``Subscription``.
 
 **Changed**
 
@@ -28,6 +29,7 @@ Release Notes
 * Improvements to docstrings of main methods ``notify()`` and ``subscribe()`` #129 (Benjamin Balder Bach)
 * Return value of ``notify()`` was changed - it no longer returns an `int` (number of created notifications), instead it returns a list of created notifications.
   This is very useful, see :doc:`howto/object_relations` #134 (Benjamin Balder Bach)
+* The field ``Notification.url`` now accepts 2,000 characters rather than 200.
 
 **Fixed**
 
