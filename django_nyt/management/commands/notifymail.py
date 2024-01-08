@@ -3,7 +3,6 @@ import os
 import smtplib
 import sys
 import time
-from datetime import datetime
 from datetime import timedelta
 
 from django.conf import settings
@@ -202,7 +201,7 @@ class Command(BaseCommand):
 
         while True:
 
-            started_sending_at = datetime.now()
+            started_sending_at = timezone.now()
             self.logger.info("Starting send loop at %s" % str(started_sending_at))
 
             # When we are looping, we don't want to iterate over user_settings that have
@@ -223,7 +222,7 @@ class Command(BaseCommand):
             )
 
             connection.close()
-            last_sent = datetime.now()
+            last_sent = timezone.now()
             time.sleep(sleep_time)
 
     def _send_with_retry(
