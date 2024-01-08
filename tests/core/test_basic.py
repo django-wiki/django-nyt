@@ -18,6 +18,7 @@ class NotifyTestBase(TestCase):
 
     def setUp(self):
         super(NotifyTestBase, self).setUp()
+        models._notification_type_cache = {}
 
         # These two users are created by migrations in testproject.testapp
         # Reason is to make the testproject easy to setup and use.
