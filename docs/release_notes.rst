@@ -1,8 +1,16 @@
 Release Notes
 =============
 
-1.4 (unreleased)
+1.4 (2024-02-16)
 ----------------
+
+Hello 👋️ We're alive and maintaining this!
+
+This release puts django-nyt a step forwards toward being a mature framework, especially by adding Django 5 support, fixing issues and adding more tests.
+However, there are still some async capabilities remaining to be solved for it to be both mature and modern.
+
+If you can get behind :doc:`the concept </index>`, please consider the great potential of contributing to this project!
+
 
 **Added**
 
@@ -44,16 +52,16 @@ Release Notes
 * Python 3.7 support removed #129 (Benjamin Balder Bach)
 * Unused (!) setting ``NYT_ENABLED`` was removed #134 (Benjamin Balder Bach)
 
-1.3
----
+1.3 (2023-05-03)
+----------------
 
 * Hatch build system, environment management and more #116 (Oscar Cortez)
 * pre-commit configuration updated #116 (Oscar Cortez)
 * Code-base black'ned #116 (Oscar Cortez)
 
 
-1.2.4
------
+1.2.4 (2022-11-11)
+------------------
 
 * Adds Django 4.1 support #113 (Oscar Cortez)
 
