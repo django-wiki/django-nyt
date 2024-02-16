@@ -8,8 +8,8 @@ django-nyt
    :alt: Documentation Status
 .. image:: https://badge.fury.io/py/django-nyt.svg
    :target: https://pypi.org/project/django-nyt/
-.. image:: https://codecov.io/github/django-wiki/django-nyt/coverage.svg?branch=master
-  :target: https://app.codecov.io/github/django-wiki/django-nyt?branch=master
+.. image:: https://codecov.io/github/django-wiki/django-nyt/coverage.svg?branch=main
+   :target: https://app.codecov.io/github/django-wiki/django-nyt?branch=main
 
 Concept
 -------
@@ -23,14 +23,12 @@ django-nyt is a notification framework for Django. It does this:
     EVENT_KEY = "my_key"
     notify(_("OMG! Something happened"), EVENT_KEY)
 
-All users subscribing to ``"my_key"`` will have a notification created
-in their stack when ``notify()`` is called.
+All users subscribing to ``"my_key"`` will have a notification created when ``notify()`` is called.
+How the notification is handled depends on the user's settings.
 
-If you have emails enabled, subscribers receive a summary of notifications at
-an interval of their choice.
+If you have emails enabled, subscribers receive a summary of notifications immediately or at an interval of their choice.
 
-Data can be accessed easily from Django models or from the included JSON
-views.
+Data can be accessed easily from Django models or from the included JSON views.
 
 By using generic object relations, custom URLs, and custom email templates,
 you can expand your notification logic to create email messages that both marks the notification as read when clicking a link and at the same time redirects users to a final destination:
@@ -49,11 +47,16 @@ you can expand your notification logic to create email messages that both marks 
     )
 
 
-Channels (django-channels)
---------------------------
+Roadmap
+-------
 
-Starting from django-nyt 1.0, support for
-`channels <https://channels.readthedocs.io/en/stable/>`_ 1.0 has been added.
+This project makes sense if people start using it and maturing it to their use-cases.
+
+Here are some aspects that aren't covered but are most welcome:
+
+* Support for async
+* Support for notifications through django-channels 4+
+* Support for HTML emails (and user setting)
 
 Docs
 ----
