@@ -34,7 +34,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
 dependencies = [
-    "django>=2.2,<5.1",
+    "django>=2.2,<5.2",
 ]
 dynamic = ["version"]
 
@@ -124,8 +124,8 @@ python = ["3.8", "3.9", "3.10", "3.11"]
 django = ["4.1", "4.2"]
 
 [[tool.hatch.envs.test.matrix]]
-python = ["3.10", "3.11"]
-django = ["5.0"]
+python = ["3.10", "3.11", "3.12"]
+django = ["5.0", "5.1"]
 
 [tool.hatch.envs.test.scripts]
 all = [
