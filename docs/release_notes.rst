@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+1.4 (2024-08-21)
+----------------
+
+**Added**
+
+* Django 5.1 support #145 (Benjamin Balder Bach)
+
 1.4 (2024-02-16)
 ----------------
 
