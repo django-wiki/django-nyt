@@ -304,6 +304,7 @@ class Command(BaseCommand):
             domain = self.options["domain"]
         else:
             from django.contrib.sites.models import Site
+
             site_object = Site.objects.get_current()
             domain = site_object.domain
 
