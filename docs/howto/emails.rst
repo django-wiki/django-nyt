@@ -9,6 +9,9 @@ Here are 3 alternative ways of getting email notifications sent out:
  #. As a daemon
  #. As a cronjob
 
+By default, they rely on django's `site framework <https://docs.djangoproject.com/en/dev/ref/contrib/sites/>`__
+to build absolute urls. If you don't have it enabled, you will need to manually
+provide the domain with the `--domain` argument.
 
 Celery integration
 ~~~~~~~~~~~~~~~~~~

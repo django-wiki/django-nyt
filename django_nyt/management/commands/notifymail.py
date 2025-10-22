@@ -6,7 +6,6 @@ import time
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -304,6 +303,7 @@ class Command(BaseCommand):
             site_object = None
             domain = self.options["domain"]
         else:
+            from django.contrib.sites.models import Site
             site_object = Site.objects.get_current()
             domain = site_object.domain
 
