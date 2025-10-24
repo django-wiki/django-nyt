@@ -6,7 +6,7 @@ from django_nyt.conf import app_settings
 
 
 class SettingsAdmin(admin.ModelAdmin):
-    raw_id_fields = ("user",)
+    autocomplete_fields = ("user",)
     list_display = (
         "user",
         "interval",
@@ -19,6 +19,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         "display_user",
         "notification_type",
         "display_interval",
+        "send_emails",
     )
 
     def display_user(self, instance):
@@ -33,8 +34,15 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class NotificationAdmin(admin.ModelAdmin):
-
-    raw_id_fields = ("user", "subscription")
+    autocomplete_fields = ("user",)
+    raw_id_fields = ("subscription",)
+    list_display = [
+        "message",
+        "user",
+        "is_viewed",
+        "is_emailed",
+        "created",
+    ]
 
 
 if app_settings.NYT_ENABLE_ADMIN:
