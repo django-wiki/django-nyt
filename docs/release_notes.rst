@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+1.5.0 (2025-11-16)
+------------------
+
+**Added**
+
+* Admin improvements #151 (Olivier Dalang)
+
+**Changed**
+
+* django.contrib.sites is now optional ¤149 (Olivier Dalang)
+
+
 1.4.2 (2025-04-23)
 ------------------
 
