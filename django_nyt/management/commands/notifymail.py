@@ -98,9 +98,10 @@ class Command(BaseCommand):
             type=int,
         )
         parser.add_argument(
-            "--retries_cooldown",
+            "--retries-cooldown",
             help="Time in seconds to wait before trying again to send the emails",
             default=30,
+            dest="retries_cooldown",
             type=int,
         )
 
