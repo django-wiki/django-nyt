@@ -3,5 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 class DjangoNytConfig(AppConfig):
+    default_auto_field = "django.db.models.AutoField"
     name = "django_nyt"
     verbose_name = _("Django Nyt")
