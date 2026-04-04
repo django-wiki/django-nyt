@@ -242,9 +242,12 @@ class Command(BaseCommand):
             notification_ids = [n.id for n in notifications]
             try:
                 self.logger.info(f"Sending to notification ids {notification_ids}")
-                self._render_and_send(
-                    template_name, subject_template_name, context, connection
-                )
+                # Allow users to disable e-mail notifications from sending (but
+                # mark them as sent so they won't be sent in the future)
+                if setting.interval > -1:
+                    self._render_and_send(
+                        template_name, subject_template_name, context, connection
+                    )
                 for n in notifications:
                     n.is_emailed = True
                     n.save()
