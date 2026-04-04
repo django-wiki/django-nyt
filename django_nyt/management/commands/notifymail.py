@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core import mail
 from django.core.management.base import BaseCommand
 from django.db.models import Q
+from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import activate
@@ -95,7 +96,6 @@ class Command(BaseCommand):
     def _render_and_send(
         self, template_name, template_subject_name, context, connection
     ):
-
         # This setting overrides everything
         if app_settings.NYT_EMAIL_SUBJECT:
             # Notice that this usually is a lazy translation object
@@ -105,15 +105,33 @@ class Command(BaseCommand):
 
         subject = subject.replace("\n", "").strip()
 
-        message = render_to_string(template_name, context)
-        email = mail.EmailMessage(
-            subject,
-            message,
-            app_settings.NYT_EMAIL_SENDER,
-            [context["user"].email],
-            connection=connection,
-        )
-        self.logger.info("Sending to: %s" % context["user"].email)
+        bodies = {}
+        for ext in ['html', 'txt']:
+            try:
+                # Adjust default naming of templates to drop the default ext
+                available_template_name = '%s.%s' % (template_name.rsplit(".", 1)[0], ext)
+                bodies[ext] = render_to_string(available_template_name, context).strip()
+            except TemplateDoesNotExist:
+                # Need at least html or text message body
+                if ext == 'txt' and not bodies:
+                    raise
+
+        if 'txt' in bodies:
+            email = mail.EmailMultiAlternatives(
+                subject, bodies['txt'], app_settings.NYT_EMAIL_SENDER,
+                [context['user'].email], connection=connection
+            )
+
+            if 'html' in bodies:
+                email.attach_alternative(bodies['html'], 'text/html')
+        else:
+            email = mail.EmailMessage(
+                subject, bodies['html'], app_settings.NYT_EMAIL_SENDER,
+                [context['user'].email], connection=connection
+            )
+            email.content_subtype = 'html'  # Set main content text/html
+
+        self.logger.info("Sending to: %s" % context['user'].email)
         email.send(fail_silently=False)
 
     def _daemonize(self):
