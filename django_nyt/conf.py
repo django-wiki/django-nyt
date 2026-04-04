@@ -52,6 +52,11 @@ class AppSettings:
     consider a no-reply kind of email if your notification system has a UI for changing
     notification settings."""
 
+    NYT_SEND_ONLY_LATEST: bool = True
+    """Email notifications are sent to subscribers, by default only the latest
+    notification for each subscription is sent. When false, sends all of the
+    unsent notifications to subscribers."""
+
     NYT_EMAIL_TEMPLATE_DEFAULT: str = "notifications/emails/default.txt"
     """Default template used for rendering email contents.
     Should contain a valid template name.

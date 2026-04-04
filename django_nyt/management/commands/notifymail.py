@@ -377,9 +377,14 @@ class Command(BaseCommand):
                 # Always, no matter what.
                 # This also means that if we are sending out emails every 5 minutes, and several
                 # notifications have been triggered meanwhile, they'll go into the same email.
-                emails_per_template[(template_name, subject_template_name)] += list(
-                    subscription.notification_set.filter(is_emailed=False),
-                )
+                if app_settings.NYT_SEND_ONLY_LATEST:
+                    emails_per_template[(template_name, subject_template_name)] += list(
+                        subscription.latest,
+                    )
+                else:
+                    emails_per_template[(template_name, subject_template_name)] += list(
+                        subscription.notification_set.filter(is_emailed=False),
+                    )
 
             # Send the prepared template names, subjects and context to the user
             for (
