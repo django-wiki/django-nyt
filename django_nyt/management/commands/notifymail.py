@@ -91,6 +91,19 @@ class Command(BaseCommand):
             dest="now",
             help="Simulate when to start sending from (mainly for testing purposes)",
         )
+        parser.add_argument(
+            "--retries",
+            help="How many time to retry if encountering errors when sending the emails",
+            default=3,
+            type=int,
+        )
+        parser.add_argument(
+            "--retries-cooldown",
+            help="Time in seconds to wait before trying again to send the emails",
+            default=30,
+            dest="retries_cooldown",
+            type=int,
+        )
 
     def _render_and_send(
         self, template_name, template_subject_name, context, connection
@@ -207,7 +220,9 @@ class Command(BaseCommand):
             # an interval greater than our last_sent marker.
             if last_sent:
                 user_settings = models.Settings.objects.filter(
-                    interval__lte=((started_sending_at - last_sent).seconds // 60) // 60
+                    user__is_active=True,
+                    interval__lte=((started_sending_at - last_sent).seconds // 60)
+                    // 60,
                 ).order_by("user")
                 now = self.options.get("now") or timezone.now()
             else:
@@ -238,13 +253,16 @@ class Command(BaseCommand):
         if len(context["notifications"]) == 0:
             return
 
-        while True:
+        for retry in range(self.options["retries"]):
             notification_ids = [n.id for n in notifications]
             try:
                 self.logger.info(f"Sending to notification ids {notification_ids}")
-                self._render_and_send(
-                    template_name, subject_template_name, context, connection
-                )
+                # Allow users to disable e-mail notifications from sending (but
+                # mark them as sent so they won't be sent in the future)
+                if setting.interval > -1:
+                    self._render_and_send(
+                        template_name, subject_template_name, context, connection
+                    )
                 for n in notifications:
                     n.is_emailed = True
                     n.save()
@@ -256,11 +274,10 @@ class Command(BaseCommand):
                 break
             except smtplib.SMTPSenderRefused:
                 self.logger.error(
-                    ("E-mail refused by SMTP server ({}), " "skipping!").format(
+                    ("E-mail refused by SMTP server ({}), skipping!").format(
                         setting.user.email
                     )
                 )
-                continue
             except smtplib.SMTPException as e:
                 self.logger.error(
                     (
@@ -268,13 +285,19 @@ class Command(BaseCommand):
                         "connection, error is: {}"
                     ).format(e)
                 )
-                self.logger.error("Sleeping for 30s then retrying...")
-                time.sleep(30)
             except Exception as e:
                 self.logger.error(
-                    ("Unhandled exception while sending, giving " "up: {}").format(e)
+                    ("Unhandled exception while sending, giving up: {}").format(e)
                 )
                 raise
+            self.logger.error(
+                f"Sleeping for 30s then retrying ({retry + 1} of {self.options['retries']})..."
+            )
+            time.sleep(self.options["retries_cooldown"])
+        else:
+            raise RuntimeError(
+                f"Failed to send notifications after {self.options['retries']} tentatives."
+            )
 
     def send_mails(  # noqa: max-complexity=12
         self, connection, now, last_sent=None, user_settings=None
@@ -291,7 +314,7 @@ class Command(BaseCommand):
 
         if not user_settings:
             user_settings = (
-                models.Settings.objects.all()
+                models.Settings.objects.filter(user__is_active=True)
                 .select_related("user")
                 .prefetch_related(
                     "subscription_set", "subscription_set__notification_type"
@@ -377,9 +400,14 @@ class Command(BaseCommand):
                 # Always, no matter what.
                 # This also means that if we are sending out emails every 5 minutes, and several
                 # notifications have been triggered meanwhile, they'll go into the same email.
-                emails_per_template[(template_name, subject_template_name)] += list(
-                    subscription.notification_set.filter(is_emailed=False),
-                )
+                if app_settings.NYT_SEND_ONLY_LATEST:
+                    emails_per_template[(template_name, subject_template_name)] += list(
+                        subscription.latest,
+                    )
+                else:
+                    emails_per_template[(template_name, subject_template_name)] += list(
+                        subscription.notification_set.filter(is_emailed=False),
+                    )
 
             # Send the prepared template names, subjects and context to the user
             for (

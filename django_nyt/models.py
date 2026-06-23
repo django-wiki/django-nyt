@@ -1,6 +1,7 @@
 import re
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -306,6 +307,20 @@ class Subscription(models.Model):
         db_table = app_settings.NYT_DB_TABLE_PREFIX + "_subscription"
         verbose_name = _("subscription")
         verbose_name_plural = _("subscriptions")
+
+    @property
+    def target_obj(self):
+        """Returns GFK object for this subscription (if there is one specified)"""
+        if not self.object_id or not self.notification_type.content_type:
+            return None
+
+        obj_type = self.notification_type.content_type
+        try:
+            obj = obj_type.get_object_for_this_type(pk=self.object_id)
+        except ObjectDoesNotExist:
+            obj = None
+
+        return obj
 
 
 class Notification(models.Model):
