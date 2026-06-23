@@ -32,7 +32,7 @@ def get_notifications(request, latest_id=None, is_viewed=False, max_results=10):
                      "occurrences": n.occurrences,
                      "occurrences_msg": _("%d times") % n.occurrences,
                      "type": n.subscription.notification_type.key if n.subscription else None,
-                     "type_lbl": n.subscription.notification_type.label if n.subscription else None,
+                     "type_label": n.subscription.notification_type.label if n.subscription else None,
                      "since": naturaltime(n.created)} for n in notifications[:max_results]]}
     """
 
@@ -71,7 +71,7 @@ def get_notifications(request, latest_id=None, is_viewed=False, max_results=10):
                 "type": n.subscription.notification_type.key
                 if n.subscription
                 else None,
-                "type_lbl": n.subscription.notification_type.label
+                "type_label": n.subscription.notification_type.label
                 if n.subscription
                 else None,
                 "since": naturaltime(n.created),
