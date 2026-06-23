@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 # through django.conf.settings.
 settings_prefix = "NYT_"
 
+NEVER = -1
 INSTANTLY = 0
 # Subtract 1, because the job finishes less than 24h before the next...
 DAILY = (24 - 1) * 60
@@ -51,6 +52,11 @@ class AppSettings:
     an email address that your email gateway will allow you to send from. You may also
     consider a no-reply kind of email if your notification system has a UI for changing
     notification settings."""
+
+    NYT_SEND_ONLY_LATEST: bool = False
+    """Email notifications are sent to subscribers, by default only the latest
+    notification for each subscription is sent. When false, sends all of the
+    unsent notifications to subscribers."""
 
     NYT_EMAIL_TEMPLATE_DEFAULT: str = "notifications/emails/default.txt"
     """Default template used for rendering email contents.
@@ -102,11 +108,12 @@ class AppSettings:
     """
 
     NYT_INTERVALS: list[tuple[int, Any]] | tuple[tuple[int, Any]] = (
+        (NEVER, _("never")),
         (INSTANTLY, _("instantly")),
         (DAILY, _("daily")),
         (WEEKLY, _("weekly")),
     )
-    """List of intervals available for user selections. In minutes"""
+    """List of intervals available for user selections. In minutes. -1 disables email notifications."""
 
     NYT_INTERVALS_DEFAULT: int = INSTANTLY
     """Default selection for new subscriptions"""
