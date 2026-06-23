@@ -1,6 +1,27 @@
 Release Notes
 =============
 
+1.6.0 (2026-06-23)
+------------------
+
+**Added**
+
+* Django 6.0 support #162 (Benjamin Balder Bach)
+* New JSON fields for notification API ``label_type`` and ``target`` #161 (dwasyl)
+* ``NYT_SEND_ONLY_LATEST`` setting to send only latest notification per subscription #161 (dwasyl)
+* "Never" option for ``Settings.interval`` for notifications with no email #159 (dwasyl)
+* ``notifymail`` now has a ``--retries`` option (default: 3) (Olivier Dalang)
+
+
+**Changed**
+
+* default_auto_field is now ``BigAutoFied`` #156
+
+**Fixed**
+
+* Don't send notifications for ``User.is_active=False`` #157 (dwasyl)
+
+
 1.5.0 (2025-11-16)
 ------------------
 
@@ -10,7 +31,7 @@ Release Notes
 
 **Changed**
 
-* django.contrib.sites is now optional ¤149 (Olivier Dalang)
+* django.contrib.sites is now optional #149 (Olivier Dalang)
 
 
 1.4.2 (2025-04-23)
