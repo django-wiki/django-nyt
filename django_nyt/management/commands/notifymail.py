@@ -208,7 +208,8 @@ class Command(BaseCommand):
             if last_sent:
                 user_settings = models.Settings.objects.filter(
                     user__is_active=True,
-                    interval__lte=((started_sending_at - last_sent).seconds // 60) // 60
+                    interval__lte=((started_sending_at - last_sent).seconds // 60)
+                    // 60,
                 ).order_by("user")
                 now = self.options.get("now") or timezone.now()
             else:
