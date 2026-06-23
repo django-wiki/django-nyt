@@ -207,7 +207,9 @@ class Command(BaseCommand):
             # an interval greater than our last_sent marker.
             if last_sent:
                 user_settings = models.Settings.objects.filter(
-                    interval__lte=((started_sending_at - last_sent).seconds // 60) // 60
+                    user__is_active=True,
+                    interval__lte=((started_sending_at - last_sent).seconds // 60)
+                    // 60,
                 ).order_by("user")
                 now = self.options.get("now") or timezone.now()
             else:
@@ -242,9 +244,12 @@ class Command(BaseCommand):
             notification_ids = [n.id for n in notifications]
             try:
                 self.logger.info(f"Sending to notification ids {notification_ids}")
-                self._render_and_send(
-                    template_name, subject_template_name, context, connection
-                )
+                # Allow users to disable e-mail notifications from sending (but
+                # mark them as sent so they won't be sent in the future)
+                if setting.interval > -1:
+                    self._render_and_send(
+                        template_name, subject_template_name, context, connection
+                    )
                 for n in notifications:
                     n.is_emailed = True
                     n.save()
@@ -291,7 +296,7 @@ class Command(BaseCommand):
 
         if not user_settings:
             user_settings = (
-                models.Settings.objects.all()
+                models.Settings.objects.filter(user__is_active=True)
                 .select_related("user")
                 .prefetch_related(
                     "subscription_set", "subscription_set__notification_type"

@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 # through django.conf.settings.
 settings_prefix = "NYT_"
 
+NEVER = -1
 INSTANTLY = 0
 # Subtract 1, because the job finishes less than 24h before the next...
 DAILY = (24 - 1) * 60
@@ -107,11 +108,12 @@ class AppSettings:
     """
 
     NYT_INTERVALS: list[tuple[int, Any]] | tuple[tuple[int, Any]] = (
+        (NEVER, _("never")),
         (INSTANTLY, _("instantly")),
         (DAILY, _("daily")),
         (WEEKLY, _("weekly")),
     )
-    """List of intervals available for user selections. In minutes"""
+    """List of intervals available for user selections. In minutes. -1 disables email notifications."""
 
     NYT_INTERVALS_DEFAULT: int = INSTANTLY
     """Default selection for new subscriptions"""
