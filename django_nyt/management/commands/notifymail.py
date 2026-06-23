@@ -106,32 +106,41 @@ class Command(BaseCommand):
         subject = subject.replace("\n", "").strip()
 
         bodies = {}
-        for ext in ['html', 'txt']:
+        for ext in ["html", "txt"]:
             try:
                 # Adjust default naming of templates to drop the default ext
-                available_template_name = '%s.%s' % (template_name.rsplit(".", 1)[0], ext)
+                available_template_name = "%s.%s" % (
+                    template_name.rsplit(".", 1)[0],
+                    ext,
+                )
                 bodies[ext] = render_to_string(available_template_name, context).strip()
             except TemplateDoesNotExist:
                 # Need at least html or text message body
-                if ext == 'txt' and not bodies:
+                if ext == "txt" and not bodies:
                     raise
 
-        if 'txt' in bodies:
+        if "txt" in bodies:
             email = mail.EmailMultiAlternatives(
-                subject, bodies['txt'], app_settings.NYT_EMAIL_SENDER,
-                [context['user'].email], connection=connection
+                subject,
+                bodies["txt"],
+                app_settings.NYT_EMAIL_SENDER,
+                [context["user"].email],
+                connection=connection,
             )
 
-            if 'html' in bodies:
-                email.attach_alternative(bodies['html'], 'text/html')
+            if "html" in bodies:
+                email.attach_alternative(bodies["html"], "text/html")
         else:
             email = mail.EmailMessage(
-                subject, bodies['html'], app_settings.NYT_EMAIL_SENDER,
-                [context['user'].email], connection=connection
+                subject,
+                bodies["html"],
+                app_settings.NYT_EMAIL_SENDER,
+                [context["user"].email],
+                connection=connection,
             )
-            email.content_subtype = 'html'  # Set main content text/html
+            email.content_subtype = "html"  # Set main content text/html
 
-        self.logger.info("Sending to: %s" % context['user'].email)
+        self.logger.info("Sending to: %s" % context["user"].email)
         email.send(fail_silently=False)
 
     def _daemonize(self):
