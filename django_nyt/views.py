@@ -28,7 +28,7 @@ def get_notifications(request, latest_id=None, is_viewed=False, max_results=10):
          "objects": [{"pk": n.pk,
                      "message": n.message,
                      "url": n.url,
-                     "target": str(n.subscription.target_obj) if n.subscription and n.subscription.object_id else None,
+                     "target": str(n.subscription.target_obj) if n.subscription else None,
                      "occurrences": n.occurrences,
                      "occurrences_msg": _("%d times") % n.occurrences,
                      "type": n.subscription.notification_type.key if n.subscription else None,
