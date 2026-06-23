@@ -225,7 +225,9 @@ class Command(BaseCommand):
             # an interval greater than our last_sent marker.
             if last_sent:
                 user_settings = models.Settings.objects.filter(
-                    interval__lte=((started_sending_at - last_sent).seconds // 60) // 60
+                    user__is_active=True,
+                    interval__lte=((started_sending_at - last_sent).seconds // 60)
+                    // 60,
                 ).order_by("user")
                 now = self.options.get("now") or timezone.now()
             else:
@@ -309,7 +311,7 @@ class Command(BaseCommand):
 
         if not user_settings:
             user_settings = (
-                models.Settings.objects.all()
+                models.Settings.objects.filter(user__is_active=True)
                 .select_related("user")
                 .prefetch_related(
                     "subscription_set", "subscription_set__notification_type"
