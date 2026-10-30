@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+1.6.1 (2026-10-31)
+------------------
+
+**Added**
+
+* Django 6.1 support (no changes) (Benjamin Balder Bach)
+
 1.6.0 (2026-06-23)
 ------------------
 
