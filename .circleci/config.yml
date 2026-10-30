@@ -68,6 +68,9 @@ workflows:
           hatch_env: "py3.12-dj6.0"
           python_version: "3.12"
       - hatch:
+          hatch_env: "py3.12-dj6.1"
+          python_version: "3.12"
+      - hatch:
           hatch_env: "py3.13-dj5.0"
           python_version: "3.13"
       - hatch:
@@ -80,6 +83,9 @@ workflows:
           hatch_env: "py3.13-dj6.0"
           python_version: "3.13"
       - hatch:
+          hatch_env: "py3.13-dj6.1"
+          python_version: "3.13"
+      - hatch:
           hatch_env: "py3.14-dj5.0"
           python_version: "3.14"
       - hatch:
@@ -90,5 +96,8 @@ workflows:
           python_version: "3.14"
       - hatch:
           hatch_env: "py3.14-dj6.0"
+          python_version: "3.14"
+      - hatch:
+          hatch_env: "py3.14-dj6.1"
           python_version: "3.14"
       - lint
